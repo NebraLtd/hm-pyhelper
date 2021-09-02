@@ -34,9 +34,14 @@ jobs:
           command: build
           args: --target aarch64-unknown-linux-musl --release
 
-      - name: Check output
-        run: |
-          ls -lah ./target/aarch64-unknown-linux-musl/release/gateway_mfr
+    - name: Copy release file
+      run: |
+        cp ./target/aarch64-unknown-linux-musl/release/gateway_mfr gateway_mfr
+
+      - uses: actions/upload-artifact@master
+        with:
+          name: gateway_mfr
+          path: ./gateway_mfr
 
   build-n-publish:
     name: Build and publish Python 🐍 distribution 📦 to TestPyPI
@@ -48,6 +53,11 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.7
+
+    - uses: actions/download-artifact@master
+      with:
+        name: gateway_mfr
+        path: ./gateway_mfr
 
     - name: Install pypa/build
       run: >-
