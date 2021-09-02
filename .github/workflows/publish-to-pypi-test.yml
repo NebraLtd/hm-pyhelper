@@ -31,7 +31,6 @@ jobs:
 
       - name: Build gateway-mfr-rs
         uses: actions-rs/cargo@v1
-        working-directory: gateway-mfr-rs
         with:
           use-cross: true
           command: build
