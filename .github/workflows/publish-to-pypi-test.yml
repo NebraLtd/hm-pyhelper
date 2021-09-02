@@ -27,13 +27,12 @@ jobs:
           command: check
 
       - name: Clone repo
-        run: >-
-          git clone https://github.com/helium/gateway-mfr-rs.git && \
-          cd gateway-mfr-rs && \
-          git checkout v0.1.3
+        run: |
+          git clone --branch v0.1.3 vhttps://github.com/helium/gateway-mfr-rs.git
 
       - name: Build gateway-mfr-rs
         uses: actions-rs/cargo@v1
+        working-directory: gateway-mfr-rs
         with:
           use-cross: true
           command: build
