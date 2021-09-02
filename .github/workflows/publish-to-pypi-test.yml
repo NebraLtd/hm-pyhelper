@@ -38,7 +38,7 @@ jobs:
         run: |
           cp ./target/aarch64-unknown-linux-musl/release/gateway_mfr gateway_mfr
 
-      - uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v2
         with:
           name: gateway_mfr
           path: ./gateway_mfr
@@ -54,7 +54,7 @@ jobs:
       with:
         python-version: 3.7
 
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v2
       with:
         name: gateway_mfr
         path: ./gateway_mfr
