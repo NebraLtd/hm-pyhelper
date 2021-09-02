@@ -7,7 +7,7 @@ on:
 
 jobs:
   check:
-    name: Check
+    name: Build gateway-mfr-rs
     runs-on: ubuntu-latest
     steps:
       - name: Install stable toolchain
@@ -24,6 +24,7 @@ jobs:
       - name: Run cargo check
         uses: actions-rs/cargo@v1
         with:
+          use-cross: true
           command: check
 
       - name: Build gateway-mfr-rs
@@ -32,6 +33,10 @@ jobs:
           use-cross: true
           command: build
           args: --target aarch64-unknown-linux-musl --release
+
+      - name: Check output
+        run: |
+          ls -lah ./target/aarch64-unknown-linux-musl/release/gateway_mfr
 
   build-n-publish:
     name: Build and publish Python 🐍 distribution 📦 to TestPyPI
