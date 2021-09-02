@@ -19,7 +19,7 @@ jobs:
 
       - name: Clone repo
         run: |
-          git clone --branch v0.1.3 vhttps://github.com/helium/gateway-mfr-rs.git .
+          git clone --branch v0.1.3 https://github.com/helium/gateway-mfr-rs.git .
 
       - name: Run cargo check
         uses: actions-rs/cargo@v1
