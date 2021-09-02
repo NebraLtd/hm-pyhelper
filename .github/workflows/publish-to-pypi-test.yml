@@ -34,9 +34,9 @@ jobs:
           command: build
           args: --target aarch64-unknown-linux-musl --release
 
-    - name: Copy release file
-      run: |
-        cp ./target/aarch64-unknown-linux-musl/release/gateway_mfr gateway_mfr
+      - name: Copy release file
+        run: |
+          cp ./target/aarch64-unknown-linux-musl/release/gateway_mfr gateway_mfr
 
       - uses: actions/upload-artifact@master
         with:
