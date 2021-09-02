@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  check:
+  rust-compile:
     name: Build gateway-mfr-rs
     runs-on: ubuntu-latest
     steps:
@@ -46,6 +46,7 @@ jobs:
   build-n-publish:
     name: Build and publish Python 🐍 distribution 📦 to TestPyPI
     runs-on: ubuntu-18.04
+    needs: [rust-compile]
 
     steps:
     - uses: actions/checkout@master
