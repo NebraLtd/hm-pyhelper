@@ -16,7 +16,5 @@ setup(
         "Bug Tracker": "https://github.com/NebraLtd/hm-pyhelper/issues",
     },
     packages=find_packages(),
-    package_data={
-        'gateway_mfr': ['gateway_mfr'],
-    },
+    include_package_data=True
 )
