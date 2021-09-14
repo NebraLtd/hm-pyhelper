@@ -28,6 +28,24 @@ def get_public_keys_rust():
     return False
 
 
+def get_ethernet_addresses(diagnostics):
+    # Get ethernet MAC and WIFI address
+
+    # The order of the values in the lists is important!
+    # It determines which value will be available for which key
+    path_to_files = [
+        "/sys/class/net/eth0/address",
+        "/sys/class/net/wlan0/address"
+    ]
+    keys = ["E0", "W0"]
+    for (path, key) in zip(path_to_files, keys):
+        try:
+            diagnostics[key] = get_mac_address(path)
+        except Exception as e:
+            diagnostics[key] = None
+            logging.error(e)
+
+
 def get_mac_address(path):
     """
     input: path to the file with the location of the mac address
