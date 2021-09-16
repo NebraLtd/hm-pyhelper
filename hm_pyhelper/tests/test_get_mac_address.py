@@ -1,8 +1,8 @@
+from hm_pyhelper.miner_param import get_mac_address
 import unittest
 from unittest.mock import mock_open, patch
 import sys
 sys.path.append("..")
-from hm_pyhelper.miner_param import get_mac_address
 
 
 class TestGetEthMac(unittest.TestCase):
