@@ -3,7 +3,7 @@ from os.path import join, dirname
 
 setup(
     name='hm_pyhelper',
-    version='0.2',
+    version='0.3',
     author="Nebra Ltd",
     description="Helium Python Helper",
     long_description=open(join(dirname(__file__), 'README.md')).read(),
