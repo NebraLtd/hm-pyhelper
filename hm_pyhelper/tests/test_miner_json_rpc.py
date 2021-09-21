@@ -3,7 +3,7 @@ import mock
 from hm_pyhelper.miner_json_rpc import MinerClient
 
 
-BASE_URL = 'http://localhost:4467'
+BASE_URL = 'http://helium-miner:4467'
 
 
 class Result(object):

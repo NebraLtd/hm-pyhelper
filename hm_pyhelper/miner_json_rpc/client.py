@@ -3,7 +3,7 @@ from jsonrpcclient import request
 
 class Client(object):
 
-    def __init__(self, url='http://localhost:4467'):
+    def __init__(self, url='http://helium-miner:4467'):
         self.url = url
 
     def __fetch_data(self, method, **kwargs):
