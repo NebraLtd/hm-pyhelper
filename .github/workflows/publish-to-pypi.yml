@@ -59,7 +59,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: gateway_mfr
-          path: ./hm_pyhelper/gateway_mfr
+          path: ./gateway_mfr
 
       - name: Move gateway_mfr in place
         run: |
