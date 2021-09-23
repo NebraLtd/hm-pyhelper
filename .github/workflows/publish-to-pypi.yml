@@ -63,6 +63,10 @@ jobs:
 
       - name: Move gateway_mfr in place
         run: |
+          chmod +x gateway_mfr/gateway_mfr
+
+      - name: Move gateway_mfr in place
+        run: |
           mv gateway_mfr/gateway_mfr hm_pyhelper/
 
       - name: Install pypa/build
