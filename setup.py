@@ -5,6 +5,7 @@ setup(
     name='hm_pyhelper',
     version='0.5',
     author="Nebra Ltd",
+    author_email="support@nebra.com",
     description="Helium Python Helper",
     long_description=open(join(dirname(__file__), 'README.md')).read(),
     long_description_content_type="text/markdown",
