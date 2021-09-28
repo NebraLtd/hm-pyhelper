@@ -59,9 +59,14 @@ def provision_key():
     direct_path = os.path.dirname(os.path.abspath(__file__))
     gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
 
-    if get_gateway_mfr_test_result():
-        logging.info("Key already provisioned")
-        return True
+    test_results = get_gateway_mfr_test_result()
+    if test_results['result'] == 'pass':
+        for test in test_results:
+
+            # Make sure the key has been provisioned in slot 0
+            if test['test'] == 'miner_key(0)':
+                logging.info("Key already provisioned")
+                return True
 
     try:
         run_gateway_mfr = subprocess.run(
