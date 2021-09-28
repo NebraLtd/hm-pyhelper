@@ -28,6 +28,30 @@ def get_public_keys_rust():
     return False
 
 
+def get_gateway_mfr_test_result():
+    """
+    Run gateway_mfr test and report back.
+    """
+    direct_path = os.path.dirname(os.path.abspath(__file__))
+    gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
+
+    try:
+        run_gateway_mfr_keys = subprocess.run(
+            [gateway_mfr_path, "test"],
+            capture_output=True,
+            check=True
+        )
+    except subprocess.CalledProcessError:
+        logging.error("gateway_mfr exited with a non-zero status")
+        return False
+
+    try:
+        return json.loads(run_gateway_mfr_keys.stdout)
+    except json.JSONDecodeError:
+        logging.error("Unable to parse JSON from gateway_mfr")
+    return False
+
+
 def get_ethernet_addresses(diagnostics):
     # Get ethernet MAC and WIFI address
 
