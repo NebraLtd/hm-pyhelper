@@ -66,7 +66,7 @@ def get_ethernet_addresses(diagnostics):
         try:
             diagnostics[key] = get_mac_address(path)
         except Exception as e:
-            diagnostics[key] = None
+            diagnostics[key] = False
             logging.error(e)
 
 
