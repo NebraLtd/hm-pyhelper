@@ -3,6 +3,7 @@ import subprocess
 import logging
 import json
 
+
 def get_public_keys_rust():
     """
     Run gateway_mfr and report back the key.
