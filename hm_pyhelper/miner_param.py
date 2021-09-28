@@ -60,13 +60,8 @@ def provision_key():
     gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
 
     test_results = get_gateway_mfr_test_result()
-    if test_results['result'] == 'pass':
-        for test in test_results:
-
-            # Make sure the key has been provisioned in slot 0
-            if test['test'] == 'miner_key(0)':
-                logging.info("Key already provisioned")
-                return True
+    if did_gateway_mfr_test_result_include_miner_key_pass(test_results):
+        return True
 
     try:
         run_gateway_mfr = subprocess.run(
@@ -81,6 +76,52 @@ def provision_key():
         return False
     return True
 
+def did_gateway_mfr_test_result_include_miner_key_pass(gateway_mfr_test_result):
+    """
+    Returns true if gateway_mfr_test_result["tests"] has an entry where
+    "test": "miner_key(0)" and "result": "pass"
+    Input: {
+        "result": "pass",
+        "tests": [
+            {
+            "output": "ok",
+            "result": "pass",
+            "test": "serial"
+            },
+            {
+            "output": "ok",
+            "result": "pass",
+            "test": "zone_locked(data)"
+            },
+            {
+            "output": "ok",
+            "result": "pass",
+            "test": "zone_locked(config)"
+            },
+            {
+            "output": "ok",
+            "result": "pass",
+            "test": "slot_config(0..=15, ecc)"
+            },
+            {
+            "output": "ok",
+            "result": "pass",
+            "test": "key_config(0..=15, ecc)"
+            },
+            {
+            "output": "ok",
+            "result": "pass",
+            "test": "miner_key(0)"
+            }
+        ]
+    }
+    """
+    def is_miner_key_and_passed(test_result):
+        return test_result['test'] == 'miner_key(0)' and \
+            test_result['result'] == 'pass'
+
+    results_is_miner_key_and_passed = map(is_miner_key_and_passed, gateway_mfr_test_result['tests'])
+    return any(results_is_miner_key_and_passed)
 
 def get_ethernet_addresses(diagnostics):
     # Get ethernet MAC and WIFI address
