@@ -3,7 +3,6 @@ import subprocess
 import logging
 import json
 
-
 def get_public_keys_rust():
     """
     Run gateway_mfr and report back the key.
@@ -50,6 +49,31 @@ def get_gateway_mfr_test_result():
     except json.JSONDecodeError:
         logging.error("Unable to parse JSON from gateway_mfr")
     return False
+
+
+def provision_key():
+    """
+    Attempt to provision key.
+    """
+    direct_path = os.path.dirname(os.path.abspath(__file__))
+    gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
+
+    if get_gateway_mfr_test_result():
+        logging.info("Key already provisioned")
+        return True
+
+    try:
+        run_gateway_mfr = subprocess.run(
+            [gateway_mfr_path, "provision"],
+            capture_output=True,
+            check=True
+        )
+        logging.info("[ECC Provisioning] %s",  run_gateway_mfr.stdout)
+
+    except subprocess.CalledProcessError:
+        logging.error("[ECC Provisioning] Exited with a non-zero status")
+        return False
+    return True
 
 
 def get_ethernet_addresses(diagnostics):
