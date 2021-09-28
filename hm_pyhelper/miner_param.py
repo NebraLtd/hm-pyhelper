@@ -51,6 +51,7 @@ def get_gateway_mfr_test_result():
         logging.error("Unable to parse JSON from gateway_mfr")
     return False
 
+
 def get_ethernet_addresses(diagnostics):
     # Get ethernet MAC and WIFI address
 
