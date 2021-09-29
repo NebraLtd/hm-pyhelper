@@ -3,7 +3,7 @@ from os.path import join, dirname
 
 setup(
     name='hm_pyhelper',
-    version='0.7.1',
+    version='0.8',
     author="Nebra Ltd",
     author_email="support@nebra.com",
     description="Helium Python Helper",
