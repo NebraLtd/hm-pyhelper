@@ -3,6 +3,8 @@ import subprocess
 import logging
 import json
 
+from hm_pyhelper.hardware_definitions import is_rockpi, is_raspberry_pi
+
 
 def log_stdout_stderr(sp_result):
     logging.info('gateway_mfr response stdout: %s' % sp_result.stdout)
@@ -15,10 +17,15 @@ def get_public_keys_rust():
     """
     direct_path = os.path.dirname(os.path.abspath(__file__))
     gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
+    command = [gateway_mfr_path, "key", "0"]
+
+    if is_rockpi():
+        extra_args = ['--path', '/dev/i2c-7']
+        command.extend(extra_args)
 
     try:
         run_gateway_mfr_keys = subprocess.run(
-            [gateway_mfr_path, "key", "0"],
+            command,
             capture_output=True,
             check=True
         )
@@ -40,10 +47,15 @@ def get_gateway_mfr_test_result():
     """
     direct_path = os.path.dirname(os.path.abspath(__file__))
     gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
+    command = [gateway_mfr_path, "test"]
+
+    if is_rockpi():
+        extra_args = ['--path', '/dev/i2c-7']
+        command.extend(extra_args)
 
     try:
         run_gateway_mfr_keys = subprocess.run(
-            [gateway_mfr_path, "test"],
+            command,
             capture_output=True,
             check=True
         )

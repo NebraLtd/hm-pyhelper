@@ -1,3 +1,31 @@
+import os
+
+
+def is_rockpi():
+    return 'rockpi' in os.getenv('BALENA_DEVICE_TYPE')
+
+
+def is_raspberry_pi():
+    """
+    Pulled from
+    https://www.balena.io/docs/reference/base-images/devicetypes/
+    """
+    device_type = os.getenv('BALENA_DEVICE_TYPE')
+    device_type_match = [
+        'raspberry-pi2',
+        'raspberrypi3',
+        'raspberrypi3-64',
+        'raspberrypi4-64',
+        'nebra-hnt',
+        'raspberrypicm4-ioboard'
+    ]
+
+    for device in device_type_match:
+        if device in device_type:
+            return True
+    return False
+
+
 variant_definitions = {
     # Nebra Indoor Hotspot Gen1
     'NEBHNT-IN1': {
