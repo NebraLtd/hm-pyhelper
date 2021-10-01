@@ -2,7 +2,7 @@ import os
 
 
 def is_rockpi():
-    return 'rockpi' in os.getenv('BALENA_DEVICE_TYPE')
+    return 'rockpi-4b-rk3399' in os.getenv('BALENA_DEVICE_TYPE')
 
 
 def is_raspberry_pi():
