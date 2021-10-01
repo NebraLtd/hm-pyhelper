@@ -3,7 +3,7 @@ import subprocess
 import logging
 import json
 
-from hm_pyhelper.hardware_definitions import is_rockpi, is_raspberry_pi
+from hm_pyhelper.hardware_definitions import is_rockpi
 
 
 def log_stdout_stderr(sp_result):
