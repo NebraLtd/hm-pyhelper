@@ -6,69 +6,55 @@ import json
 from hm_pyhelper.hardware_definitions import is_rockpi
 
 
-def log_stdout_stderr(sp_result):
-    logging.info('gateway_mfr response stdout: %s' % sp_result.stdout)
-    logging.info('gateway_mfr response stderr: %s' % sp_result.stderr)
+def run_gateway_mfr(args):
+    direct_path = os.path.dirname(os.path.abspath(__file__))
+    gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
+
+    command = [gateway_mfr_path]
+    command.extend(args)
+
+    if is_rockpi():
+        extra_args = ['--path', '/dev/i2c-7']
+        command.extend(extra_args)
+
+    try:
+        run_gateway_mfr = subprocess.run(
+            command,
+            capture_output=True,
+            check=True
+        )
+        logging.info('gateway_mfr response stdout: %s' % run_gateway_mfr.stdout)
+        logging.info('gateway_mfr response stderr: %s' % run_gateway_mfr.stderr)
+    except subprocess.CalledProcessError:
+        logging.error("gateway_mfr exited with a non-zero status")
+        return False
+
+    try:
+        return json.loads(run_gateway_mfr.stdout)
+    except json.JSONDecodeError:
+        logging.error("Unable to parse JSON from gateway_mfr")
+    return False
 
 
 def get_public_keys_rust():
     """
     Run gateway_mfr and report back the key.
     """
-    direct_path = os.path.dirname(os.path.abspath(__file__))
-    gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
-    command = [gateway_mfr_path, "key", "0"]
+    return run_gateway_mfr(["key", "0"])
 
-    if is_rockpi():
-        extra_args = ['--path', '/dev/i2c-7']
-        command.extend(extra_args)
 
-    try:
-        run_gateway_mfr_keys = subprocess.run(
-            command,
-            capture_output=True,
-            check=True
-        )
-        log_stdout_stderr(run_gateway_mfr_keys)
-    except subprocess.CalledProcessError:
-        logging.error("gateway_mfr exited with a non-zero status")
-        return False
-
-    try:
-        return json.loads(run_gateway_mfr_keys.stdout)
-    except json.JSONDecodeError:
-        logging.error("Unable to parse JSON from gateway_mfr")
-    return False
+def get_getway_mfr_info():
+    """
+    Run gateway_mfr info.
+    """
+    return run_gateway_mfr(["info"])
 
 
 def get_gateway_mfr_test_result():
     """
     Run gateway_mfr test and report back.
     """
-    direct_path = os.path.dirname(os.path.abspath(__file__))
-    gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
-    command = [gateway_mfr_path, "test"]
-
-    if is_rockpi():
-        extra_args = ['--path', '/dev/i2c-7']
-        command.extend(extra_args)
-
-    try:
-        run_gateway_mfr_keys = subprocess.run(
-            command,
-            capture_output=True,
-            check=True
-        )
-        log_stdout_stderr(run_gateway_mfr_keys)
-    except subprocess.CalledProcessError:
-        logging.error("gateway_mfr exited with a non-zero status")
-        return False
-
-    try:
-        return json.loads(run_gateway_mfr_keys.stdout)
-    except json.JSONDecodeError:
-        logging.error("Unable to parse JSON from gateway_mfr")
-    return False
+    return run_gateway_mfr(["test"])
 
 
 def get_ethernet_addresses(diagnostics):
