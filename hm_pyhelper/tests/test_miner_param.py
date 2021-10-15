@@ -74,16 +74,16 @@ class GatewayMfrProvisionMock:
 
 class TestMinerParam(unittest.TestCase):
 
-    @patch('hm_pyhelper.miner_param.get_gateway_mfr_test_result', return_value = {
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_test_result', return_value={
             "result": "pass",
             "tests": ALL_PASS_GATEWAY_MFR_TESTS
         })
     def test_provision_key_all_passed(self, get_gateway_mfr_test_result):
         self.assertTrue(provision_key())
-        
+
 
     @patch('subprocess.run', return_value = GatewayMfrProvisionMock())
-    @patch('hm_pyhelper.miner_param.get_gateway_mfr_test_result', return_value = {
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_test_result', return_value={
             "result": "fail",
             "tests": NONE_PASS_GATEWAY_MFR_TESTS
         })
@@ -91,7 +91,7 @@ class TestMinerParam(unittest.TestCase):
         self.assertTrue(provision_key())
 
 
-    @patch('hm_pyhelper.miner_param.get_gateway_mfr_test_result', return_value = {
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_test_result', return_value={
             "result": "fail",
             "tests": NONE_PASS_GATEWAY_MFR_TESTS
         })

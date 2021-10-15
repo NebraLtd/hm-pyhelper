@@ -7,6 +7,10 @@ This package is used in a number of Nebra software repos:
 - [hm-config](https://github.com/NebraLtd/hm-config/)
 - [hm-diag](https://github.com/NebraLtd/hm-diag/)
 
+The package is available on PyPI and PyPI test repos:
+- [PyPI hm-pyhelper](https://pypi.org/project/hm-pyhelper)
+- [PyPI Test hm-pyhelper](https://test.pypi.org/project/hm-pyhelper)
+
 ## Helium Hardware Definitions
 
 ```python

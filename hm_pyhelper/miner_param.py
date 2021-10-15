@@ -4,6 +4,11 @@ import logging
 import json
 
 
+def log_stdout_stderr(sp_result):
+    logging.info('gateway_mfr response stdout: %s' % sp_result.stdout)
+    logging.info('gateway_mfr response stderr: %s' % sp_result.stderr)
+
+
 def get_public_keys_rust():
     """
     Run gateway_mfr and report back the key.
@@ -17,6 +22,7 @@ def get_public_keys_rust():
             capture_output=True,
             check=True
         )
+        log_stdout_stderr(run_gateway_mfr_keys)
     except subprocess.CalledProcessError:
         logging.error("gateway_mfr exited with a non-zero status")
         return False
@@ -41,6 +47,7 @@ def get_gateway_mfr_test_result():
             capture_output=True,
             check=True
         )
+        log_stdout_stderr(run_gateway_mfr_keys)
     except subprocess.CalledProcessError:
         logging.error("gateway_mfr exited with a non-zero status")
         return False
