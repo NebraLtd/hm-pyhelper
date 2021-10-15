@@ -83,6 +83,7 @@ def provision_key():
         return False
     return True
 
+
 def did_gateway_mfr_test_result_include_miner_key_pass(gateway_mfr_test_result):
     """
     Returns true if gateway_mfr_test_result["tests"] has an entry where
@@ -129,6 +130,7 @@ def did_gateway_mfr_test_result_include_miner_key_pass(gateway_mfr_test_result):
 
     results_is_miner_key_and_passed = map(is_miner_key_and_passed, gateway_mfr_test_result['tests'])
     return any(results_is_miner_key_and_passed)
+
 
 def get_ethernet_addresses(diagnostics):
     # Get ethernet MAC and WIFI address
