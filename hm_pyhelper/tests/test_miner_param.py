@@ -1,6 +1,8 @@
 import unittest
 from unittest.mock import patch
-from hm_pyhelper.miner_param import get_gateway_mfr_test_result, provision_key, did_gateway_mfr_test_result_include_miner_key_pass
+from hm_pyhelper.miner_param import provision_key
+from hm_pyhelper.miner_param import \
+        did_gateway_mfr_test_result_include_miner_key_pass
 
 ALL_PASS_GATEWAY_MFR_TESTS = [
     {
@@ -68,9 +70,11 @@ NONE_PASS_GATEWAY_MFR_TESTS = [
     }
   ]
 
+
 class GatewayMfrProvisionMock:
     def stdout():
         return "example"
+
 
 class TestMinerParam(unittest.TestCase):
 
@@ -92,7 +96,11 @@ class TestMinerParam(unittest.TestCase):
                 "tests": NONE_PASS_GATEWAY_MFR_TESTS
             }
     )
-    def test_provision_key_none_passed(self, get_gateway_mfr_test_result, subprocess_run):
+    def test_provision_key_none_passed(
+            self,
+            get_gateway_mfr_test_result,
+            subprocess_run
+    ):
         self.assertTrue(provision_key())
 
     @patch(
@@ -102,9 +110,15 @@ class TestMinerParam(unittest.TestCase):
                 "tests": NONE_PASS_GATEWAY_MFR_TESTS
             }
     )
-    def test_did_gateway_mfr_test_result_include_miner_key_fail(self, get_gateway_mfr_test_result):
-        self.assertFalse(did_gateway_mfr_test_result_include_miner_key_pass(get_gateway_mfr_test_result))
-
+    def test_did_gateway_mfr_test_result_include_miner_key_fail(
+            self,
+            get_gateway_mfr_test_result
+    ):
+        self.assertFalse(
+                did_gateway_mfr_test_result_include_miner_key_pass(
+                    get_gateway_mfr_test_result
+                    )
+        )
 
     def test_did_gateway_mfr_test_result_include_miner_key_pass(self):
         get_gateway_mfr_test_result = {
@@ -142,4 +156,8 @@ class TestMinerParam(unittest.TestCase):
                 }
             ]
         }
-        self.assertTrue(did_gateway_mfr_test_result_include_miner_key_pass(get_gateway_mfr_test_result))
+        self.assertTrue(
+                did_gateway_mfr_test_result_include_miner_key_pass(
+                    get_gateway_mfr_test_result
+                    )
+        )

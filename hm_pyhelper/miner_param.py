@@ -84,7 +84,9 @@ def provision_key():
     return True
 
 
-def did_gateway_mfr_test_result_include_miner_key_pass(gateway_mfr_test_result):
+def did_gateway_mfr_test_result_include_miner_key_pass(
+        gateway_mfr_test_result
+):
     """
     Returns true if gateway_mfr_test_result["tests"] has an entry where
     "test": "miner_key(0)" and "result": "pass"
@@ -128,7 +130,10 @@ def did_gateway_mfr_test_result_include_miner_key_pass(gateway_mfr_test_result):
         return test_result['test'] == 'miner_key(0)' and \
             test_result['result'] == 'pass'
 
-    results_is_miner_key_and_passed = map(is_miner_key_and_passed, gateway_mfr_test_result['tests'])
+    results_is_miner_key_and_passed = map(
+            is_miner_key_and_passed,
+            gateway_mfr_test_result['tests']
+    )
     return any(results_is_miner_key_and_passed)
 
 
