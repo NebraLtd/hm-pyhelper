@@ -2,6 +2,10 @@ import os
 import subprocess
 import logging
 import json
+from retry import retry
+from hm_pyhelper.utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 def log_stdout_stderr(sp_result):
@@ -173,3 +177,36 @@ def get_mac_address(path):
     except PermissionError as e:
         raise e
     return file.readline().strip().upper()
+
+
+REGION_OVERRIDE_KEY = 'REGION_OVERRIDE'
+REGION_FILEPATH = '/var/pktfwd/region'
+REGION_INVALID_SLEEP_SECONDS = 30
+REGION_FILE_MISSING_SLEEP_SECONDS = 60
+
+
+class MalformedRegionException(Exception):
+    pass
+
+
+@retry(MalformedRegionException, delay=REGION_INVALID_SLEEP_SECONDS, logger=logger) # noqa
+@retry(FileNotFoundError, delay=REGION_FILE_MISSING_SLEEP_SECONDS, logger=logger) # noqa
+def get_region():
+    """
+    Return the region from the environment or parse file created by hm-miner.
+    Retry if region in file is malformed or not found.
+    """
+    region = os.getenv(REGION_OVERRIDE_KEY, False)
+    if region:
+        return region
+
+    logger.debug("No REGION_OVERRIDE defined, will retrieve from miner.")
+    with open(REGION_FILEPATH) as region_file:
+        region = region_file.read().rstrip('\n')
+        logger.debug("Region %s parsed from %s " % (region, REGION_FILEPATH))
+
+        is_region_valid = len(region) > 3
+        if is_region_valid:
+            return region
+
+        raise MalformedRegionException("Region %s is invalid" % region)

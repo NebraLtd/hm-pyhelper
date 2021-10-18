@@ -73,6 +73,19 @@ logger = get_logger(__name__)
 logger.debug("message to log")
 ```
 
+## miner_param
+
+### get_region
+Return the region from envvar REGION_OVERRIDE or
+from the contents of /var/pktfwd/region
+
+```python
+from hm_pyhelper.miner_param import get_region
+print(get_region())
+
+> US9155
+```
+
 ## Testing
 
 To run tests:
