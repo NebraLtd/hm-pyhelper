@@ -3,9 +3,14 @@ import subprocess
 import logging
 import json
 from retry import retry
-from hm_pyhelper.utils.logger import get_logger
+from hm_pyhelper.logger import get_logger
+from hm_pyhelper.exceptions import MalformedRegionException, \
+    SPIUnavailableException
 
-logger = get_logger(__name__)
+LOGGER = get_logger(__name__)
+REGION_INVALID_SLEEP_SECONDS = 30
+REGION_FILE_MISSING_SLEEP_SECONDS = 60
+SPI_UNAVAILABLE_SLEEP_SECONDS = 60
 
 
 def log_stdout_stderr(sp_result):
@@ -179,34 +184,37 @@ def get_mac_address(path):
     return file.readline().strip().upper()
 
 
-REGION_OVERRIDE_KEY = 'REGION_OVERRIDE'
-REGION_FILEPATH = '/var/pktfwd/region'
-REGION_INVALID_SLEEP_SECONDS = 30
-REGION_FILE_MISSING_SLEEP_SECONDS = 60
-
-
-class MalformedRegionException(Exception):
-    pass
-
-
-@retry(MalformedRegionException, delay=REGION_INVALID_SLEEP_SECONDS, logger=logger) # noqa
-@retry(FileNotFoundError, delay=REGION_FILE_MISSING_SLEEP_SECONDS, logger=logger) # noqa
-def get_region():
+@retry(MalformedRegionException, delay=REGION_INVALID_SLEEP_SECONDS, logger=LOGGER) # noqa
+@retry(FileNotFoundError, delay=REGION_FILE_MISSING_SLEEP_SECONDS, logger=LOGGER) # noqa
+def retry_get_region(region_override, region_filepath):
     """
-    Return the region from the environment or parse file created by hm-miner.
+    Return the override if it exists, or parse file created by hm-miner.
+    region_override is the actual value,
+    not the name of the environment variable.
     Retry if region in file is malformed or not found.
     """
-    region = os.getenv(REGION_OVERRIDE_KEY, False)
-    if region:
-        return region
+    if region_override:
+        return region_override
 
-    logger.debug("No REGION_OVERRIDE defined, will retrieve from miner.")
-    with open(REGION_FILEPATH) as region_file:
+    LOGGER.debug("No region override set (value = %s), will retrieve from miner." % region_override)  # noqa: E501
+    with open(region_filepath) as region_file:
         region = region_file.read().rstrip('\n')
-        logger.debug("Region %s parsed from %s " % (region, REGION_FILEPATH))
+        LOGGER.debug("Region %s parsed from %s " % (region, region_filepath))
 
         is_region_valid = len(region) > 3
         if is_region_valid:
             return region
 
         raise MalformedRegionException("Region %s is invalid" % region)
+
+
+@retry(SPIUnavailableException, delay=SPI_UNAVAILABLE_SLEEP_SECONDS, logger=LOGGER) # noqa
+def await_spi_available(spi_bus):
+    """
+    Check that the SPI bus path exists, assuming it is in /dev/{spi_bus}
+    """
+    if os.path.exists('/dev/{}'.format(spi_bus)):
+        LOGGER.debug("SPI bus %s Configured Correctly" % spi_bus)
+        return True
+    else:
+        raise SPIUnavailableException("SPI bus %s not found!" % spi_bus)
