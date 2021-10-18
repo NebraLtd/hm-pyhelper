@@ -114,7 +114,7 @@ variant_definitions = {
     'NEBHNT-HHRK4': {
         'FRIENDLY': 'Nebra Hotspot HAT RockPi 4',
         'APPNAME': 'RockPi',
-        'SPIBUS': 'spidev1.0',
+        'SPIBUS': 'spidev32766.0',
         'RESET': 149,
         'MAC': 'eth0',
         'STATUS': 156,
