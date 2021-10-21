@@ -10,8 +10,8 @@ jobs:
     steps:
       - name: Create file
         run: |
-          echo "test" > test.txt
-          echo "testing" > testing.txt
+          echo "testing" > test.txt
+          echo "test" > testing.txt
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
