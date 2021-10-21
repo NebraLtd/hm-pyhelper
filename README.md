@@ -108,3 +108,21 @@ project's Dockerfile.
 RUN pip3 install setuptools wheel
 RUN pip3 install --target="$OUTPUTS_DIR" git+https://github.com/NebraLtd/hm-pyhelper@BRANCH_NAME
 ``````
+
+## Releasing
+
+To release, use the [Github new release flow](https://github.com/NebraLtd/hm-pyhelper/releases/new).
+
+1. Create a new tag in format `vX.Y.Z`. You can use a previously tagged commit, but this is not necessary.
+2. Make sure the tag you created matches the value in setup.py.
+3. Select `master` as the target branch. If you do not select the master branch, the tag should be in format `vX.Y.Z-rc.N`.
+4. Title: `Release vX.Y.Z`.
+5. Body:
+
+```
+## What's Changed
+* Foo
+* Bar
+
+**Full Changelog**: https://github.com/NebraLtd/hm-pyhelper/compare/v0.0.A...v0.0.Z
+```
