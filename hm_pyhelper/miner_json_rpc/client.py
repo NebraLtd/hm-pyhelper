@@ -26,5 +26,5 @@ class Client(object):
         return self.__fetch_data('peer_book', addr='self')
 
     def get_firmware_version(self):
-        summary = self.__fetch_data('info_summary')
+        summary = self.get_summary()
         return summary.get('firmware_version')
