@@ -119,6 +119,8 @@ To release, use the [Github new release flow](https://github.com/NebraLtd/hm-pyh
 4. Title: `Release vX.Y.Z`.
 5. Body:
 
+**Note: you can create the release notes automatically by selecting the "Auto-generate release notes" option on the releases page.**
+
 ```
 ## What's Changed
 * Foo
