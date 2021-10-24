@@ -82,7 +82,12 @@ jobs:
           name: wheels
           path: ./dist/*
 
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v2.1
+
       - name: Publish distribution 📦 to Test PyPI
+        if: contains(steps.changed-files.outputs.modified_files, 'setup.py')
         uses: pypa/gh-action-pypi-publish@master
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
