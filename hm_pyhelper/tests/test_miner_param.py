@@ -1,8 +1,7 @@
+from hm_pyhelper.miner_param import retry_get_region, await_spi_available, \
+    provision_key, did_gateway_mfr_test_result_include_miner_key_pass
 import unittest
-from unittest.mock import patch
-from hm_pyhelper.miner_param import provision_key
-from hm_pyhelper.miner_param import \
-        did_gateway_mfr_test_result_include_miner_key_pass
+from unittest.mock import mock_open, patch
 
 ALL_PASS_GATEWAY_MFR_TESTS = [
     {
@@ -77,7 +76,6 @@ class GatewayMfrProvisionMock:
 
 
 class TestMinerParam(unittest.TestCase):
-
     @patch(
             'hm_pyhelper.miner_param.get_gateway_mfr_test_result',
             return_value={
@@ -161,3 +159,14 @@ class TestMinerParam(unittest.TestCase):
                     get_gateway_mfr_test_result
                     )
         )
+
+    def test_get_region_from_override(self):
+        self.assertEqual(retry_get_region("foo", "bar/"), 'foo')
+
+    @patch("builtins.open", new_callable=mock_open, read_data="ZZ111\n")
+    def test_get_region_from_miner(self, _):
+        self.assertEqual(retry_get_region(False, "foo/"), 'ZZ111')  # noqa: E501
+
+    @patch("os.path.exists", return_value=True)
+    def test_is_spi_available(self, _):
+        self.assertTrue(await_spi_available("spiXY.Z"))

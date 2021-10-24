@@ -63,27 +63,29 @@ Please note, DIY Hotspots do not earn HNT.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Pi Supply IoT LoRa Gateway HAT | RPi | DIY-PISLGH | 0.0 | 22 |   |   | Light | False | Any pi with 40 pin header |
 | RAK2287 | RPi | DIY-RAK2287 | 0.0 | 17 |   |   | Light | False | Any pi with 40 pin header |
-## utils
 
-### logger
+## logger
 
 ```python
-from hm_pyhelper.utils import logger
-logger = get_logger(__name__)
-logger.debug("message to log")
+from hm_pyhelper.logger import get_logger
+LOGGER = get_logger(__name__)
+LOGGER.debug("message to log")
 ```
 
 ## miner_param
 
-### get_region
-Return the region from envvar REGION_OVERRIDE or
-from the contents of /var/pktfwd/region
+### retry_get_region(region_override, region_filepath)
+Return the region from envvar region_override or
+from the contents of region_filepath
 
 ```python
-from hm_pyhelper.miner_param import get_region
-print(get_region())
+from hm_pyhelper.miner_param import retry_get_region
+print(retry_get_region("US915", "/invalid/path"))
+# US915
 
-> US9155
+# echo "EU868" > /var/pktfwd/region
+print(retry_get_region("", "/var/pktfwd/region"))
+# EU868
 ```
 
 ## Testing
@@ -94,4 +96,35 @@ To run tests:
 pip install -r requirements.txt
 pip install -r test-requirements.txt
 PYTHONPATH=./ pytest
+```
+
+## Referencing a branch for development
+It is sometimes convenient to use recent changes in hm-pyhelper before an official release.
+To do so, first double check that you've added any relevant dependencies to
+the `install_requires` section of `setup.py`. Then add the following lines to the
+project's Dockerfile.
+
+```Dockerfile
+RUN pip3 install setuptools wheel
+RUN pip3 install --target="$OUTPUTS_DIR" git+https://github.com/NebraLtd/hm-pyhelper@BRANCH_NAME
+``````
+
+## Releasing
+
+To release, use the [Github new release flow](https://github.com/NebraLtd/hm-pyhelper/releases/new).
+
+1. Create a new tag in format `vX.Y.Z`. You can use a previously tagged commit, but this is not necessary.
+2. Make sure the tag you created matches the value in setup.py.
+3. Select `master` as the target branch. If you do not select the master branch, the tag should be in format `vX.Y.Z-rc.N`.
+4. Title: `Release vX.Y.Z`.
+5. Body:
+
+**Note: you can create the release notes automatically by selecting the "Auto-generate release notes" option on the releases page.**
+
+```
+## What's Changed
+* Foo
+* Bar
+
+**Full Changelog**: https://github.com/NebraLtd/hm-pyhelper/compare/v0.0.A...v0.0.Z
 ```
