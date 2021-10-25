@@ -171,3 +171,37 @@ class TestMinerJSONRPC(unittest.TestCase):
             addr='self'
         )
         self.assertEqual(result, [])
+
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.request')
+    def test_get_firmware_version(self, mock_json_rpc_client):
+        firmware_version = '2021.10.18.0'
+        summary = {
+            'block_age': 1136610,
+            'epoch': 25612,
+            'firmware_version': firmware_version,
+            'gateway_details': 'undefined',
+            'height': 993640,
+            'mac_addresses': [
+                {'eth0': '0242AC110002'},
+                {'ip6tnl0': '00000000000000000000000000000000'},
+                {'tunl0': '00000000'},
+                {'lo': '000000000000'}
+            ],
+            'name': 'scruffy-chocolate-shell',
+            'peer_book_entry_count': 3,
+            'sync_height': 993640,
+            'uptime': 144,
+            'version': 10010005
+        }
+        mock_json_rpc_client.return_value = Response(
+            data=Result(
+                result=summary
+            )
+        )
+        client = MinerClient()
+        result = client.get_firmware_version()
+        mock_json_rpc_client.assert_called_with(
+            BASE_URL,
+            'info_summary'
+        )
+        self.assertEqual(result, firmware_version)
