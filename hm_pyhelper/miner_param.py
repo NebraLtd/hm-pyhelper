@@ -5,7 +5,7 @@ from retry import retry
 from hm_pyhelper.interprocess_lock import ecc_lock
 from hm_pyhelper.logger import get_logger
 from hm_pyhelper.exceptions import MalformedRegionException, \
-    SPIUnavailableException
+    SPIUnavailableException, ECCMalfunctionException
 from hm_pyhelper.hardware_definitions import is_rockpi
 
 
@@ -37,15 +37,17 @@ def run_gateway_mfr(args):
             'gateway_mfr response stdout: %s' % run_gateway_mfr_result.stdout)
         LOGGER.info(
             'gateway_mfr response stderr: %s' % run_gateway_mfr_result.stderr)
-    except subprocess.CalledProcessError:
-        LOGGER.error("gateway_mfr exited with a non-zero status")
-        return False
+    except subprocess.CalledProcessError as e:
+        err_str = "gateway_mfr exited with a non-zero status"
+        LOGGER.exception(err_str)
+        raise ECCMalfunctionException(err_str).with_traceback(e.__traceback__)
 
     try:
         return json.loads(run_gateway_mfr_result.stdout)
-    except json.JSONDecodeError:
-        LOGGER.error("Unable to parse JSON from gateway_mfr")
-    return False
+    except json.JSONDecodeError as e:
+        err_str = "Unable to parse JSON from gateway_mfr"
+        LOGGER.exception(err_str)
+        raise ECCMalfunctionException(err_str).with_traceback(e.__traceback__)
 
 
 def get_public_keys_rust():
