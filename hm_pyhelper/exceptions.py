@@ -4,3 +4,7 @@ class MalformedRegionException(Exception):
 
 class SPIUnavailableException(Exception):
     pass
+
+
+class ECCMalfunctionException(Exception):
+    pass

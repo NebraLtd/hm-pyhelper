@@ -5,7 +5,7 @@ import json
 from retry import retry
 from hm_pyhelper.logger import get_logger
 from hm_pyhelper.exceptions import MalformedRegionException, \
-    SPIUnavailableException
+    SPIUnavailableException, ECCMalfunctionException
 
 LOGGER = get_logger(__name__)
 REGION_INVALID_SLEEP_SECONDS = 30
@@ -57,15 +57,15 @@ def get_gateway_mfr_test_result():
             check=True
         )
         log_stdout_stderr(run_gateway_mfr_keys)
-    except subprocess.CalledProcessError:
-        logging.error("gateway_mfr exited with a non-zero status")
-        return False
+    except subprocess.CalledProcessError as e:
+        logging.exception("gateway_mfr exited with a non-zero status")
+        raise ECCMalfunctionException("gateway_mfr exited with non-zero status").with_traceback(e.__traceback__)
 
     try:
         return json.loads(run_gateway_mfr_keys.stdout)
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
         logging.error("Unable to parse JSON from gateway_mfr")
-    return False
+        raise ECCMalfunctionException("Unable to parse JSON from gateway_mfr").with_traceback(e.__traceback__)
 
 
 def provision_key():
