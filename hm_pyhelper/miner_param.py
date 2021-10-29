@@ -1,8 +1,8 @@
 import os
 import subprocess
-import logging
 import json
 from retry import retry
+from hm_pyhelper.lock_singleton import ecc_lock
 from hm_pyhelper.logger import get_logger
 from hm_pyhelper.exceptions import MalformedRegionException, \
     SPIUnavailableException
@@ -14,8 +14,8 @@ SPI_UNAVAILABLE_SLEEP_SECONDS = 60
 
 
 def log_stdout_stderr(sp_result):
-    logging.info('gateway_mfr response stdout: %s' % sp_result.stdout)
-    logging.info('gateway_mfr response stderr: %s' % sp_result.stderr)
+    LOGGER.info('gateway_mfr response stdout: %s' % sp_result.stdout)
+    LOGGER.info('gateway_mfr response stderr: %s' % sp_result.stderr)
 
 
 def get_public_keys_rust():
@@ -26,20 +26,24 @@ def get_public_keys_rust():
     gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
 
     try:
-        run_gateway_mfr_keys = subprocess.run(
-            [gateway_mfr_path, "key", "0"],
-            capture_output=True,
-            check=True
-        )
-        log_stdout_stderr(run_gateway_mfr_keys)
+        @ecc_lock
+        def run_gateway_mfr():
+            return subprocess.run(
+                [gateway_mfr_path, "key", "0"],
+                capture_output=True,
+                check=True
+            )
+
+        gateway_mfr_result = run_gateway_mfr()
+        log_stdout_stderr(gateway_mfr_result)
     except subprocess.CalledProcessError:
-        logging.error("gateway_mfr exited with a non-zero status")
+        LOGGER.error("gateway_mfr exited with a non-zero status")
         return False
 
     try:
-        return json.loads(run_gateway_mfr_keys.stdout)
+        return json.loads(gateway_mfr_result.stdout)
     except json.JSONDecodeError:
-        logging.error("Unable to parse JSON from gateway_mfr")
+        LOGGER.error("Unable to parse JSON from gateway_mfr")
     return False
 
 
@@ -51,20 +55,24 @@ def get_gateway_mfr_test_result():
     gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
 
     try:
-        run_gateway_mfr_keys = subprocess.run(
-            [gateway_mfr_path, "test"],
-            capture_output=True,
-            check=True
-        )
-        log_stdout_stderr(run_gateway_mfr_keys)
+        @ecc_lock
+        def run_gateway_mfr():
+            return subprocess.run(
+                [gateway_mfr_path, "test"],
+                capture_output=True,
+                check=True
+            )
+
+        gateway_mfr_result = run_gateway_mfr()
+        log_stdout_stderr(gateway_mfr_result)
     except subprocess.CalledProcessError:
-        logging.error("gateway_mfr exited with a non-zero status")
+        LOGGER.error("gateway_mfr exited with a non-zero status")
         return False
 
     try:
-        return json.loads(run_gateway_mfr_keys.stdout)
+        return json.loads(gateway_mfr_result.stdout)
     except json.JSONDecodeError:
-        logging.error("Unable to parse JSON from gateway_mfr")
+        LOGGER.error("Unable to parse JSON from gateway_mfr")
     return False
 
 
@@ -80,15 +88,19 @@ def provision_key():
         return True
 
     try:
-        run_gateway_mfr = subprocess.run(
-            [gateway_mfr_path, "provision"],
-            capture_output=True,
-            check=True
-        )
-        logging.info("[ECC Provisioning] %s",  run_gateway_mfr.stdout)
+        @ecc_lock
+        def run_gateway_mfr():
+            return subprocess.run(
+                [gateway_mfr_path, "provision"],
+                capture_output=True,
+                check=True
+            )
+
+        gateway_mfr_result = run_gateway_mfr()
+        LOGGER.info("[ECC Provisioning] %s",  gateway_mfr_result.stdout)
 
     except subprocess.CalledProcessError:
-        logging.error("[ECC Provisioning] Exited with a non-zero status")
+        LOGGER.error("[ECC Provisioning] Exited with a non-zero status")
         return False
     return True
 
@@ -161,7 +173,7 @@ def get_ethernet_addresses(diagnostics):
             diagnostics[key] = get_mac_address(path)
         except Exception as e:
             diagnostics[key] = False
-            logging.error(e)
+            LOGGER.error(e)
 
 
 def get_mac_address(path):
