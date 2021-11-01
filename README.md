@@ -97,7 +97,7 @@ print(retry_get_region("", "/var/pktfwd/region"))
 
 Creates a new `LockSingleton` object.
 - `name` uniquely identifies the `LockSingleton` in system wide.
-- `initial_value` specifies the initial count of the resources.
+- `resource_count` explicitly set the resource count.
 
 **acquire([timeout = None])**
 

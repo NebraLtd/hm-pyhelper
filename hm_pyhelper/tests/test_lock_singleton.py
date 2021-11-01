@@ -35,7 +35,7 @@ class TestLockSingleton(unittest.TestCase):
     def test_ecc_lock(self):
         """
         Start a slow thread then a fast thread in parallel.
-        Excpect them to execute consecutively because 
+        Excpect them to execute consecutively because
         of @ecc_lock
         """
         slow_task_running_lock = threading.Lock()
@@ -58,7 +58,7 @@ class TestLockSingleton(unittest.TestCase):
             self.assertFalse(slow_task_running_lock.locked())
             self.assertTrue(fast_task_running_lock.locked())
             fast_task_running_lock.release()
-        
+
         slow_thread = threading.Thread(target=slow_task, daemon=True)
         fast_thread = threading.Thread(target=fast_task, daemon=True)
 
@@ -84,10 +84,77 @@ class TestLockSingleton(unittest.TestCase):
         # slow_thread.start()
 
         # expected_exception = False
-        # try: 
+        # try:
         #     pass
         #     # lock.acquire(timeout=0.00001)
         # except ResourceBusyError:
         #     expected_exception = True
 
         # self.assertTrue(expected_exception)
+
+    def test_lock_singleton_basic(self):
+
+        # Creating a LockSingleton with setting the resource_count=1 explicitly.
+        lock = LockSingleton('test', resource_count=1)
+
+        self.assertFalse(lock.locked())
+        lock.acquire()
+        self.assertTrue(lock.locked())
+
+        # Do some work
+        sleep(0.001)
+
+        lock.release()
+        self.assertFalse(lock.locked())
+
+    def test_lock_singleton_racing(self):
+        def slow_task():
+            lock = LockSingleton('racing_resource')
+
+            lock.acquire()
+            self.assertTrue(lock.locked())
+
+            # Do some slow work
+            print("Starting the slow task...")
+            sleep(0.003)
+            print("Finished the slow task!")
+
+            lock.release()
+            self.assertFalse(lock.locked())
+
+        def fast_task():
+            lock = LockSingleton('racing_resource')
+
+            lock.acquire()
+            self.assertTrue(lock.locked())
+
+            # Do some slow work
+            print("Starting the fast task...")
+            sleep(0.001)
+            print("Finished the fast task!")
+
+            lock.release()
+            self.assertFalse(lock.locked())
+
+        # Reset the resource_count = 1
+        lock = LockSingleton('racing_resource', resource_count=1)
+
+        slow_thread = threading.Thread(target=slow_task, daemon=True)
+        fast_thread = threading.Thread(target=fast_task, daemon=True)
+
+        # Ensure there is no lock before starting the work
+        self.assertFalse(lock.locked())
+
+        # Start work
+        print("\n")
+        print("Initiated the slow task.")
+        slow_thread.start()
+        print("Initiated the fast task.")
+        fast_thread.start()
+
+        # Wait to finish
+        fast_thread.join()
+        slow_thread.join()
+
+        # Ensure there is no lock after finishing the work
+        self.assertFalse(lock.locked())
