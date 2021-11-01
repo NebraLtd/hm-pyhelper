@@ -1,17 +1,19 @@
-from os import supports_follow_symlinks
 import unittest
 import threading
 import pytest
 import mock
 from time import sleep
-from hm_pyhelper.lock_singleton import ecc_lock, LockSingleton, ResourceBusyError
+from hm_pyhelper.lock_singleton import ecc_lock, LockSingleton, \
+                                       ResourceBusyError
+
 
 # https://gist.github.com/sbrugman/59b3535ebcd5aa0e2598293cfa58b6ab
 @pytest.fixture(autouse=True, scope="function")
 def error_on_raise_in_thread():
     """
-    Replaces Thread with a a wrapper to record any exceptions and re-raise them after test execution.
-    In case multiple threads raise exceptions only one will be raised.
+    Replaces Thread with a a wrapper to record any exceptions and
+    re-raise them after test execution. In case multiple threads
+    raise exceptions only one will be raised.
     """
     last_exception = None
 
@@ -30,6 +32,7 @@ def error_on_raise_in_thread():
         yield
         if last_exception:
             raise last_exception
+
 
 class TestLockSingleton(unittest.TestCase):
     def test_ecc_lock(self):
@@ -69,32 +72,34 @@ class TestLockSingleton(unittest.TestCase):
         fast_thread.start()
 
     def test_lock_singleton_failure(self):
-
+        """
+        Start a slow running thread and then try to acquire a shared
+        lock. Expect the acquire call to throw an exception.
+        """
         lock = LockSingleton('test')
 
-        # def slow_task():
-        #     sleep(0.01)
-        #     lock.release()
-        #     return True
+        def slow_task():
+            sleep(0.01)
+            lock.release()
+            return True
 
-        # slow_thread = threading.Thread(target=slow_task, daemon=True)
+        slow_thread = threading.Thread(target=slow_task, daemon=True)
 
         lock.acquire()
-        self.assertTrue(True)
-        # slow_thread.start()
+        slow_thread.start()
 
-        # expected_exception = False
-        # try:
-        #     pass
-        #     # lock.acquire(timeout=0.00001)
-        # except ResourceBusyError:
-        #     expected_exception = True
+        expected_exception = False
+        try:
+            lock.acquire(timeout=0.00001)
+        except ResourceBusyError:
+            expected_exception = True
 
-        # self.assertTrue(expected_exception)
+        self.assertTrue(expected_exception)
 
     def test_lock_singleton_basic(self):
 
-        # Creating a LockSingleton with setting the resource_count=1 explicitly.
+        # Creating a LockSingleton with setting the
+        # resource_count=1 explicitly.
         lock = LockSingleton('test', resource_count=1)
 
         self.assertFalse(lock.locked())

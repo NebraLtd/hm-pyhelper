@@ -27,8 +27,8 @@ class LockSingleton(object):
                                             mode=self._mode,
                                             flags=posix_ipc.O_CREAT,
                                             initial_value=self._resource_count)
-            # Override the resource count if it's explicitly set. Otherwise the previous value
-            # of the resource count is preserved.
+            # Override the resource count if it's explicitly set. Otherwise the
+            # previous value of the resource count is preserved.
             if resource_count and resource_count != self._sem.value:
                 while resource_count > self._sem.value:
                     self._sem.release()
