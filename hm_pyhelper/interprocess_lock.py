@@ -18,6 +18,9 @@ class InterprocessLock(object):
         name: uniquely identifies the `LockSingleton` across processes in the system
         available_resources: the count of the available resources
         reset: set True to reset the available_resources
+
+        The available_resources of a `InterprocessLock` get reset on every restart of the system or docker container.
+        It's tested in Ubuntu 20.04 desktop and diagnostics container in a Hotspot.
         """
         self._name = self._prefix + name
         # so it doesn't interfere with our semaphore mode

@@ -98,7 +98,9 @@ print(retry_get_region("", "/var/pktfwd/region"))
 Creates a new `InterprocessLock` object.
 - `name` uniquely identifies the `LockSingleton` across processes in the system
 - `available_resources` the count of the available resources
-- `reset` set `True` to reset the available_resources
+- `reset` set `True` to reset the available_resources  
+  The available_resources of a `InterprocessLock` get reset on every restart of the system or docker container.
+  It's tested in Ubuntu 20.04 desktop and diagnostics container in a Hotspot.
 **acquire([timeout = None])**
 
 Waits until the resource is available and then returns, decrementing the available count.
