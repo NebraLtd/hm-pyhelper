@@ -2,7 +2,7 @@ import os
 import subprocess
 import json
 from retry import retry
-from hm_pyhelper.lock_singleton import ecc_lock
+from hm_pyhelper.interprocess_lock import ecc_lock
 from hm_pyhelper.logger import get_logger
 from hm_pyhelper.exceptions import MalformedRegionException, \
     SPIUnavailableException
@@ -26,7 +26,7 @@ def get_public_keys_rust():
     gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
 
     try:
-        @ecc_lock
+        @ecc_lock()
         def run_gateway_mfr():
             return subprocess.run(
                 [gateway_mfr_path, "key", "0"],
@@ -55,7 +55,7 @@ def get_gateway_mfr_test_result():
     gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
 
     try:
-        @ecc_lock
+        @ecc_lock()
         def run_gateway_mfr():
             return subprocess.run(
                 [gateway_mfr_path, "test"],
@@ -88,7 +88,7 @@ def provision_key():
         return True
 
     try:
-        @ecc_lock
+        @ecc_lock()
         def run_gateway_mfr():
             return subprocess.run(
                 [gateway_mfr_path, "provision"],

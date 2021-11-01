@@ -89,16 +89,16 @@ print(retry_get_region("", "/var/pktfwd/region"))
 ```
 
 ## LockSingleton
-`LockSingleton` prevents the concurrent access to a resource. 
+`LockSingleton` prevents the concurrent access to a resource.
 
 ### Methods
 
-**LockSingleton(name, initial_value=1)**
+**InterprocessLock(name, initial_value=1)**
 
-Creates a new `LockSingleton` object.
-- `name` uniquely identifies the `LockSingleton` in system wide.
-- `resource_count` explicitly set the resource count.
-
+Creates a new `InterprocessLock` object.
+- `name` uniquely identifies the `LockSingleton` across processes in the system
+- `available_resources` the count of the available resources
+- `reset` set `True` to reset the available_resources
 **acquire([timeout = None])**
 
 Waits until the resource is available and then returns, decrementing the available count.
@@ -139,7 +139,7 @@ except CannotLockError:
 ### `@ecc_lock` decorator
 This is the convenient decorator wrapping around the `LockSingleton`.
 ```
-@ecc_lock
+@ecc_lock()
 def run_gateway_mfr():
     return subprocess.run(
         [gateway_mfr_path, "key", "0"],
