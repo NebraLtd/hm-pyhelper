@@ -75,7 +75,7 @@ class TestInterprocessLock(unittest.TestCase):
 
     def test_interprocess_lock_racing(self):
         def slow_task():
-            lock = InterprocessLock('racing_resource')
+            lock = InterprocessLock('racing')
 
             lock.acquire()
             self.assertTrue(lock.locked())
@@ -89,7 +89,7 @@ class TestInterprocessLock(unittest.TestCase):
             self.assertFalse(lock.locked())
 
         def fast_task():
-            lock = InterprocessLock('racing_resource')
+            lock = InterprocessLock('racing')
 
             lock.acquire()
             self.assertTrue(lock.locked())
@@ -102,7 +102,7 @@ class TestInterprocessLock(unittest.TestCase):
             lock.release()
             self.assertFalse(lock.locked())
 
-        lock = InterprocessLock('racing_resource', available_resources=1, reset=True)
+        lock = InterprocessLock('racing', available_resources=1, reset=True)
 
         slow_thread = threading.Thread(target=slow_task, daemon=True)
         fast_thread = threading.Thread(target=fast_task, daemon=True)

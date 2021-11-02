@@ -15,14 +15,16 @@ class InterprocessLock(object):
 
     def __init__(self, name, available_resources=1, reset=False):
         """
-        name: uniquely identifies the `LockSingleton` across processes in the system
+        name: uniquely identifies the `LockSingleton` across processes
         available_resources: the count of the available resources
         reset: set True to reset the available_resources
 
-        The available_resources of a `InterprocessLock` get reset on every restart of the system or docker container.
-        It's tested in Ubuntu 20.04 desktop and diagnostics container in a Hotspot.
-        Resetting the available_resources by passing the `reset=True` should be used with a caution and it can be used
-        in a very specific scenarios such as in the development environment. It's designed for facilitating
+        The available_resources of a `InterprocessLock` get reset on every
+        restart of the system or docker container. It's tested in Ubuntu
+        20.04 desktop and diagnostics container in a Hotspot.
+        Resetting the available_resources by passing the `reset=True` should be
+        used with a caution and it can be used in a very specific scenarios
+        such as in the development environment. It's designed for facilitating
         the development. It's not recommended to be used in production.
         """
         self._name = self._prefix + name
@@ -35,9 +37,9 @@ class InterprocessLock(object):
                                             initial_value=available_resources)
 
             if reset:
-                """ Some hack to set the Semaphore's read-only value to a specific value.
+                """ Some hack to set the Semaphore's read-only value
 https://github.com/rwarren/SystemEvent/blob/87422d850a3f0a4631528f5fbee23904170c0703/SystemEvent/__init__.py#L47
-https://github.com/GEANT/CAT/blob/b53bc299c7e822c7abd8deb1ee1a9e44f3f465da/ansible/ManagedSP/templates/daemon/fr_restart.py#L46                
+https://github.com/GEANT/CAT/blob/b53bc299c7e822c7abd8deb1ee1a9e44f3f465da/ansible/ManagedSP/templates/daemon/fr_restart.py#L46
 https://github.com/south-coast-science/scs_host_rpi/blob/50b6277b4281b043d7c8f340371183faea4c5b8c/src/scs_host/sync/binary_semaphore.py#L54
                 """
                 while available_resources > self._sem.value:
@@ -93,8 +95,9 @@ def ecc_lock(timeout=DEFAULT_TIMEOUT, raise_exception=False):
     """
     Returns an ECC LOCK decorator.
 
-    timeout: timeout value
-    raise_exception: set True to raise exception in case of timeout or some error, otherwise just log the error msg
+    timeout: timeout value. DEFAULT_TIMEOUT = 2 seconds.
+    raise_exception: set True to raise exception in case of timeout and error.
+                    Otherwise just log the error msg
     """
 
     def decorator_ecc_lock(func):
