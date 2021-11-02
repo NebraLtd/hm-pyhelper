@@ -77,6 +77,14 @@ jobs:
         run: |
           python -m pip install bump2version
 
+      - name: Assign Git User Email
+        run: |
+          git config --global user.email "mrbump@nebra.com"
+
+      - name: Assign Git User Name
+        run: |
+          git config --global user.name "Mr Bump Nebra"
+
       - name: Bump Version
         run: |
           bump2version minor setup.py

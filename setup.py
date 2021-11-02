@@ -13,8 +13,7 @@ setup(
     install_requires=[
         'requests>=2.26.0',
         'jsonrpcclient==3.3.6',
-        'retry==0.9.2',
-        'bump2version'
+        'retry==0.9.2'
     ],
     project_urls={
         "Bug Tracker": "https://github.com/NebraLtd/hm-pyhelper/issues",
