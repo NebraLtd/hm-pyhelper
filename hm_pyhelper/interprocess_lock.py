@@ -21,6 +21,9 @@ class InterprocessLock(object):
 
         The available_resources of a `InterprocessLock` get reset on every restart of the system or docker container.
         It's tested in Ubuntu 20.04 desktop and diagnostics container in a Hotspot.
+        Resetting the available_resources by passing the `reset=True` should be used with a caution and it can be used
+        in a very specific scenarios such as in the development environment. It's designed for facilitating
+        the development. It's not recommended to be used in production.
         """
         self._name = self._prefix + name
         # so it doesn't interfere with our semaphore mode
@@ -86,8 +89,12 @@ class CannotLockError(posix_ipc.Error):
         pass
 
 
-def ecc_lock(timeout=DEFAULT_TIMEOUT):
-    """Returns an ECC LOCK decorator.
+def ecc_lock(timeout=DEFAULT_TIMEOUT, raise_exception=False):
+    """
+    Returns an ECC LOCK decorator.
+
+    timeout: timeout value
+    raise_exception: set True to raise exception in case of timeout or some error, otherwise just log the error msg
     """
 
     def decorator_ecc_lock(func):
@@ -105,10 +112,14 @@ def ecc_lock(timeout=DEFAULT_TIMEOUT):
                 lock.release()
 
                 return value
-            except ResourceBusyError:
+            except ResourceBusyError as ex:
                 LOGGER.error("ECC is busy now.")
-            except CannotLockError:
+                if raise_exception:
+                    raise ex
+            except CannotLockError as ex:
                 LOGGER.error("Can't lock the ECC for some internal issue.")
+                if raise_exception:
+                    raise ex
 
         return wrapper_ecc_lock
 
