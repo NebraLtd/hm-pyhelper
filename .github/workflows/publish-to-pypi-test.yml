@@ -73,6 +73,28 @@ jobs:
         run: |
           python -m pip install build --user
 
+      - name: Install bump2version
+        run: |
+          python -m pip install bump2version
+
+      - name: Assign Git User Email
+        run: |
+          git config --global user.email "mrbump@nebra.com"
+
+      - name: Assign Git User Name
+        run: |
+          git config --global user.name "Mr Bump Nebra"
+
+      - name: Bump Version
+        run: |
+          bump2version minor setup.py
+
+      - name: Push Commit from Bump2Version
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+
       - name: Build a binary wheel and a source tarball
         run: |
           python -m build --sdist --wheel --outdir dist/ .
