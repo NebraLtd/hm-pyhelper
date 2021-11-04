@@ -87,7 +87,7 @@ jobs:
 
       - name: Bump Version
         run: |
-          bump2version minor setup.py
+          bump2version patch setup.py
         if: github.ref == 'refs/heads/master'
 
       - name: Push Commit from Bump2Version
