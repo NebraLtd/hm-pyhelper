@@ -88,12 +88,14 @@ jobs:
       - name: Bump Version
         run: |
           bump2version minor setup.py
+        if: github.ref == 'refs/heads/master'
 
       - name: Push Commit from Bump2Version
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
+        if: github.ref == 'refs/heads/master'
 
       - name: Build a binary wheel and a source tarball
         run: |
@@ -109,7 +111,7 @@ jobs:
         uses: tj-actions/changed-files@v2.1
 
       - name: Publish distribution 📦 to Test PyPI
-        if: contains(steps.changed-files.outputs.modified_files, 'setup.py')
+        if: github.ref == 'refs/heads/master'
         uses: pypa/gh-action-pypi-publish@master
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
