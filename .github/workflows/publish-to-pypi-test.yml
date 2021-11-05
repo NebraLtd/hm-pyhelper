@@ -14,12 +14,12 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          target: aarch64-unknown-linux-musl
+          target: arm-unknown-linux-gnueabihf
           override: true
 
       - name: Clone repo
         run: |
-          git clone --branch v0.1.3 https://github.com/helium/gateway-mfr-rs.git .
+          git clone --branch v0.1.5 https://github.com/helium/gateway-mfr-rs.git .
 
       - name: Run cargo check
         uses: actions-rs/cargo@v1
@@ -32,11 +32,11 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --target aarch64-unknown-linux-musl --release
+          args: --target arm-unknown-linux-gnueabihf --release
 
       - name: Copy release file
         run: |
-          cp ./target/aarch64-unknown-linux-musl/release/gateway_mfr gateway_mfr
+          cp ./target/arm-unknown-linux-gnueabihf/release/gateway_mfr gateway_mfr
 
       - uses: actions/upload-artifact@v2
         with:
@@ -73,6 +73,28 @@ jobs:
         run: |
           python -m pip install build --user
 
+      - name: Install bump2version
+        run: |
+          python -m pip install bump2version
+
+      - name: Assign Git User Email
+        run: |
+          git config --global user.email "mrbump@nebra.com"
+
+      - name: Assign Git User Name
+        run: |
+          git config --global user.name "Mr Bump Nebra"
+
+      - name: Bump Version
+        run: |
+          bump2version minor setup.py
+
+      - name: Push Commit from Bump2Version
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+
       - name: Build a binary wheel and a source tarball
         run: |
           python -m build --sdist --wheel --outdir dist/ .
@@ -82,7 +104,12 @@ jobs:
           name: wheels
           path: ./dist/*
 
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v2.1
+
       - name: Publish distribution 📦 to Test PyPI
+        if: contains(steps.changed-files.outputs.modified_files, 'setup.py')
         uses: pypa/gh-action-pypi-publish@master
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
