@@ -23,8 +23,10 @@ def run_gateway_mfr(args):
             capture_output=True,
             check=True
         )
-        logging.info('gateway_mfr response stdout: %s' % run_gateway_mfr.stdout)
-        logging.info('gateway_mfr response stderr: %s' % run_gateway_mfr.stderr)
+        logging.info(
+            'gateway_mfr response stdout: %s' % run_gateway_mfr.stdout)
+        logging.info(
+            'gateway_mfr response stderr: %s' % run_gateway_mfr.stderr)
     except subprocess.CalledProcessError:
         logging.error("gateway_mfr exited with a non-zero status")
         return False
