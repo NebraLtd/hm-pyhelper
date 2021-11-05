@@ -1,6 +1,10 @@
 import unittest
 import mock
+
 from hm_pyhelper.miner_json_rpc import MinerClient
+from hm_pyhelper.miner_json_rpc.exceptions import MinerRegionUnset
+from hm_pyhelper.miner_json_rpc.exceptions import MinerMalformedURL
+from hm_pyhelper.miner_json_rpc.exceptions import MinerConnectionError
 
 
 BASE_URL = 'http://helium-miner:4467'
@@ -23,6 +27,34 @@ class TestMinerJSONRPC(unittest.TestCase):
         self.assertIsInstance(client, MinerClient)
         self.assertEqual(client.url, BASE_URL)
 
+    def test_malformed_url(self):
+        client = MinerClient(url='fakeurl')
+
+        exception_raised = False
+        exception_type = None
+        try:
+            client.get_height()
+        except Exception as exc:
+            exception_raised = True
+            exception_type = exc
+
+        self.assertTrue(exception_raised)
+        self.assertIsInstance(exception_type, MinerMalformedURL)
+
+    def test_connection_error(self):
+        client = MinerClient(url='http://notarealminer:9999')
+
+        exception_raised = False
+        exception_type = None
+        try:
+            client.get_height()
+        except Exception as exc:
+            exception_raised = True
+            exception_type = exc
+
+        self.assertTrue(exception_raised)
+        self.assertIsInstance(exception_type, MinerConnectionError)
+
     @mock.patch('hm_pyhelper.miner_json_rpc.client.request')
     def test_get_height(self, mock_json_rpc_client):
         mock_json_rpc_client.return_value = Response(
@@ -37,6 +69,26 @@ class TestMinerJSONRPC(unittest.TestCase):
             'info_height'
         )
         self.assertEqual(result, {'epoch': 25612, 'height': 993640})
+
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.request')
+    def test_get_region_not_asserted(self, mock_json_rpc_client):
+        mock_json_rpc_client.return_value = Response(
+            data=Result(
+                result={'region': None}
+            )
+        )
+        client = MinerClient()
+        exception_raised = False
+        exception_type = None
+
+        try:
+            client.get_region()
+        except Exception as exc:
+            exception_raised = True
+            exception_type = exc
+
+        self.assertTrue(exception_raised)
+        self.assertIsInstance(exception_type, MinerRegionUnset)
 
     @mock.patch('hm_pyhelper.miner_json_rpc.client.request')
     def test_get_region(self, mock_json_rpc_client):
@@ -119,3 +171,37 @@ class TestMinerJSONRPC(unittest.TestCase):
             addr='self'
         )
         self.assertEqual(result, [])
+
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.request')
+    def test_get_firmware_version(self, mock_json_rpc_client):
+        firmware_version = '2021.10.18.0'
+        summary = {
+            'block_age': 1136610,
+            'epoch': 25612,
+            'firmware_version': firmware_version,
+            'gateway_details': 'undefined',
+            'height': 993640,
+            'mac_addresses': [
+                {'eth0': '0242AC110002'},
+                {'ip6tnl0': '00000000000000000000000000000000'},
+                {'tunl0': '00000000'},
+                {'lo': '000000000000'}
+            ],
+            'name': 'scruffy-chocolate-shell',
+            'peer_book_entry_count': 3,
+            'sync_height': 993640,
+            'uptime': 144,
+            'version': 10010005
+        }
+        mock_json_rpc_client.return_value = Response(
+            data=Result(
+                result=summary
+            )
+        )
+        client = MinerClient()
+        result = client.get_firmware_version()
+        mock_json_rpc_client.assert_called_with(
+            BASE_URL,
+            'info_summary'
+        )
+        self.assertEqual(result, firmware_version)
