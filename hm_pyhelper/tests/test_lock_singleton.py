@@ -3,8 +3,8 @@ import threading
 import pytest
 import mock
 from time import sleep
-from hm_pyhelper.interprocess_lock import ecc_lock, InterprocessLock, \
-    ResourceBusyError, LOCK_ECC
+from hm_pyhelper.lock_singleton import LockSingleton, ResourceBusyError, \
+    lock_ecc
 
 
 # https://gist.github.com/sbrugman/59b3535ebcd5aa0e2598293cfa58b6ab
@@ -34,13 +34,12 @@ def error_on_raise_in_thread():
             raise last_exception
 
 
-class TestInterprocessLock(unittest.TestCase):
-    def test_interprocess_lock_basic(self):
-        lock = InterprocessLock('test', available_resources=1, reset=True)
+class TestLockSingleton(unittest.TestCase):
+    def test_lock_singleton_simple(self):
+        lock = LockSingleton()
 
         self.assertFalse(lock.locked())
         lock.acquire()
-        self.assertTrue(lock.locked())
 
         # Do some work
         sleep(0.001)
@@ -48,23 +47,27 @@ class TestInterprocessLock(unittest.TestCase):
         lock.release()
         self.assertFalse(lock.locked())
 
-    def test_interprocess_lock_timeout(self):
+    def test_lock_singleton_timeout(self):
         """
         Start a slow running thread and then try to acquire a shared
         lock. Expect the acquire call to throw an exception.
         """
-        lock = InterprocessLock('test', available_resources=1, reset=True)
 
         def slow_task():
-            sleep(0.01)
-            # lock.release()
+            sleep(0.1)
+            lock.release()
             return True
 
-        slow_thread = threading.Thread(target=slow_task, daemon=True)
+        lock = LockSingleton()
 
+        # ECC is going to be occupied by `slow_task`.
+        slow_thread = threading.Thread(target=slow_task, daemon=True)
         lock.acquire()
         slow_thread.start()
 
+        self.assertTrue(lock.locked())
+
+        # Try to acquire the ECC that is occupied by `slow_task` currently.
         expected_exception = False
         try:
             lock.acquire(timeout=0.00001)
@@ -73,23 +76,23 @@ class TestInterprocessLock(unittest.TestCase):
 
         self.assertTrue(expected_exception)
 
-    def test_interprocess_lock_racing(self):
+    def test_lock_singleton_racing(self):
         def slow_task():
-            lock = InterprocessLock('racing')
+            lock = LockSingleton()
 
             lock.acquire()
             self.assertTrue(lock.locked())
 
             # Do some slow work
             print("Starting the slow task...")
-            sleep(0.003)
+            sleep(0.01)
             print("Finished the slow task!")
 
             lock.release()
             self.assertFalse(lock.locked())
 
         def fast_task():
-            lock = InterprocessLock('racing')
+            lock = LockSingleton()
 
             lock.acquire()
             self.assertTrue(lock.locked())
@@ -102,54 +105,42 @@ class TestInterprocessLock(unittest.TestCase):
             lock.release()
             self.assertFalse(lock.locked())
 
-        lock = InterprocessLock('racing', available_resources=1, reset=True)
-
         slow_thread = threading.Thread(target=slow_task, daemon=True)
         fast_thread = threading.Thread(target=fast_task, daemon=True)
-
-        # Ensure there is no lock before starting the work
-        self.assertFalse(lock.locked())
 
         # Start work
         print("\n")
         print("Initiated the slow task.")
         slow_thread.start()
+
         print("Initiated the fast task.")
         fast_thread.start()
 
         # Wait to finish
-        fast_thread.join()
-        slow_thread.join()
+        try:
+            fast_thread.join()
+            slow_thread.join()
+        except Exception as ex:
+            print(ex)
 
-        # Ensure there is no lock after finishing the work
-        self.assertFalse(lock.locked())
-
-    def test_ecc_lock_basic(self):
-        @ecc_lock()
+    def test_lock_ecc_simple(self):
+        @lock_ecc()
         def some_task():
             sleep(0.00001)
 
-        lock = InterprocessLock(LOCK_ECC, available_resources=1, reset=True)
-        self.assertFalse(lock.locked())
-
         some_task_thread = threading.Thread(target=some_task, daemon=True)
         some_task_thread.start()
-        self.assertTrue(lock.locked())
 
         some_task_thread.join()
-        self.assertFalse(lock.locked())
 
-    def test_ecc_lock_timeout(self):
-        @ecc_lock()
+    def test_lock_ecc_timeout(self):
+        @lock_ecc()
         def slow_task():
             sleep(0.1)
 
-        @ecc_lock(timeout=0.01, raise_exception=True)
+        @lock_ecc(timeout=0.01, raise_exception=True)
         def lock_with_timeout():
             pass
-
-        lock = InterprocessLock(LOCK_ECC, available_resources=1, reset=True)
-        self.assertFalse(lock.locked())
 
         slow_thread = threading.Thread(target=slow_task, daemon=True)
         slow_thread.start()
@@ -162,23 +153,20 @@ class TestInterprocessLock(unittest.TestCase):
 
         self.assertTrue(expected_exception)
 
-    def test_ecc_lock_racing(self):
-        @ecc_lock()
+    def test_lock_ecc_racing(self):
+        @lock_ecc()
         def slow_task():
             # Do some slow work
             print("Starting the slow task...")
             sleep(0.003)
             print("Finished the slow task!")
 
-        @ecc_lock()
+        @lock_ecc()
         def fast_task():
             # Do some slow work
             print("Starting the fast task...")
             sleep(0.001)
             print("Finished the fast task!")
-
-        lock = InterprocessLock(LOCK_ECC, available_resources=1, reset=True)
-        self.assertFalse(lock.locked())
 
         slow_thread = threading.Thread(target=slow_task, daemon=True)
         fast_thread = threading.Thread(target=fast_task, daemon=True)
@@ -193,6 +181,3 @@ class TestInterprocessLock(unittest.TestCase):
         # Wait to finish
         fast_thread.join()
         slow_thread.join()
-
-        # Ensure there is no lock after finishing the work
-        self.assertFalse(lock.locked())
