@@ -89,27 +89,17 @@ print(retry_get_region("", "/var/pktfwd/region"))
 ```
 
 ## LockSingleton
-`LockSingleton` prevents the concurrent access to a resource.
+`LockSingleton` prevents the concurrent access to a resource across threads.
 
 ### Methods
 
-**InterprocessLock(name, initial_value=1)**
+**LockSingleton()**
 
-Creates a new `InterprocessLock` object.
-- `name` uniquely identifies the `LockSingleton` across processes in the system
-- `available_resources` the count of the available resources
-- `reset` set `True` to reset the available_resources  
+Creates a new `LockSingleton` object.
   
-Note:
-  The available_resources of a `InterprocessLock` get reset on every restart of the system or docker container.
-  It's tested in Ubuntu 20.04 desktop and diagnostics container in a Hotspot.
-  Resetting the available_resources by passing the `reset=True` should be used with a caution and it can be used
-  in a very specific scenarios such as in the development environment. It's designed for facilitating
-  the development. It's not recommended to be used in production.
+**acquire(timeout = DEFAULT_TIMEOUT)**
 
-**acquire([timeout = None])**
-
-Waits until the resource is available and then returns, decrementing the available count.
+Waits until the resource is available. DEFAULT_TIMEOUT = 2 seconds 
  
 **release()**
 
@@ -119,13 +109,9 @@ Release the resource.
 
 Check if there is an available resource.
 
-**value()**
-
-Returns the count of available resources.
-
 ### Usage
 ```
-lock = LockSingleton("some_resource")
+lock = LockSingleton()
 
 try:
     # try to acquire the resource or may raise an exception
@@ -140,20 +126,18 @@ try:
     lock.release()
 except ResourceBusyError:
     print("The resource is busy now.")
-except CannotLockError:
-    print("Can't lock the resource for some internal issue.")
 ```
 
-### `@ecc_lock` decorator
-`@ecc_lock(timeout=DEFAULT_TIMEOUT, raise_exception=False):`
+### `@lock_ecc` decorator
+`@lock_ecc(timeout=DEFAULT_TIMEOUT, raise_exception=False):`
 
 This is the convenient decorator wrapping around the `LockSingleton`.
-  - timeout: timeout value. DEFAULT_TIMEOUT = 2 seconds 
+  - timeout: timeout value. DEFAULT_TIMEOUT = 2 seconds.
   - raise_exception: set True to raise exception in case of timeout or some error, otherwise just log the error msg
 
 Usage
 ```
-@ecc_lock()
+@lock_ecc()
 def run_gateway_mfr():
     return subprocess.run(
         [gateway_mfr_path, "key", "0"],

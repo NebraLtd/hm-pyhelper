@@ -2,7 +2,7 @@ import os
 import subprocess
 import json
 from retry import retry
-from hm_pyhelper.interprocess_lock import ecc_lock
+from hm_pyhelper.lock_singleton import lock_ecc
 from hm_pyhelper.logger import get_logger
 from hm_pyhelper.exceptions import MalformedRegionException, \
     SPIUnavailableException
@@ -15,7 +15,7 @@ REGION_FILE_MISSING_SLEEP_SECONDS = 60
 SPI_UNAVAILABLE_SLEEP_SECONDS = 60
 
 
-@ecc_lock()
+@lock_ecc()
 def run_gateway_mfr(args):
     direct_path = os.path.dirname(os.path.abspath(__file__))
     gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
@@ -81,7 +81,7 @@ def provision_key():
         return True
 
     try:
-        @ecc_lock()
+        @lock_ecc()
         def run_gateway_mfr():
             return subprocess.run(
                 [gateway_mfr_path, "provision"],
