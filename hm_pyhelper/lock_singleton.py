@@ -34,12 +34,13 @@ class ResourceBusyError(Exception):
     pass
 
 
-def lock_ecc(timeout=DEFAULT_TIMEOUT, raise_exception=False):
+def lock_ecc(timeout=DEFAULT_TIMEOUT, raise_resource_busy_exception=True):
     """
     Returns a decorator that locks the ECC.
 
     timeout: timeout value. DEFAULT_TIMEOUT = 2 seconds.
-    raise_exception: set True to raise exception in case of timeout and error.
+    raise_resource_busy_exception: set True to raise exception
+                    in case of lock acquire timeout and error.
                     Otherwise just log the error msg
     """
 
@@ -64,7 +65,7 @@ def lock_ecc(timeout=DEFAULT_TIMEOUT, raise_exception=False):
                 return value
             except ResourceBusyError as ex:
                 LOGGER.error("ECC is busy now.")
-                if raise_exception:
+                if raise_resource_busy_exception:
                     raise ex
             except Exception as ex:
                 raise ex

@@ -129,11 +129,11 @@ except ResourceBusyError:
 ```
 
 ### `@lock_ecc` decorator
-`@lock_ecc(timeout=DEFAULT_TIMEOUT, raise_exception=False):`
+`@lock_ecc(timeout=DEFAULT_TIMEOUT, raise_resource_busy_exception=True):`
 
 This is the convenient decorator wrapping around the `LockSingleton`.
   - timeout: timeout value. DEFAULT_TIMEOUT = 2 seconds.
-  - raise_exception: set True to raise exception in case of timeout or some error, otherwise just log the error msg
+  - raise_resource_busy_exception: set True to raise exception in case of timeout or some error, otherwise just log the error msg
 
 Usage
 ```

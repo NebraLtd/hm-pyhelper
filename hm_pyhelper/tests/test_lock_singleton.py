@@ -136,9 +136,9 @@ class TestLockSingleton(unittest.TestCase):
     def test_lock_ecc_timeout(self):
         @lock_ecc()
         def slow_task():
-            sleep(0.1)
+            sleep(0.01)
 
-        @lock_ecc(timeout=0.01, raise_exception=True)
+        @lock_ecc(timeout=0.001, raise_resource_busy_exception=True)
         def lock_with_timeout():
             pass
 
