@@ -52,16 +52,22 @@ def lock_ecc(timeout=DEFAULT_TIMEOUT, raise_exception=False):
                 # try to acquire the ECC resource or may raise an exception
                 lock.acquire(timeout=timeout)
 
-                value = func(*args, **kwargs)
+                try:
+                    value = func(*args, **kwargs)
+                except Exception as ex:
+                    lock.release()
+                    raise ex
 
                 # release the resource
                 lock.release()
 
                 return value
-            except Exception as ex:
+            except ResourceBusyError as ex:
                 LOGGER.error("ECC is busy now.")
                 if raise_exception:
                     raise ex
+            except Exception as ex:
+                raise ex
 
         return wrapper_lock_ecc
 
