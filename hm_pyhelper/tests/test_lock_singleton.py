@@ -181,3 +181,18 @@ class TestLockSingleton(unittest.TestCase):
         # Wait to finish
         fast_thread.join()
         slow_thread.join()
+
+    def test_lock_ecc_forward_exception(self):
+        @lock_ecc()
+        def faulty_task():
+            print("Starting the faulty task...")
+            sleep(0.001)
+            raise Exception("Intended faulty occurred!")
+
+        expected_exception = False
+        try:
+            faulty_task()
+        except Exception:
+            expected_exception = True
+
+        self.assertTrue(expected_exception)
