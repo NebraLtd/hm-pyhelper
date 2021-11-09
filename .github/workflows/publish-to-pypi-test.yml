@@ -1,8 +1,6 @@
 name: Publish Python 🐍 distribution 📦 to TestPyPI
 
-on:
-  push:
-    branches: '*'
+on: [push]
 
 jobs:
   rust-compile:
