@@ -136,9 +136,9 @@ class TestLockSingleton(unittest.TestCase):
     def test_lock_ecc_timeout(self):
         @lock_ecc()
         def slow_task():
-            sleep(0.1)
+            sleep(0.01)
 
-        @lock_ecc(timeout=0.01, raise_exception=True)
+        @lock_ecc(timeout=0.001, raise_resource_busy_exception=True)
         def lock_with_timeout():
             pass
 
@@ -181,3 +181,18 @@ class TestLockSingleton(unittest.TestCase):
         # Wait to finish
         fast_thread.join()
         slow_thread.join()
+
+    def test_lock_ecc_forward_exception(self):
+        @lock_ecc()
+        def faulty_task():
+            print("Starting the faulty task...")
+            sleep(0.001)
+            raise Exception("Intended faulty occurred!")
+
+        expected_exception = False
+        try:
+            faulty_task()
+        except Exception:
+            expected_exception = True
+
+        self.assertTrue(expected_exception)
