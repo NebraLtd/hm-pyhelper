@@ -88,6 +88,67 @@ print(retry_get_region("", "/var/pktfwd/region"))
 # EU868
 ```
 
+## LockSingleton
+`LockSingleton` prevents the concurrent access to a resource across threads.
+
+### Methods
+
+**LockSingleton()**
+
+Creates a new `LockSingleton` object.
+  
+**acquire(timeout = DEFAULT_TIMEOUT)**
+
+Waits until the resource is available. DEFAULT_TIMEOUT = 2 seconds 
+ 
+**release()**
+
+Release the resource.
+
+**locked()**
+
+Check if there is an available resource.
+
+### Usage
+```
+lock = LockSingleton()
+
+try:
+    # try to acquire the resource or may raise an exception
+    lock.acquire()
+
+    # do some work
+    print("Starting work...")
+    sleep(5)
+    print("Finished work!")
+
+    # release the resource
+    lock.release()
+except ResourceBusyError:
+    print("The resource is busy now.")
+```
+
+### `@lock_ecc` decorator
+`@lock_ecc(timeout=DEFAULT_TIMEOUT, raise_resource_busy_exception=True):`
+
+This is the convenient decorator wrapping around the `LockSingleton`.
+  - timeout: timeout value. DEFAULT_TIMEOUT = 2 seconds.
+  - raise_resource_busy_exception: set True to raise exception in case of timeout or some error, otherwise just log the error msg
+
+Usage
+```
+@lock_ecc()
+def run_gateway_mfr():
+    return subprocess.run(
+        [gateway_mfr_path, "key", "0"],
+        capture_output=True,
+        check=True
+    )
+
+gateway_mfr_result = run_gateway_mfr()
+log_stdout_stderr(gateway_mfr_result)
+```
+
 ## Testing
 
 To run tests:
@@ -108,3 +169,23 @@ project's Dockerfile.
 RUN pip3 install setuptools wheel
 RUN pip3 install --target="$OUTPUTS_DIR" git+https://github.com/NebraLtd/hm-pyhelper@BRANCH_NAME
 ``````
+
+## Releasing
+
+To release, use the [Github new release flow](https://github.com/NebraLtd/hm-pyhelper/releases/new).
+
+1. Create a new tag in format `vX.Y.Z`. You can use a previously tagged commit, but this is not necessary.
+2. Make sure the tag you created matches the value in setup.py.
+3. Select `master` as the target branch. If you do not select the master branch, the tag should be in format `vX.Y.Z-rc.N`.
+4. Title: `Release vX.Y.Z`.
+5. Body:
+
+**Note: you can create the release notes automatically by selecting the "Auto-generate release notes" option on the releases page.**
+
+```
+## What's Changed
+* Foo
+* Bar
+
+**Full Changelog**: https://github.com/NebraLtd/hm-pyhelper/compare/v0.0.A...v0.0.Z
+```

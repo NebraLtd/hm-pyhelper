@@ -22,13 +22,14 @@ class DiagnosticsReport(dict):
             diagnostics_report = DiagnosticsReport(diagnostics)
 
         When deserializing from JSON string:
-            report_json_str = '{"diagnostics_passed": false, "errors": ["blah"], "ECC": false}'
+            report_json_str = '{"diagnostics_passed": false,
+                                "errors": ["blah"], "ECC": false}'
             report = DiagnosticsReport.from_json_str(report_json_str)
         """
         super(DiagnosticsReport, self).__init__(kwargs)
 
         if DIAGNOSTICS_PASSED_KEY not in self:
-            self.__setitem__(DIAGNOSTICS_PASSED_KEY, True)
+            self.__setitem__(DIAGNOSTICS_PASSED_KEY, False)
 
         if DIAGNOSTICS_ERRORS_KEY not in self:
             self.__setitem__(DIAGNOSTICS_ERRORS_KEY, [])
@@ -47,6 +48,7 @@ class DiagnosticsReport(dict):
         return self[DIAGNOSTICS_ERRORS_KEY]
 
     def perform_diagnostics(self):
+        self.__setitem__(DIAGNOSTICS_PASSED_KEY, True)
         for diagnostic in self.diagnostics:
             diagnostic.perform_test(self)
 
@@ -57,7 +59,7 @@ class DiagnosticsReport(dict):
         """
         self.__setitem__(diagnostic.key, result)
         # The current keys are terse. Let's migrate to human friendly ones.
-        self.__setitem__(diagnostic.friendly_name, result)
+        self.__setitem__(diagnostic.friendly_key, result)
 
     def record_failure(self, msg_or_exception, diagnostic):
         """
@@ -78,9 +80,20 @@ class DiagnosticsReport(dict):
         self.record_result(record_failure_as, diagnostic)
 
     def get_report_subset(self, keys_to_extract):
-        return {key: self.__getattribute__(key) for key in keys_to_extract}
+        return {key: self.__getitem__(key) for key in keys_to_extract}
+
+    def get_error_messages(self):
+        def get_error_message(key):
+            return "%s Error: %s" % (key, self.__getitem__(key))
+
+        error_messages = map(get_error_message, self.get_errors())
+        return ("\n").join(error_messages)
 
     @staticmethod
     def from_json_str(json_str):
         report_dict = json.loads(json_str)
+        return DiagnosticsReport(report_dict)
+
+    @staticmethod
+    def from_json_dict(report_dict):
         return DiagnosticsReport(**report_dict)
