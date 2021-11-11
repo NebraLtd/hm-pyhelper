@@ -80,7 +80,7 @@ class DiagnosticsReport(dict):
         self.record_result(record_failure_as, diagnostic)
 
     def get_report_subset(self, keys_to_extract):
-        return {key: self.__getattribute__(key) for key in keys_to_extract}
+        return {key: self.__getitem__(key) for key in keys_to_extract}
 
     def get_error_messages(self):
         def get_error_message(key):
