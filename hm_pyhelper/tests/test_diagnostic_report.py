@@ -55,3 +55,12 @@ class TestDiagnostic(unittest.TestCase):
         actual_msgs = diagnostics_report.get_error_messages()
         expected_msgs = "key1 Error: Error1\nkey2 Error: Error2"
         self.assertEqual(actual_msgs, expected_msgs)
+
+    def test_get_report_subset(self):
+        diagnostics_report = DiagnosticsReport()
+        diagnostics_report['VA'] = 'NEBHNT-IN1'
+        diagnostics_report['foo'] = 'bar'
+
+        self.assertDictEqual(diagnostics_report.get_report_subset(["VA"]), {
+            'VA': 'NEBHNT-IN1'
+        })
