@@ -1,3 +1,4 @@
+from logging import Logger
 import os
 import subprocess
 import json
@@ -5,7 +6,11 @@ from retry import retry
 from hm_pyhelper.lock_singleton import lock_ecc
 from hm_pyhelper.logger import get_logger
 from hm_pyhelper.exceptions import MalformedRegionException, \
-    SPIUnavailableException, ECCMalfunctionException
+    SPIUnavailableException, ECCMalfunctionException, \
+    GatewayMFRFileNotFoundException, \
+    MinerFailedToFetchMacAddress
+from hm_pyhelper.miner_json_rpc.exceptions import \
+     MinerFailedToFetchEthernetAddress
 from hm_pyhelper.hardware_definitions import is_rockpi
 
 
@@ -41,6 +46,15 @@ def run_gateway_mfr(args):
         err_str = "gateway_mfr exited with a non-zero status"
         LOGGER.exception(err_str)
         raise ECCMalfunctionException(err_str).with_traceback(e.__traceback__)
+    except (FileNotFoundError, NotADirectoryError) as e:
+        err_str = "file/directory for gateway_mfr was not found"
+        LOGGER.exception(err_str)
+        raise GatewayMFRFileNotFoundException(err_str) \
+            .with_traceback(e.__traceback__)
+    except Exception as e:
+        err_str = "Exception occured on running gateway_mfr %s" \
+                  % str(e)
+        LOGGER.exception(e)
 
     try:
         return json.loads(run_gateway_mfr_result.stdout)
@@ -167,9 +181,13 @@ def get_ethernet_addresses(diagnostics):
     for (path, key) in zip(path_to_files, keys):
         try:
             diagnostics[key] = get_mac_address(path)
+        except MinerFailedToFetchMacAddress as e:
+            diagnostics[key] = False
+            LOGGER.error(e)
         except Exception as e:
             diagnostics[key] = False
             LOGGER.error(e)
+            raise MinerFailedToFetchEthernetAddress(str(e))
 
 
 def get_mac_address(path):
@@ -182,13 +200,30 @@ def get_mac_address(path):
         TypeError - If the function argument is not a string.
     """
     if type(path) is not str:
-        raise TypeError("The path must be a string value")
+        raise TypeError(
+            "Constructing miner mac address failed.\
+             The path must be a string value")
     try:
         file = open(path)
+    except MinerFailedToFetchMacAddress as e:
+        Logger.exception(str(e))
     except FileNotFoundError as e:
-        raise e
+        LOGGER.exception("Failed to find Miner"
+                         "Mac Address file at path %s" % path)
+        raise MinerFailedToFetchMacAddress("Failed to find file" 
+                                           "containing miner mac address."
+                                           "Exception: %s" % str(e)).with_traceback(e.__traceback__)
     except PermissionError as e:
-        raise e
+        LOGGER.exception("Permissions invalid for Miner"
+                         "Mac Address file at path %s" % path)
+        raise MinerFailedToFetchMacAddress("Failed to fetch" 
+                                           "miner mac address. Invalid permissions to access file."
+                                           "Exception: %s" % str(e)).with_traceback(e.__traceback__)
+    except Exception as e:
+        LOGGER.exception(e)
+        raise MinerFailedToFetchMacAddress("Failed to fetch miner"
+                                           "mac address. Exception: %s" % str(e))\
+                                           .with_traceback(e.__traceback__)
     return file.readline().strip().upper()
 
 
