@@ -8,7 +8,8 @@ from hm_pyhelper.exceptions import MalformedRegionException, \
     SPIUnavailableException, ECCMalfunctionException, \
     GatewayMFRFileNotFoundException, \
     MinerFailedToFetchMacAddress
-from hm_pyhelper.miner_json_rpc.exceptions import MinerFailedToFetchEthernetAddress
+from hm_pyhelper.miner_json_rpc.exceptions import \
+     MinerFailedToFetchEthernetAddress
 from hm_pyhelper.hardware_definitions import is_rockpi
 
 
@@ -178,9 +179,9 @@ def get_ethernet_addresses(diagnostics):
         except Exception as e:
             diagnostics[key] = False
             LOGGER.error(e)
-            raise(MinerFailedToFetchEthernetAddress \
-                ("Unable to fetch miner ethernet address. Exception: %s" % str(e))) \
-                .with_traceback(e.__traceback__)
+            raise(MinerFailedToFetchEthernetAddress(\
+                "Unable to fetch miner ethernet address.\
+                 Exception: %s" % str(e))).with_traceback(e.__traceback__)
 
 
 def get_mac_address(path):
@@ -193,22 +194,24 @@ def get_mac_address(path):
         TypeError - If the function argument is not a string.
     """
     if type(path) is not str:
-        raise TypeError("Constructing miner mac address failed. The path must be a string value") #Make 2 lines
+        raise TypeError(\
+            "Constructing miner mac address failed.\
+             The path must be a string value")
     try:
         file = open(path)
     except FileNotFoundError as e:
         
-        raise MinerFailedToFetchMacAddress \
-                ("Failed to find file containing miner mac address. \
-                  Exception: %s" % str(e)).with_traceback(e.__traceback__)
+        raise MinerFailedToFetchMacAddress(\
+            "Failed to find file containing miner mac address. \
+             Exception: %s" % str(e)).with_traceback(e.__traceback__)
     except PermissionError as e:
-        raise MinerFailedToFetchMacAddress \
-            ("Failed to fetch miner mac address. Invalid permissions to access file. \
-            Exception: %s" % str(e)).with_traceback(e.__traceback__)
+        raise MinerFailedToFetchMacAddress(\
+            "Failed to fetch miner mac address. Invalid permissions to access file. \
+             Exception: %s" % str(e)).with_traceback(e.__traceback__)
     except Exception as e:
-        raise MinerFailedToFetchMacAddress \
-            ("Failed to fetch miner mac address. \
-              Exception: %s" % str(e)).with_traceback(e.__traceback__)
+        raise MinerFailedToFetchMacAddress(\
+            "Failed to fetch miner mac address. \
+             Exception: %s" % str(e)).with_traceback(e.__traceback__)
     return file.readline().strip().upper()
 
 
