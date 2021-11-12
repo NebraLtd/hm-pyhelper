@@ -1,4 +1,3 @@
-
 class MinerJSONRPCException(Exception):
     pass
 
@@ -12,4 +11,12 @@ class MinerMalformedURL(MinerJSONRPCException):
 
 
 class MinerRegionUnset(MinerJSONRPCException):
+    pass
+
+
+class MinerFailedFetchData(MinerJSONRPCException):
+    pass
+
+
+class MinerFailedToFetchEthernetAddress(MinerJSONRPCException):
     pass
