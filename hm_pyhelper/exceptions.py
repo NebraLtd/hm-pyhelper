@@ -18,4 +18,3 @@ class GatewayMFRFileNotFoundException(Exception):
 
 class MinerFailedToFetchMacAddress(Exception):
     pass
-

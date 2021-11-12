@@ -200,7 +200,6 @@ def get_mac_address(path):
     try:
         file = open(path)
     except FileNotFoundError as e:
-        
         raise MinerFailedToFetchMacAddress(
             "Failed to find file containing miner mac address. \
              Exception: %s" % str(e)).with_traceback(e.__traceback__)

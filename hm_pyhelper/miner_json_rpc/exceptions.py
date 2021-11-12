@@ -22,4 +22,3 @@ class MinerFailedFetchData(MinerJSONRPCException):
 
 class MinerFailedToFetchEthernetAddress(MinerJSONRPCException):
     pass
-
