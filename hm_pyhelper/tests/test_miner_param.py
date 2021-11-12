@@ -1,7 +1,10 @@
+from hm_pyhelper.exceptions import MinerFailedToFetchMacAddress
 from hm_pyhelper.miner_param import retry_get_region, await_spi_available, \
-    provision_key, did_gateway_mfr_test_result_include_miner_key_pass
+    provision_key, did_gateway_mfr_test_result_include_miner_key_pass, \
+    get_mac_address
 import unittest
 from unittest.mock import mock_open, patch
+import pytest
 
 ALL_PASS_GATEWAY_MFR_TESTS = [
     {
@@ -170,3 +173,8 @@ class TestMinerParam(unittest.TestCase):
     @patch("os.path.exists", return_value=True)
     def test_is_spi_available(self, _):
         self.assertTrue(await_spi_available("spiXY.Z"))
+
+    def test_error_mac_address(self):
+        with pytest.raises(MinerFailedToFetchMacAddress):
+            get_mac_address("test/path")
+            print("Exception called.")
