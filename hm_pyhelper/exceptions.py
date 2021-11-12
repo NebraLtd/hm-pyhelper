@@ -1,5 +1,3 @@
-
-
 class MalformedRegionException(Exception):
     pass
 

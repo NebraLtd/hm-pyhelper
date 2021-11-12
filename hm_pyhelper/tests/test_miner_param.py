@@ -177,4 +177,3 @@ class TestMinerParam(unittest.TestCase):
     def test_error_mac_address(self):
         with pytest.raises(MinerFailedToFetchMacAddress):
             get_mac_address("test/path")
-            print("Exception called.")

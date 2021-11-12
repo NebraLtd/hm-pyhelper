@@ -1,5 +1,3 @@
-
-
 class MinerJSONRPCException(Exception):
     pass
 
