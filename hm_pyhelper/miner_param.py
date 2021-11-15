@@ -210,19 +210,23 @@ def get_mac_address(path):
     except FileNotFoundError as e:
         LOGGER.exception("Failed to find Miner"
                          "Mac Address file at path %s" % path)
-        raise MinerFailedToFetchMacAddress("Failed to find file" 
+        raise MinerFailedToFetchMacAddress("Failed to find file"
                                            "containing miner mac address."
-                                           "Exception: %s" % str(e)).with_traceback(e.__traceback__)
+                                           "Exception: %s" % str(e))\
+                                           .with_traceback(e.__traceback__)
     except PermissionError as e:
         LOGGER.exception("Permissions invalid for Miner"
                          "Mac Address file at path %s" % path)
-        raise MinerFailedToFetchMacAddress("Failed to fetch" 
-                                           "miner mac address. Invalid permissions to access file."
-                                           "Exception: %s" % str(e)).with_traceback(e.__traceback__)
+        raise MinerFailedToFetchMacAddress("Failed to fetch"
+                                           "miner mac address. "
+                                           "Invalid permissions to access file. "
+                                           "Exception: %s" % str(e))\
+                                           .with_traceback(e.__traceback__)
     except Exception as e:
         LOGGER.exception(e)
         raise MinerFailedToFetchMacAddress("Failed to fetch miner"
-                                           "mac address. Exception: %s" % str(e))\
+                                           "mac address. "
+                                           "Exception: %s" % str(e))\
                                            .with_traceback(e.__traceback__)
     return file.readline().strip().upper()
 
