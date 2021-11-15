@@ -1,7 +1,10 @@
-from hm_pyhelper.exceptions import ECCMalfunctionException, MinerFailedToFetchMacAddress
+from hm_pyhelper.exceptions import ECCMalfunctionException, \
+    MinerFailedToFetchMacAddress
 from hm_pyhelper.lock_singleton import ResourceBusyError
-from hm_pyhelper.miner_param import get_gateway_mfr_test_result, retry_get_region, await_spi_available, \
-    provision_key, did_gateway_mfr_test_result_include_miner_key_pass, \
+from hm_pyhelper.miner_param import get_gateway_mfr_test_result, \
+    retry_get_region, await_spi_available, \
+    provision_key, \
+    did_gateway_mfr_test_result_include_miner_key_pass, \
     get_mac_address
 import unittest
 from unittest.mock import mock_open, patch
