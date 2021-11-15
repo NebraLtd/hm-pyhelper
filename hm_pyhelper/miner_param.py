@@ -54,6 +54,7 @@ def run_gateway_mfr(args):
         err_str = "Exception occured on running gateway_mfr %s" \
                   % str(e)
         LOGGER.exception(e)
+        raise ECCMalfunctionException(err_str).with_traceback(e.__traceback__)
 
     try:
         return json.loads(run_gateway_mfr_result.stdout)
