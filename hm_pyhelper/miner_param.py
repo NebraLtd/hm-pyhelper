@@ -50,6 +50,11 @@ def run_gateway_mfr(args):
         LOGGER.exception(err_str)
         raise GatewayMFRFileNotFoundException(err_str) \
             .with_traceback(e.__traceback__)
+    except Exception as e:
+        err_str = "Exception occured on running gateway_mfr %s" \
+                  % str(e)
+        LOGGER.exception(e)
+        raise ECCMalfunctionException(err_str).with_traceback(e.__traceback__)
 
     try:
         return json.loads(run_gateway_mfr_result.stdout)
@@ -176,12 +181,13 @@ def get_ethernet_addresses(diagnostics):
     for (path, key) in zip(path_to_files, keys):
         try:
             diagnostics[key] = get_mac_address(path)
+        except MinerFailedToFetchMacAddress as e:
+            diagnostics[key] = False
+            LOGGER.error(e)
         except Exception as e:
             diagnostics[key] = False
             LOGGER.error(e)
-            raise(MinerFailedToFetchEthernetAddress(
-                "Unable to fetch miner ethernet address.\
-                 Exception: %s" % str(e))).with_traceback(e.__traceback__)
+            raise MinerFailedToFetchEthernetAddress(str(e))
 
 
 def get_mac_address(path):
@@ -199,23 +205,30 @@ def get_mac_address(path):
              The path must be a string value")
     try:
         file = open(path)
+    except MinerFailedToFetchMacAddress as e:
+        LOGGER.exception(str(e))
     except FileNotFoundError as e:
-        LOGGER.exception("Failed to find Miner \
-            Mac Address file at path %s" % path)
-        raise MinerFailedToFetchMacAddress(
-            "Failed to find file containing miner mac address. \
-             Exception: %s" % str(e)).with_traceback(e.__traceback__)
+        LOGGER.exception("Failed to find Miner"
+                         "Mac Address file at path %s" % path)
+        raise MinerFailedToFetchMacAddress("Failed to find file"
+                                           "containing miner mac address."
+                                           "Exception: %s" % str(e))\
+              .with_traceback(e.__traceback__)
     except PermissionError as e:
-        LOGGER.exception("Permissions invalid for Miner \
-            Mac Address file at path %s" % path)
-        raise MinerFailedToFetchMacAddress(
-            "Failed to fetch miner mac address. Invalid permissions to access file. \
-             Exception: %s" % str(e)).with_traceback(e.__traceback__)
+        LOGGER.exception("Permissions invalid for Miner"
+                         "Mac Address file at path %s" % path)
+        raise MinerFailedToFetchMacAddress("Failed to fetch"
+                                           "miner mac address. "
+                                           "Invalid permissions to access "
+                                           "file. Exception: %s" % str(e))\
+              .with_traceback(e.__traceback__)
     except Exception as e:
         LOGGER.exception(e)
-        raise MinerFailedToFetchMacAddress(
-            "Failed to fetch miner mac address. \
-             Exception: %s" % str(e)).with_traceback(e.__traceback__)
+        raise MinerFailedToFetchMacAddress("Failed to fetch miner"
+                                           "mac address. "
+                                           "Exception: %s" % str(e))\
+              .with_traceback(e.__traceback__)
+
     return file.readline().strip().upper()
 
 
