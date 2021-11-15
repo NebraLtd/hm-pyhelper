@@ -88,13 +88,6 @@ jobs:
           bump2version patch setup.py
         if: github.ref == 'refs/heads/master'
 
-      - name: Push Commit from Bump2Version
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-        if: github.ref == 'refs/heads/master'
-
       - name: Build a binary wheel and a source tarball
         run: |
           python -m build --sdist --wheel --outdir dist/ .

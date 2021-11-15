@@ -2,7 +2,7 @@ import os
 import subprocess
 import json
 from retry import retry
-from hm_pyhelper.lock_singleton import lock_ecc
+from hm_pyhelper.lock_singleton import ResourceBusyError, lock_ecc
 from hm_pyhelper.logger import get_logger
 from hm_pyhelper.exceptions import MalformedRegionException, \
     SPIUnavailableException, ECCMalfunctionException, \
@@ -49,6 +49,11 @@ def run_gateway_mfr(args):
         err_str = "file/directory for gateway_mfr was not found"
         LOGGER.exception(err_str)
         raise GatewayMFRFileNotFoundException(err_str) \
+            .with_traceback(e.__traceback__)
+    except ResourceBusyError as e:
+        err_str = "resource busy error: %s"
+        LOGGER.exception(err_str % str(e))
+        raise ResourceBusyError(e)\
             .with_traceback(e.__traceback__)
     except Exception as e:
         err_str = "Exception occured on running gateway_mfr %s" \

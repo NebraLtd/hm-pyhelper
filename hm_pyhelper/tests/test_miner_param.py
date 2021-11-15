@@ -1,6 +1,10 @@
-from hm_pyhelper.exceptions import MinerFailedToFetchMacAddress
-from hm_pyhelper.miner_param import retry_get_region, await_spi_available, \
-    provision_key, did_gateway_mfr_test_result_include_miner_key_pass, \
+from hm_pyhelper.exceptions import ECCMalfunctionException, \
+    MinerFailedToFetchMacAddress
+from hm_pyhelper.lock_singleton import ResourceBusyError
+from hm_pyhelper.miner_param import get_gateway_mfr_test_result, \
+    retry_get_region, await_spi_available, \
+    provision_key, \
+    did_gateway_mfr_test_result_include_miner_key_pass, \
     get_mac_address
 import unittest
 from unittest.mock import mock_open, patch
@@ -177,3 +181,24 @@ class TestMinerParam(unittest.TestCase):
     def test_error_mac_address(self):
         with pytest.raises(MinerFailedToFetchMacAddress):
             get_mac_address("test/path")
+
+    @patch(
+      'hm_pyhelper.miner_param.run_gateway_mfr',
+      side_effect=FileNotFoundError("File Not Found Error"))
+    def test_filenotfound_exception(self, mock):
+        with pytest.raises(FileNotFoundError):
+            get_gateway_mfr_test_result()
+
+    @patch(
+      'hm_pyhelper.miner_param.run_gateway_mfr',
+      side_effect=ECCMalfunctionException("File Not Found Error"))
+    def test_eccmalfunction_exception(self, mock):
+        with pytest.raises(ECCMalfunctionException):
+            get_gateway_mfr_test_result()
+
+    @patch(
+      'hm_pyhelper.miner_param.run_gateway_mfr',
+      side_effect=ResourceBusyError("Resource Busy Error"))
+    def test_resourcebusy_exception(self, mock):
+        with pytest.raises(ResourceBusyError):
+            get_gateway_mfr_test_result()
