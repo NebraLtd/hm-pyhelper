@@ -25,11 +25,12 @@ def run_gateway_mfr(args):
     gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
 
     command = [gateway_mfr_path]
-    command.extend(args)
 
     if is_rockpi():
         extra_args = ['--path', '/dev/i2c-7']
         command.extend(extra_args)
+
+    command.extend(args)
 
     try:
         run_gateway_mfr_result = subprocess.run(
