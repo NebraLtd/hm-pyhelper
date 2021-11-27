@@ -82,6 +82,7 @@ class GatewayMfrProvisionMock:
         return "example"
 
 
+@patch.dict('os.environ', {"BALENA_DEVICE_TYPE": "raspberrypi3-64"})
 class TestMinerParam(unittest.TestCase):
     @patch(
             'hm_pyhelper.miner_param.get_gateway_mfr_test_result',

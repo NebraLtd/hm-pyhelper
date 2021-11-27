@@ -95,23 +95,12 @@ def provision_key():
     """
     Attempt to provision key.
     """
-    direct_path = os.path.dirname(os.path.abspath(__file__))
-    gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
-
     test_results = get_gateway_mfr_test_result()
     if did_gateway_mfr_test_result_include_miner_key_pass(test_results):
         return True
 
     try:
-        @lock_ecc()
-        def run_gateway_mfr():
-            return subprocess.run(
-                [gateway_mfr_path, "provision"],
-                capture_output=True,
-                check=True
-            )
-
-        gateway_mfr_result = run_gateway_mfr()
+        gateway_mfr_result = run_gateway_mfr(["provision"])
         LOGGER.info("[ECC Provisioning] %s", gateway_mfr_result.stdout)
 
     except subprocess.CalledProcessError:
