@@ -138,9 +138,9 @@ variant_definitions = {
         'CELLULAR': False
         },
 
-    # Nebra Hotspot HAT Rockpi 4
+    # Nebra Hotspot HAT Rockpi 4 Indoor
     'NEBHNT-HHRK4': {
-        'FRIENDLY': 'Nebra Hotspot HAT RockPi 4',
+        'FRIENDLY': 'Nebra RockPi 4 Indoor',
         'APPNAME': 'RockPi',
         'SPIBUS': 'spidev32766.0',
         'RESET': 149,
@@ -150,6 +150,20 @@ variant_definitions = {
         'ECCOB': True,
         'TYPE': 'Full',
         'CELLULAR': False
+        },
+
+    # Nebra Hotspot HAT Rockpi 4 Outdoor
+    'NEBHNT-HHRK4-OUT': {
+        'FRIENDLY': 'Nebra RockPi 4 Outdoor',
+        'APPNAME': 'RockPi',
+        'SPIBUS': 'spidev32766.0',
+        'RESET': 149,
+        'MAC': 'eth0',
+        'STATUS': 156,
+        'BUTTON': 154,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': True
         },
 
     # Nebra Hotspot HAT RPi 3/4 Full
