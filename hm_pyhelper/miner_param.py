@@ -101,7 +101,7 @@ def provision_key():
 
     try:
         gateway_mfr_result = run_gateway_mfr(["provision"])
-        LOGGER.info("[ECC Provisioning] %s", gateway_mfr_result.stdout)
+        LOGGER.info("[ECC Provisioning] %s", gateway_mfr_result)
 
     except subprocess.CalledProcessError:
         LOGGER.error("[ECC Provisioning] Exited with a non-zero status")

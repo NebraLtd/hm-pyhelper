@@ -78,8 +78,11 @@ NONE_PASS_GATEWAY_MFR_TESTS = [
 
 
 class GatewayMfrProvisionMock:
-    def stdout():
-        return "example"
+    stderr = "example error"
+
+    stdout = """{
+          "provision": "example"
+        }"""
 
 
 @patch.dict('os.environ', {"BALENA_DEVICE_TYPE": "raspberrypi3-64"})
