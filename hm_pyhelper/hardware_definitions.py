@@ -149,7 +149,9 @@ variant_definitions = {
         'BUTTON': 154,
         'ECCOB': True,
         'TYPE': 'Full',
-        'CELLULAR': False
+        'CELLULAR': False,
+        'GPIO_PIN_LED': 18,
+        'GPIO_PIN_BUTTON': 16
         },
 
     # Nebra Hotspot HAT ROCK Pi 4 Outdoor
@@ -163,7 +165,9 @@ variant_definitions = {
         'BUTTON': 154,
         'ECCOB': True,
         'TYPE': 'Full',
-        'CELLULAR': True
+        'CELLULAR': True,
+        'GPIO_PIN_LED': 18,
+        'GPIO_PIN_BUTTON': 16
         },
 
     # Nebra Hotspot HAT RPi 3/4 Full
