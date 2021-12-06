@@ -1,0 +1,68 @@
+name: Check if we're using the latest Gateway MFR (gateway-mfr-rs) release
+
+on:
+  schedule:
+    - cron:  "0 0 * * 0" # Run weekly on sunday
+  workflow_dispatch:
+
+jobs:
+  latest-version:
+    name: Get Latest Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Get Latest Release
+        id: latest_version
+        uses: abatilo/release-info-action@v1.3.0
+        with:
+          owner: helium
+          repo: gateway-mfr-rs
+      - name: Perform check and update
+        env:
+          GATEWAY_MFR_RS_RELEASE: ${{ steps.latest_version.outputs.latest_tag }}
+        run: |
+          GITHUB_BRANCH=$( echo "${{ github.ref }}" | sed 's/refs\/heads\///g' )
+          CHECK_LATEST_RELEASE="GATEWAY_MFR_RS_RELEASE: ${GATEWAY_MFR_RS_RELEASE}"
+
+          echo "GATEWAY_MFR_RS_RELEASE=$GATEWAY_MFR_RS_RELEASE" >> $GITHUB_ENV
+          echo "GITHUB_BRANCH=$GITHUB_BRANCH" >> $GITHUB_ENV
+          
+          # Get the latest gateway-mfr-rs release
+          if grep -q "$CHECK_LATEST_RELEASE" .github/workflows/publish-to-pypi-test.yml; then
+            echo "We're on the latest Helium gateway-mfr-rs release $GATEWAY_MFR_RS_RELEASE."
+            exit 0
+          else
+            echo "We're not on the latest Helium gateway-mfr-rs release. Updating to $GATEWAY_MFR_RS_RELEASE."
+            sed -i -E 's/GATEWAY_MFR_RS_RELEASE: v.*/GATEWAY_MFR_RS_RELEASE: '$GATEWAY_MFR_RS_RELEASE'/g' .github/workflows/publish-to-pypi-test.yml
+            sed -i -E 's/GATEWAY_MFR_RS_RELEASE: v.*/GATEWAY_MFR_RS_RELEASE: '$GATEWAY_MFR_RS_RELEASE'/g' .github/workflows/publish-to-pypi.yml
+            UPDATED=true
+            echo "UPDATED=$UPDATED" >> $GITHUB_ENV
+            exit 0
+          fi
+      - name: Create Pull Request
+        if: env.UPDATED == 'true'
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: Update gateway-mfr-rs to latest release ${{ env.GATEWAY_MFR_RS_RELEASE }}
+          branch: gateway-mfr-rs/${{ env.GATEWAY_MFR_RS_RELEASE }}
+          delete-branch: true
+          base: master
+          title: "gateway-mfr-rs: Update to latest release ${{ env.GATEWAY_MFR_RS_RELEASE }}"
+          body: |
+            Update gateway-mfr-rs to latest release ${{ env.GATEWAY_MFR_RS_RELEASE }}
+            Ref https://github.com/helium/gateway-mfr-rs/releases/tag/${{ env.GATEWAY_MFR_RS_RELEASE }}
+          draft: false
+      - name: Report Status
+        if: env.UPDATED == 'true'
+        uses: ravsamhq/notify-slack-action@master
+        with:
+          status: ${{ job.status }}
+          notification_title: 'Gateway-mfr-rs has been updated to ${{ env.GATEWAY_MFR_RS_RELEASE }}. Please review PR!'
+          message_format: '{emoji} *{workflow}* {status_message} in <{repo_url}|{repo}>'
+          footer: '<{run_url}|View Run> | Linked Repo <{repo_url}|{repo}> | <{workflow_url}|View Workflow>'
+          mention_groups: ${{ secrets.SLACK_DEVELOPERS_GROUP }}
+          notify_when: 'success'
+          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.MINER_MONITORING_SLACK }}

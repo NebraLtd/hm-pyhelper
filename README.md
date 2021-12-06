@@ -6,6 +6,8 @@ This package is used in a number of Nebra software repos:
 - [hm-pktfwd](https://github.com/NebraLtd/hm-pktfwd/)
 - [hm-config](https://github.com/NebraLtd/hm-config/)
 - [hm-diag](https://github.com/NebraLtd/hm-diag/)
+- [hm-dashboard (private repo)](https://github.com/NebraLtd/hm-dashboard)
+- [Hotspot-Production-Tool (private repo)](https://github.com/NebraLtd/Hotspot-Production-Tool)
 
 The package is available on PyPI and PyPI test repos:
 - [PyPI hm-pyhelper](https://pypi.org/project/hm-pyhelper)
@@ -33,7 +35,8 @@ Note: Light hotspot software will also work on all models listed as type "full".
 | Nebra Pi 0 Light Hotspot X | NEBHNT-LGT-ZX | 1.2 | 22 | 24 | 23 | Light | False | USB Based Ethernet |
 | Nebra Beaglebone Light Hotspot | NEBHNT-BBB | 1.0 | 60 | 31  | 30  | Light | False | In Planning |
 | Nebra Pocket Beagle Light Hotspot | NEBHNT-PBB | 1.0 | 60 | 31 | 30 | Light | False | In Planning |
-| Nebra Hotspot HAT RockPi4 | NEBHNT-HHRK4 | 1.0 | 149 | 156 | 154 | Full | False | In Planning |
+| Nebra Hotspot HAT ROCK Pi 4 Indoor | NEBHNT-HHRK4 | 32766.0 | 149 | 156 (Physical pin 18) | 154 (Physical pin 16) | Full | False | In Planning |
+| Nebra Hotspot HAT ROCK Pi 4 Outdoor | NEBHNT-HHRK4-OUT | 32766.0 | 149 | 156 (Physical pin 18) | 154 (Physical pin 16)| Full | True | In Planning |
 | Nebra Hotspot HAT RPi | NEBHNT-HHRPI | 0.0 | 22 | 24 | 23 | Full | False | Should be compatible with 3+ & 4 |
 | Nebra Hotspot HAT RPi LIGHT | NEBHNT-HHRPL | 0.0 | 22 | 24 | 23 | Light | False | Light is compatible with all 40 pin headers |
 | Nebra Hotspot HAT Tinkerboard 2 | NEBHNT-HHTK | 2.0 | 167 | 163 | 162 | Full | False | Light would be compatible on TK1 |
@@ -189,3 +192,18 @@ To release, use the [Github new release flow](https://github.com/NebraLtd/hm-pyh
 
 **Full Changelog**: https://github.com/NebraLtd/hm-pyhelper/compare/v0.0.A...v0.0.Z
 ```
+
+### Release strategy
+
+The automated GitHub Actions in this repo do the following:
+- all pushes / PRs, regardless of branch, trigger a build of the wheels and python package which are released as build artifacts ([see below section](#test-release-artifacts))
+- pushes to master with an updated version number in `setup.py` are pushed to Test PyPI as well as being uploaded as build artifacts (note that if the version number isn't properly updated and is a duplicate of a previous one then the push to Test PyPI will fail)
+- any tagged releases on master branch ([see releasing process above](#releasing)) are built and published to PyPI as well as being uploaded as build artifacts
+
+### Test release artifacts
+
+Note that artifacts (wheels and source) are uploaded to the GitHub Actions artifacts even when the build fails or isn't pushed to PyPI/Test PyPI due to not being on the master branch.
+
+For example, [this failed build](https://github.com/NebraLtd/hm-pyhelper/actions/runs/1369814396), has artifacts uploaded [here](https://github.com/NebraLtd/hm-pyhelper/suites/4125934376/artifacts/105569066).
+
+These artifacts can be useful for testing releases without needing to bump version numbers.
