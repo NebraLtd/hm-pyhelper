@@ -6,47 +6,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  rust-compile:
-    name: Build gateway-mfr-rs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: arm-unknown-linux-gnueabihf
-          override: true
-
-      - name: Clone repo
-        run: |
-          git clone --branch v0.1.5 https://github.com/helium/gateway-mfr-rs.git .
-
-      - name: Run cargo check
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: true
-          command: check
-
-      - name: Build gateway-mfr-rs
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: true
-          command: build
-          args: --target arm-unknown-linux-gnueabihf --release
-
-      - name: Copy release file
-        run: |
-          cp ./target/arm-unknown-linux-gnueabihf/release/gateway_mfr gateway_mfr
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: gateway_mfr
-          path: ./gateway_mfr
-
   build-n-publish:
     name: Build and publish Python 🐍 distribution 📦 to PyPI
     runs-on: ubuntu-18.04
-    needs: [rust-compile]
 
     steps:
       - uses: actions/checkout@master
@@ -56,18 +18,32 @@ jobs:
         with:
           python-version: 3.7
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: gateway_mfr
-          path: ./gateway_mfr
+      - name: Fetch gateway-mfr-rs
+        env:
+          GATEWAY_MFR_RS_RELEASE: v0.1.6
+        run: |
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum"
+          SHA256=$( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz" )
+          
+          # Verify the checksum 
+          if grep -q "${SHA256}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum"; then
+            echo "Checksum verified for gateway_mfr. Unpacking tarball..."
+            # Unpack the tarball
+            tar -xvf "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz"
+            exit 0
+          else
+            echo "Checksum does not match. Please check download manually and rerun!"
+            exit 1
+          fi
+
+      - name: Change permissions on gateway_mfr
+        run: |
+          chmod +x gateway_mfr
 
       - name: Move gateway_mfr in place
         run: |
-          chmod +x gateway_mfr/gateway_mfr
-
-      - name: Move gateway_mfr in place
-        run: |
-          mv gateway_mfr/gateway_mfr hm_pyhelper/
+          mv gateway_mfr hm_pyhelper/
 
       - name: Install pypa/build
         run: |
@@ -81,7 +57,7 @@ jobs:
         with:
           name: wheels
           path: ./dist/*
-          
+
       - name: Get Latest Release
         id: latest_version
         uses: abatilo/release-info-action@v1.3.0
