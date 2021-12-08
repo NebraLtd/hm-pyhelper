@@ -91,6 +91,12 @@ print(retry_get_region("", "/var/pktfwd/region"))
 # EU868
 ```
 
+## gateway-mfr-rs (gateway_mfr)
+
+This helper module brings in the armv6 build of [gateway-mfr-rs (gateway_mfr)](https://github.com/helium/gateway-mfr-rs) which allows us to program the ECC secure element chips in production.
+
+We have a GitHub action in this repo called [update-gateway-mfr-rs.yml](https://github.com/NebraLtd/hm-pyhelper/blob/master/.github/workflows/update-gateway-mfr-rs.yml) which checks the upstream repo for updated release versions every Sunday at midnight and if a new release is found it triggers a new PR in this repo to update the version number. This action also can be triggered on `workflow_dispatch:` meaning you can also manually trigger it from the [actions tab](https://github.com/NebraLtd/hm-pyhelper/actions).
+
 ## LockSingleton
 `LockSingleton` prevents the concurrent access to a resource across threads.
 
@@ -207,9 +213,3 @@ Note that artifacts (wheels and source) are uploaded to the GitHub Actions artif
 For example, [this failed build](https://github.com/NebraLtd/hm-pyhelper/actions/runs/1369814396), has artifacts uploaded [here](https://github.com/NebraLtd/hm-pyhelper/suites/4125934376/artifacts/105569066).
 
 These artifacts can be useful for testing releases without needing to bump version numbers.
-
-## gateway-mfr-rs (gateway_mfr)
-
-This helper module brings in the armv6 build of [gateway-mfr-rs (gateway_mfr)](https://github.com/helium/gateway-mfr-rs) which allows us to program the ECC secure element chips in production.
-
-We have a GitHub action in this repo called [update-gateway-mfr-rs.yml](https://github.com/NebraLtd/hm-pyhelper/blob/master/.github/workflows/update-gateway-mfr-rs.yml) which checks the upstream repo for updated release versions every Sunday at midnight and if a new release is found it triggers a new PR in this repo to update the version number. This action also can be triggered on `workflow_dispatch:` meaning you can also manually trigger it from the [actions tab](https://github.com/NebraLtd/hm-pyhelper/actions).
