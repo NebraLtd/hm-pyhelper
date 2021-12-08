@@ -17,14 +17,15 @@ jobs:
 
       - name: Fetch gateway-mfr-rs
         env:
-          GATEWAY_MFR_RS_RELEASE: v0.1.6
+          GATEWAY_MFR_RS_RELEASE: v0.1.7
         run: |
           wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz"
           wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum"
-          SHA256=($( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz" ))
-          
+          SHA256=$( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz" | awk '{print $1}')
+          echo "Generated checksum: ${SHA256}"
+
           # Verify the checksum 
-          if grep -q "${SHA256}[1]" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum"; then
+          if grep -q "${SHA256}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum"; then
             echo "Checksum verified for gateway_mfr. Unpacking tarball..."
             # Unpack the tarball
             tar -xvf "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz"
