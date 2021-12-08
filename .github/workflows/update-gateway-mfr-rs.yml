@@ -63,6 +63,6 @@ jobs:
           footer: '<{run_url}|View Run> | Linked Repo <{repo_url}|{repo}> | <{workflow_url}|View Workflow>'
           mention_groups: ${{ secrets.SLACK_DEVELOPERS_GROUP }}
           notify_when: 'success'
-          token: ${{ secrets.MINER_UPDATE }}
+          token: ${{ secrets.MR_BUMP }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.MINER_MONITORING_SLACK }}
