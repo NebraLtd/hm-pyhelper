@@ -18,7 +18,7 @@ class TestHardwareDefinitions(TestCase):
             'CELLULAR',
             'FCC_IDS',
             'CONTAINS_FCC_IDS',
-            'ICC_IDS'
+            'IC_IDS'
         }
 
         for variant_name, variant_dict in variant_definitions.items():
