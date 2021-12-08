@@ -44,6 +44,7 @@ jobs:
         if: env.UPDATED == 'true'
         uses: peter-evans/create-pull-request@v3
         with:
+          token: ${{ secrets.MR_BUMP }}
           commit-message: Update gateway-mfr-rs to latest release ${{ env.GATEWAY_MFR_RS_RELEASE }}
           branch: gateway-mfr-rs/${{ env.GATEWAY_MFR_RS_RELEASE }}
           delete-branch: true
@@ -63,6 +64,6 @@ jobs:
           footer: '<{run_url}|View Run> | Linked Repo <{repo_url}|{repo}> | <{workflow_url}|View Workflow>'
           mention_groups: ${{ secrets.SLACK_DEVELOPERS_GROUP }}
           notify_when: 'success'
-          token: ${{ secrets.MR_BUMP }}
+          token: ${{ secrets.GITHUB_TOKEN }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.MINER_MONITORING_SLACK }}
