@@ -1,4 +1,6 @@
 import os
+from hm_pyhelper.exceptions import UnknownVariantException, \
+                                   UnknownVariantAttributeException
 
 
 def is_rockpi():
@@ -372,3 +374,23 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         }
 }
+
+
+def get_variant_attribute(variant_name, attribute_key):
+    """
+    Returns the value of an attribute from a specific variant.
+    Raises UnknownVariantException and UnknownVariantAttributeException.
+    """
+
+    try:
+        variant_dict = variant_definitions[variant_name]
+    except KeyError:
+        raise UnknownVariantException("Variant %s is not recognized."
+                                      % variant_name)
+
+    try:
+        return variant_dict[attribute_key]
+    except KeyError:
+        raise UnknownVariantAttributeException("Variant attribute %s"
+                                               "is not recognized."
+                                               % attribute_key)

@@ -16,3 +16,11 @@ class GatewayMFRFileNotFoundException(Exception):
 
 class MinerFailedToFetchMacAddress(Exception):
     pass
+
+
+class UnknownVariantException(Exception):
+    pass
+
+
+class UnknownVariantAttributeException(Exception):
+    pass
