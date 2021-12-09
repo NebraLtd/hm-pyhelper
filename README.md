@@ -67,6 +67,18 @@ Please note, DIY Hotspots do not earn HNT.
 | Pi Supply IoT LoRa Gateway HAT | RPi | DIY-PISLGH | 0.0 | 22 |   |   | Light | False | Any pi with 40 pin header |
 | RAK2287 | RPi | DIY-RAK2287 | 0.0 | 17 |   |   | Light | False | Any pi with 40 pin header |
 
+## hardware_definitions
+
+### variant_definitions
+
+A dictionary of all known Nebra hotspot variants.
+Not all variants are fully supported.
+
+### get_variant_attribute(variant_name, variant_attribute)
+
+Returns the value of an attribute from a specific variant.
+Raises UnknownVariantException and UnknownVariantAttributeException if invalid params supplied.
+
 ## logger
 
 ```python
