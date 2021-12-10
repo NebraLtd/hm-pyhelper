@@ -44,7 +44,8 @@ variant_definitions = {
         'FCC_IDS': ['2AZDM-HNTIN'],
         'CONTAINS_FCC_IDS': ['2AHRD-EPN8531', '2AB8JCSR40', '2ARPP-GL5712UX'],
         'IC_IDS': ['27187-HNTIN'],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': 'HNTIN'
         },
 
     # Nebra Indoor Hotspot, Old identifier
@@ -62,7 +63,8 @@ variant_definitions = {
         'FCC_IDS': ['2AZDM-HNTIN'],
         'CONTAINS_FCC_IDS': ['2AHRD-EPN8531', '2AB8JCSR40', '2ARPP-GL5712UX'],
         'IC_IDS': ['27187-HNTIN'],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': 'HNTIN'
         },
 
     # Nebra Outdoor Hotspot Gen1
@@ -81,7 +83,8 @@ variant_definitions = {
         'CONTAINS_FCC_IDS': ['2ARPP-GL5712UX', '2AZDM-CSR8510',
                              'XMR201903EG25G', '2AZDM-WIFIRP'],
         'IC_IDS': ['27187-HNTOUT'],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': 'HNTOUT'
         },
 
     # Nebra Outdoor Hotspot Old Identifier
@@ -100,7 +103,8 @@ variant_definitions = {
         'CONTAINS_FCC_IDS': ['2ARPP-GL5712UX', '2AZDM-CSR8510',
                              'XMR201903EG25G', '2AZDM-WIFIRP'],
         'IC_IDS': ['27187-HNTOUT'],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': 'HNTOUT'
         },
 
     # Nebra Pi 0 Light Hotspot SPI Ethernet
@@ -118,7 +122,8 @@ variant_definitions = {
         'FCC_IDS': ['2AZDM-HNTLGTMC'],
         'CONTAINS_FCC_IDS': ['2ABCB-RPI0W', '2ARPP-GL5712UX'],
         'IC_IDS': ['27187-HNTLGTMC'],
-        'CONTAINS_IC_IDS': ['20953-RPI0W']
+        'CONTAINS_IC_IDS': ['20953-RPI0W'],
+        'MODEL_NUM_PREFIX': 'HNTLGT'
         },
 
     # Nebra Pi 0 Light Hotspot USB Ethernet
@@ -136,7 +141,8 @@ variant_definitions = {
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': ''
         },
 
     # Nebra Beaglebone Light Hotspot
@@ -154,7 +160,8 @@ variant_definitions = {
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': ''
         },
 
     # Nebra Pocket Beagle Light Hotspot
@@ -172,7 +179,8 @@ variant_definitions = {
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': ''
         },
 
     # Nebra Hotspot HAT ROCK Pi 4 Indoor
@@ -192,7 +200,8 @@ variant_definitions = {
         'FCC_IDS': ['2AZDM-HHRK4'],
         'CONTAINS_FCC_IDS': ['2ARPP-GL5712UX', '2A3PA-ROCKPI4'],
         'IC_IDS': ['27187-HHRK4'],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': 'HNTIN'
         },
 
     # Nebra Hotspot HAT ROCK Pi 4 Outdoor
@@ -214,7 +223,8 @@ variant_definitions = {
                              '2A3PA-ROCKPI4',
                              'XMR201903EG25G'],
         'IC_IDS': ['27187-HHRK4-OUT'],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': 'HNTOUT'
         },
 
     # Nebra Hotspot HAT RPi 3/4 Full
@@ -232,7 +242,8 @@ variant_definitions = {
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': ''
         },
 
     # Nebra Hotspot HAT RPi Light
@@ -250,7 +261,8 @@ variant_definitions = {
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': ''
         },
 
     # Nebra Hotspot HAT Tinkerboard 1
@@ -268,7 +280,8 @@ variant_definitions = {
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': ''
         },
 
     # Nebra Hotspot HAT Tinkerboard 2
@@ -286,7 +299,8 @@ variant_definitions = {
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': ''
         },
 
     # RAKwireless Hotspot Miner
@@ -303,7 +317,8 @@ variant_definitions = {
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': ''
         },
 
     # Helium Hotspot
@@ -320,7 +335,8 @@ variant_definitions = {
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': ''
         },
 
     # SenseCAP M1 Hotspot
@@ -337,7 +353,8 @@ variant_definitions = {
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': ''
         },
 
     # DIY Pi Supply Hotspot HAT
@@ -354,7 +371,8 @@ variant_definitions = {
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': ''
         },
 
     # Nebra Indoor Hotspot
@@ -371,7 +389,8 @@ variant_definitions = {
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
+        'CONTAINS_IC_IDS': [],
+        'MODEL_NUM_PREFIX': ''
         }
 }
 
