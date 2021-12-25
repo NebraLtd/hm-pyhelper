@@ -3,7 +3,7 @@ from hm_pyhelper.exceptions import ECCMalfunctionException, \
 from hm_pyhelper.lock_singleton import ResourceBusyError
 from hm_pyhelper.miner_param import get_gateway_mfr_test_result, \
     retry_get_region, await_spi_available, \
-    provision_key, \
+    provision_key, run_gateway_mfr, \
     did_gateway_mfr_test_result_include_miner_key_pass, \
     get_mac_address
 import unittest
@@ -76,6 +76,15 @@ NONE_PASS_GATEWAY_MFR_TESTS = [
     }
   ]
 
+mock_variant_definitions = {
+        'NEBHNT-WITHKSB': {
+            'KEY_STORAGE_BUS': '/dev/i2c-X',
+        },
+        'NEBHNT-NOKSB': {
+            'NO_KEY_STORAGE_BUS': '/dev/i2c-X',
+        }
+    }
+
 
 class GatewayMfrProvisionMock:
     stderr = "example error"
@@ -85,8 +94,37 @@ class GatewayMfrProvisionMock:
         }"""
 
 
-@patch.dict('os.environ', {"BALENA_DEVICE_TYPE": "raspberrypi3-64"})
+@patch.dict('os.environ', {"VARIANT": "NEBHNT-WITHKSB"})
+@patch('hm_pyhelper.hardware_definitions.variant_definitions',
+       mock_variant_definitions)
 class TestMinerParam(unittest.TestCase):
+    @patch('subprocess.run', return_value=GatewayMfrProvisionMock())
+    def test_run_gateway_mfr(self, subprocess_run):
+        run_gateway_mfr(["unittest"])
+        self.assertEqual(
+            subprocess_run.call_args[0][0][1:], [
+                "--path",
+                mock_variant_definitions['NEBHNT-WITHKSB']['KEY_STORAGE_BUS'],
+                "unittest"
+            ]
+        )
+
+    @patch.dict('os.environ', {"VARIANT": "NEBHNT-NOKSB"})
+    @patch('subprocess.run', return_value=GatewayMfrProvisionMock())
+    def test_run_gateway_mfr_no_ksb_attribute(self, subprocess_run):
+        run_gateway_mfr(["unittest"])
+        self.assertEqual(
+            subprocess_run.call_args[0][0][1:], ["unittest"]
+        )
+
+    @patch.dict('os.environ', {"VARIANT": "NEBHNT-INVALID"})
+    @patch('subprocess.run', return_value=GatewayMfrProvisionMock())
+    def test_run_gateway_mfr_no_variant(self, subprocess_run):
+        run_gateway_mfr(["unittest"])
+        self.assertEqual(
+            subprocess_run.call_args[0][0][1:], ["unittest"]
+        )
+
     @patch(
             'hm_pyhelper.miner_param.get_gateway_mfr_test_result',
             return_value={
