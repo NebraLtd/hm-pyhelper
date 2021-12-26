@@ -10,7 +10,8 @@ from hm_pyhelper.exceptions import MalformedRegionException, \
     MinerFailedToFetchMacAddress
 from hm_pyhelper.miner_json_rpc.exceptions import \
      MinerFailedToFetchEthernetAddress
-from hm_pyhelper.hardware_definitions import is_rockpi
+from hm_pyhelper.hardware_definitions import get_variant_attribute, \
+    UnknownVariantException, UnknownVariantAttributeException
 
 
 LOGGER = get_logger(__name__)
@@ -26,9 +27,14 @@ def run_gateway_mfr(args):
 
     command = [gateway_mfr_path]
 
-    if is_rockpi():
-        extra_args = ['--path', '/dev/i2c-7']
-        command.extend(extra_args)
+    try:
+        path_arg = [
+            '--path',
+            get_variant_attribute(os.getenv('VARIANT'), 'KEY_STORAGE_BUS')
+        ]
+        command.extend(path_arg)
+    except (UnknownVariantException, UnknownVariantAttributeException) as e:
+        LOGGER.warning(str(e) + ' Omitting --path arg.')
 
     command.extend(args)
 

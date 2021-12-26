@@ -34,6 +34,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra Indoor Hotspot Gen 1',
         'APPNAME': 'Indoor',
         'SPIBUS': 'spidev1.2',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 38,
         'MAC': 'eth0',
         'STATUS': 25,
@@ -52,6 +53,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra Indoor Hotspot Gen 1',
         'APPNAME': 'Indoor',
         'SPIBUS': 'spidev1.2',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 38,
         'MAC': 'eth0',
         'STATUS': 25,
@@ -70,6 +72,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra Outdoor Hotspot Gen 1',
         'APPNAME': 'Outdoor',
         'SPIBUS': 'spidev1.2',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 38,
         'MAC': 'eth0',
         'STATUS': 25,
@@ -89,6 +92,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra Outdoor Hotspot Gen 1',
         'APPNAME': 'Outdoor',
         'SPIBUS': 'spidev1.2',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 38,
         'MAC': 'eth0',
         'STATUS': 25,
@@ -108,6 +112,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra Pi 0 Light Hotspot SE',
         'APPNAME': 'Pi 0 Light',
         'SPIBUS': 'spidev1.2',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 22,
         'MAC': 'wlan0',
         'STATUS': 24,
@@ -126,6 +131,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra Pi 0 Light Hotspot XE',
         'APPNAME': 'Pi 0 Light',
         'SPIBUS': 'spidev1.2',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 22,
         'MAC': 'wlan0',
         'STATUS': 24,
@@ -144,6 +150,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra Beaglebone Light Hotspot',
         'APPNAME': 'Beaglebone Light',
         'SPIBUS': 'spidev1.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 60,
         'MAC': 'eth0',
         'STATUS': 31,
@@ -162,6 +169,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra Pocket Beagle Light Hotspot',
         'APPNAME': 'PB Light',
         'SPIBUS': 'spidev1.2',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 60,
         'MAC': 'wlan0',
         'STATUS': 31,
@@ -180,6 +188,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra ROCK Pi 4 Indoor',
         'APPNAME': 'ROCK Pi',
         'SPIBUS': 'spidev32766.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-7',
         'RESET': 149,
         'MAC': 'eth0',
         'STATUS': 156,
@@ -200,6 +209,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra ROCK Pi 4 Outdoor',
         'APPNAME': 'ROCK Pi',
         'SPIBUS': 'spidev32766.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-7',
         'RESET': 149,
         'MAC': 'eth0',
         'STATUS': 156,
@@ -222,6 +232,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra Hotspot HAT RPi',
         'APPNAME': 'RPi',
         'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 22,
         'MAC': 'eth0',
         'STATUS': 24,
@@ -240,6 +251,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra Hotspot HAT RPi Light',
         'APPNAME': 'Light RPi',
         'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 22,
         'MAC': 'eth0',
         'STATUS': 24,
@@ -258,6 +270,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra Hotspot HAT Tinkerboard Light',
         'APPNAME': 'Tinkerboard Light',
         'SPIBUS': 'spidev2.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 167,
         'MAC': 'eth0',
         'STATUS': 163,
@@ -276,6 +289,7 @@ variant_definitions = {
         'FRIENDLY': 'Nebra Hotspot HAT Tinkerboard 2',
         'APPNAME': 'Tinkerboard',
         'SPIBUS': 'spidev2.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 167,
         'MAC': 'eth0',
         'STATUS': 163,
@@ -293,6 +307,7 @@ variant_definitions = {
     'COMP-RAKHM': {
         'FRIENDLY': 'RAK Hotspot',
         'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 17,
         'MAC': 'wlan0',
         'STATUS': 20,
@@ -310,6 +325,7 @@ variant_definitions = {
     'COMP-HELIUM': {
         'FRIENDLY': 'Helium Hotspot',
         'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 17,
         'MAC': 'wlan0',
         'STATUS': 20,
@@ -327,6 +343,7 @@ variant_definitions = {
     'COMP-SENSECAPM1': {
         'FRIENDLY': 'SenseCAP M1',
         'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 17,
         'MAC': 'wlan0',
         'STATUS': 20,
@@ -344,6 +361,7 @@ variant_definitions = {
     'DIY-PISLGH': {
         'FRIENDLY': 'DIY Pi Supply Hotspot HAT',
         'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 22,
         'MAC': 'eth0',
         'STATUS': 20,
@@ -361,6 +379,7 @@ variant_definitions = {
     'DIY-RAK2287': {
         'FRIENDLY': 'DIY RAK2247/RAK2287 HAT',
         'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 17,
         'MAC': 'eth0',
         'STATUS': 20,
@@ -392,5 +411,5 @@ def get_variant_attribute(variant_name, attribute_key):
         return variant_dict[attribute_key]
     except KeyError:
         raise UnknownVariantAttributeException("Variant attribute %s"
-                                               "is not recognized."
+                                               " is not recognized."
                                                % attribute_key)

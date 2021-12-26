@@ -38,6 +38,7 @@ class TestHardwareDefinitions(TestCase):
             'FRIENDLY': 'XYZ Hotspot Gen 1',
             'APPNAME': 'APPNAMEXYZ',
             'SPIBUS': 'spidevX.Y',
+            'KEY_STORAGE_BUS': '/dev/i2c-X',
             'RESET': 00,
             'MAC': 'ethXYZ',
             'STATUS': 00,
