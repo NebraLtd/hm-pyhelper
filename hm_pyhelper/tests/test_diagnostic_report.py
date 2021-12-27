@@ -66,7 +66,7 @@ class TestDiagnostic(unittest.TestCase):
 
     def test_passed_success(self):
         report = DiagnosticsReport()
-        report['PF'] = True
+        report[DIAGNOSTICS_PASSED_KEY] = True
 
         self.assertTrue(report.passed())
 
@@ -103,7 +103,7 @@ class TestDiagnostic(unittest.TestCase):
             response['errors'] = [key]
             report = DiagnosticsReport.from_json_dict(response)
             self.assertFalse(report.passed())
-            assert report.manufacturing_errors == {key}
+            assert report.has_manufacturing_errors() == {key}
 
         response['errors'] = keys_to_test
         report = DiagnosticsReport.from_json_dict(response)
@@ -137,4 +137,4 @@ class TestDiagnostic(unittest.TestCase):
         }
 
         report = DiagnosticsReport.from_json_dict(response)
-        self.assertTrue(report.passed())
+        assert len(report.has_manufacturing_errors()) == 0
