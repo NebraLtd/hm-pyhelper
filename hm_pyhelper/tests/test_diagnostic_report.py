@@ -72,7 +72,8 @@ class TestDiagnostic(unittest.TestCase):
 
     def test_passed_false_on_errors(self):
         keys_to_test = (
-            'ECC', 'BT', 'OK', 'E0', 'W0', 'PK', 'VA', 'FR', 'serial_number'
+            'ECC', 'onboarding_key', 'eth_mac_address', 'wifi_mac_address',
+            'public_key', 'bluetooth', 'VARIANT', 'FREQ', 'serial_number'
         )
 
         response = {
@@ -81,6 +82,7 @@ class TestDiagnostic(unittest.TestCase):
             'serial_number': '0000000021aabbcc',
             'ECC': 'gateway_mfr test finished with error',
             'E0': 'F0:4C:D5:58:E0:E1',
+            'eth_mac_address': 'F0:4C:D5:58:E0:E1',
             'FR': '915',
             'FREQ': '915',
             'FW': '2021.11.22.0-1',
@@ -88,6 +90,7 @@ class TestDiagnostic(unittest.TestCase):
             'VA': 'NEBHNT-OUT1',
             'VARIANT': 'NEBHNT-OUT1',
             'BT': True,
+            'bluetooth': True,
             'LTE': False,
             'LOR': False,
             'lora': False,
@@ -122,6 +125,7 @@ class TestDiagnostic(unittest.TestCase):
             'serial_number': '0000000021aabbcc',
             'ECC': True,
             'E0': 'F0:4C:D5:58:E0:E1',
+            'eth_mac_address': 'F0:4C:D5:58:E0:E1',
             'FR': '915',
             'FREQ': '915',
             'FW': '2021.11.22.0-1',
@@ -129,6 +133,7 @@ class TestDiagnostic(unittest.TestCase):
             'VA': 'NEBHNT-OUT1',
             'VARIANT': 'NEBHNT-OUT1',
             'BT': True,
+            'bluetooth': True,
             'LTE': False,
             'LOR': False,
             'lora': False,

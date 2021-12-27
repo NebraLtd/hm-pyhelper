@@ -12,7 +12,8 @@ DIAGNOSTICS_ERRORS_KEY = 'errors'
 class DiagnosticsReport(dict):
 
     KEYS_TO_CHECK_IN_MANUFACTUING = {
-        'ECC', 'OK', 'E0', 'W0', 'PK', 'BT', 'VA', 'FR', 'serial_number'
+        'ECC', 'onboarding_key', 'eth_mac_address', 'wifi_mac_address',
+        'public_key', 'bluetooth', 'VARIANT', 'FREQ', 'serial_number'
     }
 
     def __init__(self, diagnostics=[], **kwargs):
