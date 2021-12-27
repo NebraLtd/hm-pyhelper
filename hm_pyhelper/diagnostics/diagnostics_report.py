@@ -10,6 +10,12 @@ DIAGNOSTICS_ERRORS_KEY = 'errors'
 
 
 class DiagnosticsReport(dict):
+
+    KEYS_TO_CHECK_IN_MANUFACTUING = {
+        'ECC', 'onboarding_key', 'eth_mac_address', 'wifi_mac_address',
+        'public_key', 'bluetooth', 'VARIANT', 'FREQ', 'serial_number'
+    }
+
     def __init__(self, diagnostics=[], **kwargs):
         """
         Intended to be used for constructing a DiagnosticsReport
@@ -46,6 +52,20 @@ class DiagnosticsReport(dict):
 
     def get_errors(self):
         return self[DIAGNOSTICS_ERRORS_KEY]
+
+    def has_manufacturing_errors(self) -> list:
+        # Check only a subset of keys that are required for manufacturing
+        # tests. If these don't have errors then we can conclude that device
+        # is good from manufacturing point-of-view.
+        errors = self.get_errors()
+
+        if errors:
+            manufacturing_errors = \
+                self.KEYS_TO_CHECK_IN_MANUFACTUING.intersection(errors)
+
+            return manufacturing_errors
+
+        return []
 
     def perform_diagnostics(self):
         self.__setitem__(DIAGNOSTICS_PASSED_KEY, True)
