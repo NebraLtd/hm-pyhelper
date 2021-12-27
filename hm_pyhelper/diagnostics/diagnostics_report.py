@@ -91,6 +91,7 @@ class DiagnosticsReport(dict):
 
         # Add the failing key to list of errors
         self.append_error(diagnostic.key)
+        self.append_error(diagnostic.friendly_key)
 
         # Provide additional details, like error message
         record_failure_as = msg_or_exception

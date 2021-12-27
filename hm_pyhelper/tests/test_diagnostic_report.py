@@ -24,10 +24,9 @@ class TestDiagnostic(unittest.TestCase):
         diagnostic = Diagnostic('key', 'friendly_name')
         diagnostics_report = DiagnosticsReport()
         diagnostics_report.record_failure('foo', diagnostic)
-
         self.assertDictEqual(diagnostics_report, {
             DIAGNOSTICS_PASSED_KEY: False,
-            DIAGNOSTICS_ERRORS_KEY: ['key'],
+            DIAGNOSTICS_ERRORS_KEY: ['key', 'friendly_name'],
             'key': 'foo',
             'friendly_name': 'foo'
         })
@@ -45,14 +44,15 @@ class TestDiagnostic(unittest.TestCase):
         })
 
     def test_get_error_messages(self):
-        diagnostic1 = Diagnostic('key1', 'friendly_name')
-        diagnostic2 = Diagnostic('key2', 'friendly_name')
+        diagnostic1 = Diagnostic('key1', 'friendly_name1')
+        diagnostic2 = Diagnostic('key2', 'friendly_name2')
         diagnostics_report = DiagnosticsReport()
         diagnostics_report.record_failure('Error1', diagnostic1)
         diagnostics_report.record_failure('Error2', diagnostic2)
 
         actual_msgs = diagnostics_report.get_error_messages()
-        expected_msgs = "key1 Error: Error1\nkey2 Error: Error2"
+        expected_msgs = "key1 Error: Error1\nfriendly_name1 Error: Error1" + \
+            "\nkey2 Error: Error2\nfriendly_name2 Error: Error2"
         self.assertEqual(actual_msgs, expected_msgs)
 
     def test_get_report_subset(self):
