@@ -60,7 +60,6 @@ class DiagnosticsReport(dict):
         errors = self.get_errors()
 
         if errors:
-            self.set_passed(False)
             manufacturing_errors = \
                 self.KEYS_TO_CHECK_IN_MANUFACTUING.intersection(errors)
 
