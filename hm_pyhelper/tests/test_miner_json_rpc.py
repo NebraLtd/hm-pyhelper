@@ -1,13 +1,22 @@
 import unittest
 import mock
-
+import responses
+import requests
 from hm_pyhelper.miner_json_rpc import MinerClient
 from hm_pyhelper.miner_json_rpc.exceptions import MinerRegionUnset
 from hm_pyhelper.miner_json_rpc.exceptions import MinerMalformedURL
 from hm_pyhelper.miner_json_rpc.exceptions import MinerConnectionError
 
-
 BASE_URL = 'http://helium-miner:4467'
+
+
+@responses.activate
+def response_result(data, status, method):
+    url = "https://fake_url"
+    responses.add(method, url, json=data, status=status)
+    resp = requests.request(method, url)
+    print(resp.json())
+    return resp
 
 
 class Result(object):
@@ -55,28 +64,25 @@ class TestMinerJSONRPC(unittest.TestCase):
         self.assertTrue(exception_raised)
         self.assertIsInstance(exception_type, MinerConnectionError)
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.request')
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+                return_value=response_result(
+                    {"result": {'epoch': 25612, 'height': 993640}, "id": 1},
+                    200,
+                    "INFO_HEIGHT"))
     def test_get_height(self, mock_json_rpc_client):
-        mock_json_rpc_client.return_value = Response(
-            data=Result(
-                result={'epoch': 25612, 'height': 993640}
-            )
-        )
         client = MinerClient()
         result = client.get_height()
         mock_json_rpc_client.assert_called_with(
-            BASE_URL,
-            'info_height'
+            'info_height', BASE_URL
         )
         self.assertEqual(result, {'epoch': 25612, 'height': 993640})
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.request')
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+                return_value=response_result(
+                    {"result": {'region': None}, "id": 1},
+                    200,
+                    "INFO_REGION"))
     def test_get_region_not_asserted(self, mock_json_rpc_client):
-        mock_json_rpc_client.return_value = Response(
-            data=Result(
-                result={'region': None}
-            )
-        )
         client = MinerClient()
         exception_raised = False
         exception_type = None
@@ -90,118 +96,113 @@ class TestMinerJSONRPC(unittest.TestCase):
         self.assertTrue(exception_raised)
         self.assertIsInstance(exception_type, MinerRegionUnset)
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.request')
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+                return_value=response_result(
+                    {"result": {'region': "EU868"}, "id": 1},
+                    200,
+                    "INFO_REGION"))
     def test_get_region(self, mock_json_rpc_client):
-        mock_json_rpc_client.return_value = Response(
-            data=Result(
-                result={'region': 'EU868'}
-            )
-        )
         client = MinerClient()
         result = client.get_region()
         mock_json_rpc_client.assert_called_with(
-            BASE_URL,
-            'info_region'
+            'info_region',
+            BASE_URL
         )
         self.assertEqual(result, {'region': 'EU868'})
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.request')
+    summary = {
+        'block_age': 1136610,
+        'epoch': 25612,
+        'firmware_version': "0.1",
+        'gateway_details': 'undefined',
+        'height': 993640,
+        'mac_addresses': [
+            {'eth0': '0242AC110002'},
+            {'ip6tnl0': '00000000000000000000000000000000'},
+            {'tunl0': '00000000'},
+            {'lo': '000000000000'}
+        ],
+        'name': 'scruffy-chocolate-shell',
+        'peer_book_entry_count': 3,
+        'sync_height': 993640,
+        'uptime': 144,
+        'version': 10010005
+    }
+
+    result_json = {"result": summary, "id": 1}
+
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+                return_value=response_result(result_json, 200, "INFO_SUMMARY"))
     def test_get_summary(self, mock_json_rpc_client):
-        fw_version_err = ("cat: can't open '/etc/lsb_release': ",
-                          "No such file or directory\n")
-        summary = {
-            'block_age': 1136610,
-            'epoch': 25612,
-            'firmware_version': fw_version_err,
-            'gateway_details': 'undefined',
-            'height': 993640,
-            'mac_addresses': [
-                {'eth0': '0242AC110002'},
-                {'ip6tnl0': '00000000000000000000000000000000'},
-                {'tunl0': '00000000'},
-                {'lo': '000000000000'}
-            ],
-            'name': 'scruffy-chocolate-shell',
-            'peer_book_entry_count': 3,
-            'sync_height': 993640,
-            'uptime': 144,
-            'version': 10010005
-        }
-        mock_json_rpc_client.return_value = Response(
-            data=Result(
-                result=summary
-            )
-        )
         client = MinerClient()
         result = client.get_summary()
         mock_json_rpc_client.assert_called_with(
-            BASE_URL,
-            'info_summary'
+            'info_summary', BASE_URL
         )
-        self.assertEqual(result, summary)
+        print(result)
+        self.assertEqual(result, self.summary)
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.request')
+    peer_addr = '/p2p/11jr2kMp1bZvSC6pd3XkNvs9Q43qCgEzxRwV6vpuqXanC5UcLEs'
+
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+                return_value=response_result(
+                    {"result": {'peer_addr': peer_addr}, "id": 1},
+                    200,
+                    "PEER_ADDR"))
     def test_get_peer_addr(self, mock_json_rpc_client):
-        peer_addr = '/p2p/11jr2kMp1bZvSC6pd3XkNvs9Q43qCgEzxRwV6vpuqXanC5UcLEs'
-        mock_json_rpc_client.return_value = Response(
-            data=Result(
-                result={'peer_addr': peer_addr}
-            )
-        )
+
         client = MinerClient()
         result = client.get_peer_addr()
         mock_json_rpc_client.assert_called_with(
-            BASE_URL,
-            'peer_addr'
+            'peer_addr', BASE_URL
         )
-        self.assertEqual(result, {'peer_addr': peer_addr})
+        self.assertEqual(result, {'peer_addr': self.peer_addr})
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.request')
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+                return_value=response_result(
+                    {"result": [], "id": 1},
+                    200,
+                    "PEER_BOOK"))
     def test_get_peer_book(self, mock_json_rpc_client):
-        mock_json_rpc_client.return_value = Response(
-            data=Result(
-                result=[]
-            )
-        )
+
         client = MinerClient()
         result = client.get_peer_book()
         mock_json_rpc_client.assert_called_with(
-            BASE_URL,
-            'peer_book',
-            addr='self'
+            'peer_book', BASE_URL, addr='self'
         )
         self.assertEqual(result, [])
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.request')
+    firmware_version = '2021.10.18.0'
+    data_response = {
+        'block_age': 1136610,
+        'epoch': 25612,
+        'firmware_version': firmware_version,
+        'gateway_details': 'undefined',
+        'height': 993640,
+        'mac_addresses': [
+            {'eth0': '0242AC110002'},
+            {'ip6tnl0': '00000000000000000000000000000000'},
+            {'tunl0': '00000000'},
+            {'lo': '000000000000'}
+        ],
+        'name': 'scruffy-chocolate-shell',
+        'peer_book_entry_count': 3,
+        'sync_height': 993640,
+        'uptime': 144,
+        'version': 10010005
+    }
+
+    result_response = {"result": data_response, "id": 1}
+
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+                return_value=response_result(
+                    result_response,
+                    200,
+                    "INFO_SUMMARY"))
     def test_get_firmware_version(self, mock_json_rpc_client):
-        firmware_version = '2021.10.18.0'
-        summary = {
-            'block_age': 1136610,
-            'epoch': 25612,
-            'firmware_version': firmware_version,
-            'gateway_details': 'undefined',
-            'height': 993640,
-            'mac_addresses': [
-                {'eth0': '0242AC110002'},
-                {'ip6tnl0': '00000000000000000000000000000000'},
-                {'tunl0': '00000000'},
-                {'lo': '000000000000'}
-            ],
-            'name': 'scruffy-chocolate-shell',
-            'peer_book_entry_count': 3,
-            'sync_height': 993640,
-            'uptime': 144,
-            'version': 10010005
-        }
-        mock_json_rpc_client.return_value = Response(
-            data=Result(
-                result=summary
-            )
-        )
         client = MinerClient()
         result = client.get_firmware_version()
         mock_json_rpc_client.assert_called_with(
-            BASE_URL,
-            'info_summary'
+            'info_summary', BASE_URL
         )
-        self.assertEqual(result, firmware_version)
+        self.assertEqual(result, self.firmware_version)

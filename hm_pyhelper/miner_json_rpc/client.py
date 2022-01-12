@@ -1,5 +1,5 @@
 import requests
-from jsonrpcclient import request
+from jsonrpcclient import parse
 from hm_pyhelper.miner_json_rpc.exceptions import MinerConnectionError
 from hm_pyhelper.miner_json_rpc.exceptions import MinerMalformedURL
 from hm_pyhelper.miner_json_rpc.exceptions import MinerRegionUnset
@@ -12,8 +12,9 @@ class Client(object):
 
     def __fetch_data(self, method, **kwargs):
         try:
-            response = request(self.url, method, **kwargs)
-            return response.data.result
+            response = requests.request(method, self.url, **kwargs)
+            parsed = parse(response.json())
+            return parsed.result
         except requests.exceptions.ConnectionError:
             raise MinerConnectionError(
                 "Unable to connect to miner %s" % self.url
@@ -29,6 +30,8 @@ class Client(object):
 
     def get_region(self):
         region = self.__fetch_data('info_region')
+        print(region)
+        print("!!!!!!!!!")
         if not region.get('region'):
             raise MinerRegionUnset(
                 "Miner at %s does not have an asserted region"
