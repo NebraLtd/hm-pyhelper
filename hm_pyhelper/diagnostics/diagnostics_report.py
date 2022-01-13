@@ -53,6 +53,18 @@ class DiagnosticsReport(dict):
     def get_errors(self):
         return self[DIAGNOSTICS_ERRORS_KEY]
 
+    def get_missing_keys(self, required_keys: set) -> set:
+        """
+        Get required_keys that are missing from the DiagnosticsReport.
+
+        Args:
+            required_keys (set): Key names that should be present.
+
+        Returns:
+            set: Of keys that are missing
+        """
+        return required_keys.difference(self.keys())
+
     def has_manufacturing_errors(self) -> list:
         # Check only a subset of keys that are required for manufacturing
         # tests. If these don't have errors then we can conclude that device

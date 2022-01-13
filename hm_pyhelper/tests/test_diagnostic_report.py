@@ -143,3 +143,20 @@ class TestDiagnostic(unittest.TestCase):
 
         report = DiagnosticsReport.from_json_dict(response)
         assert len(report.has_manufacturing_errors()) == 0
+
+    def test_assert_diagnostics_present(self):
+        diagnostics_report = DiagnosticsReport.from_json_dict({
+            'foo': 'bar'
+        })
+
+        missing_keys = diagnostics_report.get_missing_keys({'foo'})
+
+        self.assertEqual(missing_keys, set())
+
+    def test_assert_diagnostics_not_present(self):
+        diagnostics_report = DiagnosticsReport.from_json_dict({
+            'foo': 'bar'
+        })
+
+        missing_keys = diagnostics_report.get_missing_keys({'missing_key'})
+        self.assertEqual(missing_keys, {'missing_key'})
