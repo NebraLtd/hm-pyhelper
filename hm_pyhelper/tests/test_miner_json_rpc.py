@@ -11,12 +11,16 @@ BASE_URL = 'http://helium-miner:4467'
 
 
 @responses.activate
-def response_result(data, status, method):
+def response_result(data, status):
     url = "https://fake_url"
-    responses.add(method, url, json=data, status=status)
-    resp = requests.request(method, url)
+    responses.add(responses.POST, url, json=data, status=status)
+    resp = requests.post(url)
     print(resp.json())
     return resp
+
+
+def return_payload_with_method(method):
+    return {'jsonrpc': '2.0', 'id': 1, 'method': method}
 
 
 class Result(object):
@@ -30,7 +34,6 @@ class Response(object):
 
 
 class TestMinerJSONRPC(unittest.TestCase):
-
     def test_instantiation(self):
         client = MinerClient()
         self.assertIsInstance(client, MinerClient)
@@ -64,24 +67,21 @@ class TestMinerJSONRPC(unittest.TestCase):
         self.assertTrue(exception_raised)
         self.assertIsInstance(exception_type, MinerConnectionError)
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.post',
                 return_value=response_result(
                     {"result": {'epoch': 25612, 'height': 993640}, "id": 1},
-                    200,
-                    "INFO_HEIGHT"))
+                    200))
     def test_get_height(self, mock_json_rpc_client):
         client = MinerClient()
         result = client.get_height()
         mock_json_rpc_client.assert_called_with(
-            'info_height', BASE_URL
-        )
+            BASE_URL, json=return_payload_with_method('info_height'))
+
         self.assertEqual(result, {'epoch': 25612, 'height': 993640})
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.post',
                 return_value=response_result(
-                    {"result": {'region': None}, "id": 1},
-                    200,
-                    "INFO_REGION"))
+                    {"result": {'region': None}, "id": 1}, 200))
     def test_get_region_not_asserted(self, mock_json_rpc_client):
         client = MinerClient()
         exception_raised = False
@@ -96,17 +96,14 @@ class TestMinerJSONRPC(unittest.TestCase):
         self.assertTrue(exception_raised)
         self.assertIsInstance(exception_type, MinerRegionUnset)
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.post',
                 return_value=response_result(
-                    {"result": {'region': "EU868"}, "id": 1},
-                    200,
-                    "INFO_REGION"))
+                    {"result": {'region': "EU868"}, "id": 1}, 200))
     def test_get_region(self, mock_json_rpc_client):
         client = MinerClient()
         result = client.get_region()
         mock_json_rpc_client.assert_called_with(
-            'info_region',
-            BASE_URL
+            BASE_URL, json=return_payload_with_method('info_region')
         )
         self.assertEqual(result, {'region': 'EU868'})
 
@@ -131,44 +128,40 @@ class TestMinerJSONRPC(unittest.TestCase):
 
     result_json = {"result": summary, "id": 1}
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
-                return_value=response_result(result_json, 200, "INFO_SUMMARY"))
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.post',
+                return_value=response_result(result_json, 200))
     def test_get_summary(self, mock_json_rpc_client):
         client = MinerClient()
         result = client.get_summary()
         mock_json_rpc_client.assert_called_with(
-            'info_summary', BASE_URL
+            BASE_URL, json=return_payload_with_method('info_summary')
         )
-        print(result)
         self.assertEqual(result, self.summary)
 
     peer_addr = '/p2p/11jr2kMp1bZvSC6pd3XkNvs9Q43qCgEzxRwV6vpuqXanC5UcLEs'
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.post',
                 return_value=response_result(
-                    {"result": {'peer_addr': peer_addr}, "id": 1},
-                    200,
-                    "PEER_ADDR"))
+                    {"result": {'peer_addr': peer_addr}, "id": 1}, 200))
     def test_get_peer_addr(self, mock_json_rpc_client):
 
         client = MinerClient()
         result = client.get_peer_addr()
         mock_json_rpc_client.assert_called_with(
-            'peer_addr', BASE_URL
+            BASE_URL, json=return_payload_with_method('peer_addr')
         )
         self.assertEqual(result, {'peer_addr': self.peer_addr})
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.post',
                 return_value=response_result(
                     {"result": [], "id": 1},
-                    200,
-                    "PEER_BOOK"))
+                    200))
     def test_get_peer_book(self, mock_json_rpc_client):
 
         client = MinerClient()
         result = client.get_peer_book()
         mock_json_rpc_client.assert_called_with(
-            'peer_book', BASE_URL
+            BASE_URL, json=return_payload_with_method('peer_book')
         )
         self.assertEqual(result, [])
 
@@ -194,15 +187,13 @@ class TestMinerJSONRPC(unittest.TestCase):
 
     result_response = {"result": data_response, "id": 1}
 
-    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.request',
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.post',
                 return_value=response_result(
-                    result_response,
-                    200,
-                    "INFO_SUMMARY"))
+                    result_response, 200))
     def test_get_firmware_version(self, mock_json_rpc_client):
         client = MinerClient()
         result = client.get_firmware_version()
         mock_json_rpc_client.assert_called_with(
-            'info_summary', BASE_URL
+            BASE_URL, json=return_payload_with_method('info_summary')
         )
         self.assertEqual(result, self.firmware_version)

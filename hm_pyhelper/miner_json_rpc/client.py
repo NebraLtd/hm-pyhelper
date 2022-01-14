@@ -1,5 +1,4 @@
 import requests
-from jsonrpcclient import parse
 from hm_pyhelper.miner_json_rpc.exceptions import MinerConnectionError
 from hm_pyhelper.miner_json_rpc.exceptions import MinerMalformedURL
 from hm_pyhelper.miner_json_rpc.exceptions import MinerRegionUnset
@@ -10,11 +9,14 @@ class Client(object):
     def __init__(self, url='http://helium-miner:4467'):
         self.url = url
 
-    def __fetch_data(self, method, **kwargs):
+    def __fetch_data(self, method):
+        req_body = {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": method,
+        }
         try:
-            response = requests.request(method, self.url, **kwargs)
-            parsed = parse(response.json())
-            return parsed.result
+            response = requests.post(self.url, json=req_body)
         except requests.exceptions.ConnectionError:
             raise MinerConnectionError(
                 "Unable to connect to miner %s" % self.url
@@ -24,6 +26,11 @@ class Client(object):
                 "Miner JSONRPC URL '%s' is not a valid URL"
                 % self.url
             )
+
+        if not response.ok:
+            raise Exception("Error happened")
+
+        return response.json().get('result')
 
     def get_height(self):
         return self.__fetch_data('info_height')
