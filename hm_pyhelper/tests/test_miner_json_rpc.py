@@ -168,7 +168,7 @@ class TestMinerJSONRPC(unittest.TestCase):
         client = MinerClient()
         result = client.get_peer_book()
         mock_json_rpc_client.assert_called_with(
-            'peer_book', BASE_URL, addr='self'
+            'peer_book', BASE_URL
         )
         self.assertEqual(result, [])
 

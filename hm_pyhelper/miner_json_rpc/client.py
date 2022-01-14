@@ -30,8 +30,6 @@ class Client(object):
 
     def get_region(self):
         region = self.__fetch_data('info_region')
-        print(region)
-        print("!!!!!!!!!")
         if not region.get('region'):
             raise MinerRegionUnset(
                 "Miner at %s does not have an asserted region"
@@ -46,7 +44,7 @@ class Client(object):
         return self.__fetch_data('peer_addr')
 
     def get_peer_book(self):
-        return self.__fetch_data('peer_book', addr='self')
+        return self.__fetch_data('peer_book')
 
     def get_firmware_version(self):
         summary = self.get_summary()
