@@ -28,7 +28,7 @@ class Client(object):
             )
 
         if not response.ok:
-            raise Exception("Error happened")
+            response.raise_for_status()
 
         return response.json().get('result')
 
