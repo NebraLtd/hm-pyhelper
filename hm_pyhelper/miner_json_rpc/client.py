@@ -9,12 +9,14 @@ class Client(object):
     def __init__(self, url='http://helium-miner:4467'):
         self.url = url
 
-    def __fetch_data(self, method):
+    def __fetch_data(self, method, **kwargs):
         req_body = {
             "jsonrpc": "2.0",
             "id": 1,
             "method": method,
         }
+        if kwargs:
+            req_body["params"] = kwargs
         try:
             response = requests.post(self.url, json=req_body)
         except requests.exceptions.ConnectionError:
@@ -51,7 +53,7 @@ class Client(object):
         return self.__fetch_data('peer_addr')
 
     def get_peer_book(self):
-        return self.__fetch_data('peer_book')
+        return self.__fetch_data('peer_book', addr='self')
 
     def get_firmware_version(self):
         summary = self.get_summary()
