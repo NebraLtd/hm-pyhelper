@@ -199,3 +199,38 @@ class TestMinerJSONRPC(unittest.TestCase):
             BASE_URL, json=return_payload_with_method('info_summary')
         )
         self.assertEqual(result, self.firmware_version)
+
+    add_gateway_response = {
+        "jsonrpc": "2.0",
+        "result": {
+            "result": "CroBCiEBwPbb63LQD8x/m/ZDLLyOLgtxypQIjh+xPPS+d8g/i24SIQB8XdzWqrIF201DNKHpXKFtsMtgvZeqBBc1wOk9sV2j4SJGMEQCIGE82gHbn0z/AOyaDXsuQDptC/I15fHCF//QEgzoxodrAiBsoRUiw8zMVttkPhEOoMfM0smmdCZPKX6tVOgK0s/0KiohAVHXaw1kNly2VOt47MlzTfkCIUTOgW34Orw1LSJt+9mCOICS9AFA6PsD"  # noqa: E501
+        },
+        "id": "1"
+    }
+
+    @mock.patch('hm_pyhelper.miner_json_rpc.client.requests.post',
+                return_value=response_result(
+                    add_gateway_response, 200))
+    def test_create_add_gateway_txn(self, mock_json_rpc_client):
+        self.maxDiff = None
+        client = MinerClient()
+        actual_result = client.create_add_gateway_txn(
+            '14QjC3A5DEH2uFwhDxyBHdFir7YWGG23Fic1wGvkCr6qrWC7Q47',
+            '13Zni1he7KY9pUmkXMhEhTwfUpL9AcEV1m2UbbvFsrU9QPTMgE3')
+
+        expected_result = {
+            'gateway_address':
+            '11wmnCAfvFkdx3Az1hesTsSv9YeBUhs8JZKjCqcs2vmRwRazpBa',
+
+            'owner_address':
+            '14QjC3A5DEH2uFwhDxyBHdFir7YWGG23Fic1wGvkCr6qrWC7Q47',
+
+            'payer_address':
+            '13Zni1he7KY9pUmkXMhEhTwfUpL9AcEV1m2UbbvFsrU9QPTMgE3',
+
+            'fee': 65000,
+            'staking_fee': 4000000,
+            'txn': "CroBCiEBwPbb63LQD8x/m/ZDLLyOLgtxypQIjh+xPPS+d8g/i24SIQB8XdzWqrIF201DNKHpXKFtsMtgvZeqBBc1wOk9sV2j4SJGMEQCIGE82gHbn0z/AOyaDXsuQDptC/I15fHCF//QEgzoxodrAiBsoRUiw8zMVttkPhEOoMfM0smmdCZPKX6tVOgK0s/0KiohAVHXaw1kNly2VOt47MlzTfkCIUTOgW34Orw1LSJt+9mCOICS9AFA6PsD"  # noqa: E501
+        }
+
+        self.assertDictEqual(actual_result, expected_result)

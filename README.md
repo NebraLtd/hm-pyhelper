@@ -170,6 +170,20 @@ gateway_mfr_result = run_gateway_mfr()
 log_stdout_stderr(gateway_mfr_result)
 ```
 
+## helium/miner RPC
+Send RPC commands to the miner container.
+
+### create_add_gateway_txn
+Return a `blockchain_txn_add_gateway_v1_pb2` signed by the gateway
+and formatted the same way as the [smartphone app expects](https://docs.helium.com/mine-hnt/full-hotspots/become-a-maker/hotspot-integration-testing/#generate-an-add-hotspot-transaction).
+
+Usage:
+```
+client = MinerClient()
+result = client.create_add_gateway_txn('owner_address', 'payer_address', 'gateway_address')
+```
+
+`gateway_address` is optional and will only be used to validate the returned payload if supplied.
 ## Testing
 
 To run tests:
