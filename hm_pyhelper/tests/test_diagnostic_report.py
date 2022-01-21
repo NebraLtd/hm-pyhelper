@@ -196,7 +196,7 @@ class TestDiagnostic(unittest.TestCase):
 
         payload_key = DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY
         expected_keys = [
-            payload_key + '.' +'address',
+            payload_key + '.' + 'address',
             payload_key + '.' + 'owner',
             payload_key + '.' + 'staking fee'
         ]
