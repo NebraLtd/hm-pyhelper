@@ -160,3 +160,65 @@ class TestDiagnostic(unittest.TestCase):
 
         missing_keys = diagnostics_report.get_missing_keys({'missing_key'})
         self.assertEqual(missing_keys, {'missing_key'})
+
+    def test_validate_gateway_transaction_not_present(self):
+        """
+        Test validate_gateway_transaction passes if report contains no
+        transaction data.
+        """
+        report = DiagnosticsReport.from_json_dict({
+            'foo': 'bar'
+        })
+
+        assert [] == report.validate_gateway_transaction_if_present()
+
+    def test_validate_gateway_transaction_fails_on_no_payload(self):
+        report = DiagnosticsReport.from_json_dict({
+            'foo': 'bar',
+            DiagnosticsReport.ADD_GATEWAY_TXN_NAME_KEY: 'Acme Inc.'
+        })
+
+        assert [DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY] == \
+            report.validate_gateway_transaction_if_present()
+
+    def test_validate_gateway_transaction_fails_on_invalid_payload(self):
+        report = DiagnosticsReport.from_json_dict({
+            'foo': 'bar',
+            DiagnosticsReport.ADD_GATEWAY_TXN_NAME_KEY: 'Acme Inc.',
+            DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY: {
+                "address": "",
+                "fee": 65000,
+                "payer": "138LbePH4r7hWPuTnK6HXVJ8ATM2QU",
+                "staking fee": None,
+                "txn": "CrkBCiEBrlImpYLbJ0z0hw5b4g9isRyPrgbXs9X"
+            }
+        })
+
+        assert ['address', 'owner', 'staking fee'] == \
+            report.validate_gateway_transaction_if_present()
+
+    def test_validate_gateway_transaction_fails_on_empty_payload(self):
+        report = DiagnosticsReport.from_json_dict({
+            'foo': 'bar',
+            DiagnosticsReport.ADD_GATEWAY_TXN_NAME_KEY: 'Acme Inc.',
+            DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY: {}
+        })
+
+        assert DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_CONTENT_KEYS == \
+            report.validate_gateway_transaction_if_present()
+
+    def test_validate_gateway_transaction_on_valid_payload(self):
+        report = DiagnosticsReport.from_json_dict({
+            'foo': 'bar',
+            DiagnosticsReport.ADD_GATEWAY_TXN_NAME_KEY: 'Acme Inc.',
+            DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY: {
+                "address": "11TL62V8NYvSTXmV5CZCjaucskvN",
+                "fee": 65000,
+                "owner": "14GWyFj9FjLHzoN3aX7Tq7PL6fEg4d",
+                "payer": "138LbePH4r7hWPuTnK6HXVJ8ATM2QU",
+                "staking fee": 4000000,
+                "txn": "CrkBCiEBrlImpYLbJ0z0hw5b4g9isRyPrgbXs9X"
+            }
+        })
+
+        assert [] == report.validate_gateway_transaction_if_present()

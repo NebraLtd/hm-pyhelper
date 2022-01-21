@@ -16,6 +16,16 @@ class DiagnosticsReport(dict):
         'public_key', 'bluetooth', 'VARIANT', 'FREQ', 'serial_number'
     }
 
+    KEYS_TO_CHECK_IN_GATEWAY_TRANSACTION_PAYLOAD = {
+        'address', 'fee', 'owner', 'payer', 'txn', 'staking fee'
+    }
+
+    ADD_GATEWAY_TXN_NAME_KEY = 'destination_name'
+    ADD_GATEWAY_TXN_PAYLOAD_KEY = 'destination_add_gateway_txn'
+    ADD_GATEWAY_TXN_PAYLOAD_CONTENT_KEYS = [
+        'address', 'fee', 'owner', 'payer', 'staking fee', 'txn'
+    ]
+
     def __init__(self, diagnostics=[], **kwargs):
         """
         Intended to be used for constructing a DiagnosticsReport
@@ -78,6 +88,37 @@ class DiagnosticsReport(dict):
             return manufacturing_errors
 
         return []
+
+    def validate_gateway_transaction_if_present(self) -> list:
+        """
+        Check if add gateway transaction data is present in this report and
+        that it's valid.
+
+        returns list:
+            - If empty it means either there was no transaction data
+            or it was valid.
+            - In case of missing ADD_GATEWAY_TXN_PAYLOAD_KEY
+            the ADD_GATEWAY_TXN_PAYLOAD_KEY is returned.
+            - If payload is found but has missing or empty keys those
+            keys are returned.
+        """
+        errors = []
+        if self.ADD_GATEWAY_TXN_NAME_KEY in self.keys():
+            if self.ADD_GATEWAY_TXN_PAYLOAD_KEY not in self.keys():
+                return [self.ADD_GATEWAY_TXN_PAYLOAD_KEY]
+
+            txn_payload = self.get(self.ADD_GATEWAY_TXN_PAYLOAD_KEY, {})
+            if not txn_payload:
+                return self.ADD_GATEWAY_TXN_PAYLOAD_CONTENT_KEYS
+
+            for key in self.ADD_GATEWAY_TXN_PAYLOAD_CONTENT_KEYS:
+                if key not in txn_payload or \
+                        txn_payload[key] is None \
+                        or txn_payload[key] == '':
+
+                    errors.append(key)
+
+        return errors
 
     def perform_diagnostics(self):
         self.__setitem__(DIAGNOSTICS_PASSED_KEY, True)
