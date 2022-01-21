@@ -194,7 +194,13 @@ class TestDiagnostic(unittest.TestCase):
             }
         })
 
-        assert ['address', 'owner', 'staking fee'] == \
+        payload_key = DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY
+        expected_keys = [
+            payload_key + '.' +'address',
+            payload_key + '.' + 'owner',
+            payload_key + '.' + 'staking fee'
+        ]
+        assert expected_keys == \
             report.validate_gateway_transaction_if_present()
 
     def test_validate_gateway_transaction_fails_on_empty_payload(self):
@@ -204,7 +210,11 @@ class TestDiagnostic(unittest.TestCase):
             DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY: {}
         })
 
-        assert DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_CONTENT_KEYS == \
+        expected_keys = [
+            DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY + '.' + k
+            for k in DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_CONTENT_KEYS
+        ]
+        assert expected_keys == \
             report.validate_gateway_transaction_if_present()
 
     def test_validate_gateway_transaction_on_valid_payload(self):

@@ -109,14 +109,16 @@ class DiagnosticsReport(dict):
 
             txn_payload = self.get(self.ADD_GATEWAY_TXN_PAYLOAD_KEY, {})
             if not txn_payload:
-                return self.ADD_GATEWAY_TXN_PAYLOAD_CONTENT_KEYS
+                return [self.ADD_GATEWAY_TXN_PAYLOAD_KEY + '.' + k
+                        for k in self.ADD_GATEWAY_TXN_PAYLOAD_CONTENT_KEYS]
 
             for key in self.ADD_GATEWAY_TXN_PAYLOAD_CONTENT_KEYS:
                 if key not in txn_payload or \
                         txn_payload[key] is None \
                         or txn_payload[key] == '':
 
-                    errors.append(key)
+                    errors.append(
+                        self.ADD_GATEWAY_TXN_PAYLOAD_KEY + '.' + key)
 
         return errors
 
