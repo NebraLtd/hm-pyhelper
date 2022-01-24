@@ -53,7 +53,8 @@ class DiagnosticsReport(dict):
         Args:
             keys_to_check (Union[tuple, list, set, None]): If not None then
                 only keys present in this set are returned if they are also
-                found in the diagnostics errors keys list.
+                found in the diagnostics errors keys list. If None, all errors
+                present in returned.
 
         Returns:
             set: Set of key names that have errors.
