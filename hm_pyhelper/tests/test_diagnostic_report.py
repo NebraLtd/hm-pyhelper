@@ -71,10 +71,10 @@ class TestDiagnostic(unittest.TestCase):
         self.assertTrue(report.passed())
 
     def test_passed_false_on_errors(self):
-        keys_to_test = (
+        keys_to_test = {
             'ECC', 'onboarding_key', 'eth_mac_address', 'wifi_mac_address',
             'public_key', 'bluetooth', 'VARIANT', 'FREQ', 'serial_number'
-        )
+        }
 
         response = {
             'diagnostics_passed': False,
@@ -106,43 +106,12 @@ class TestDiagnostic(unittest.TestCase):
             response['errors'] = [key]
             report = DiagnosticsReport.from_json_dict(response)
             self.assertFalse(report.passed())
-            assert report.has_manufacturing_errors() == {key}
+            assert report.has_errors([key]) == {key}
 
-        response['errors'] = keys_to_test
+        response['errors'] = set(keys_to_test)
         report = DiagnosticsReport.from_json_dict(response)
         self.assertFalse(report.passed())
-
-    def test_passed_on_non_manufacturing_errors(self):
-        """
-        Test that we're only considering a subset of keys
-        ['ECC', 'BT', 'OK', 'E0', 'W0', 'PK'] to determine if manufacturing
-        is good. Other keys may have errors but that should not cause miner
-        to fail manufacturing.
-        """
-        response = {
-            'diagnostics_passed': False,
-            'errors': ['BN', 'PF'],
-            'serial_number': '0000000021aabbcc',
-            'ECC': True,
-            'E0': 'F0:4C:D5:58:E0:E1',
-            'eth_mac_address': 'F0:4C:D5:58:E0:E1',
-            'FR': '915',
-            'FREQ': '915',
-            'FW': '2021.11.22.0-1',
-            'FIRMWARE_VERSION': '2021.11.22.0-1',
-            'VA': 'NEBHNT-OUT1',
-            'VARIANT': 'NEBHNT-OUT1',
-            'BT': True,
-            'bluetooth': True,
-            'LTE': False,
-            'LOR': False,
-            'lora': False,
-            'PF': False,
-            'legacy_pass_fail': False
-        }
-
-        report = DiagnosticsReport.from_json_dict(response)
-        assert len(report.has_manufacturing_errors()) == 0
+        assert report.has_errors(keys_to_test) == keys_to_test
 
     def test_assert_diagnostics_present(self):
         diagnostics_report = DiagnosticsReport.from_json_dict({
