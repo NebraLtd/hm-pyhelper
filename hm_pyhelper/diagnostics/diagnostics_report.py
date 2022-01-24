@@ -1,3 +1,4 @@
+from typing import Union
 import json
 
 # Name of key in diagnostics containing meta-information about
@@ -45,8 +46,25 @@ class DiagnosticsReport(dict):
     def append_error(self, key):
         self.__getitem__(DIAGNOSTICS_ERRORS_KEY).append(key)
 
-    def get_errors(self):
-        return self[DIAGNOSTICS_ERRORS_KEY]
+    def has_errors(self, keys_to_check: Union[tuple, list, set] = None) -> set:
+        """
+        Return list of keys that have errors (don't have valid values).
+
+        Args:
+            keys_to_check (Union[tuple, list, set, None]): If not None then
+                only keys present in this set are returned if they are also
+                found in the diagnostics errors keys list.
+
+        Returns:
+            set: Set of key names that have errors.
+        """
+        if keys_to_check is None:
+            return self[DIAGNOSTICS_ERRORS_KEY]
+
+        if not isinstance(keys_to_check, set):
+            keys_to_check = set(keys_to_check)
+
+        return keys_to_check.intersection(self[DIAGNOSTICS_ERRORS_KEY])
 
     def get_missing_keys(self, required_keys: set) -> set:
         """
@@ -100,7 +118,7 @@ class DiagnosticsReport(dict):
         def get_error_message(key):
             return "%s Error: %s" % (key, self.__getitem__(key))
 
-        error_messages = map(get_error_message, self.get_errors())
+        error_messages = map(get_error_message, self.has_errors())
         return ("\n").join(error_messages)
 
     @staticmethod

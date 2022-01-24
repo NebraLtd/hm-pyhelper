@@ -71,10 +71,10 @@ class TestDiagnostic(unittest.TestCase):
         self.assertTrue(report.passed())
 
     def test_passed_false_on_errors(self):
-        keys_to_test = (
+        keys_to_test = {
             'ECC', 'onboarding_key', 'eth_mac_address', 'wifi_mac_address',
             'public_key', 'bluetooth', 'VARIANT', 'FREQ', 'serial_number'
-        )
+        }
 
         response = {
             'diagnostics_passed': False,
@@ -106,11 +106,12 @@ class TestDiagnostic(unittest.TestCase):
             response['errors'] = [key]
             report = DiagnosticsReport.from_json_dict(response)
             self.assertFalse(report.passed())
-            assert report.get_errors() == [key]
+            assert report.has_errors([key]) == {key}
 
-        response['errors'] = keys_to_test
+        response['errors'] = set(keys_to_test)
         report = DiagnosticsReport.from_json_dict(response)
         self.assertFalse(report.passed())
+        assert report.has_errors(keys_to_test) == keys_to_test
 
     def test_assert_diagnostics_present(self):
         diagnostics_report = DiagnosticsReport.from_json_dict({
