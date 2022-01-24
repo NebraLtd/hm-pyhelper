@@ -106,43 +106,11 @@ class TestDiagnostic(unittest.TestCase):
             response['errors'] = [key]
             report = DiagnosticsReport.from_json_dict(response)
             self.assertFalse(report.passed())
-            assert report.has_manufacturing_errors() == {key}
+            assert report.get_errors() == [key]
 
         response['errors'] = keys_to_test
         report = DiagnosticsReport.from_json_dict(response)
         self.assertFalse(report.passed())
-
-    def test_passed_on_non_manufacturing_errors(self):
-        """
-        Test that we're only considering a subset of keys
-        ['ECC', 'BT', 'OK', 'E0', 'W0', 'PK'] to determine if manufacturing
-        is good. Other keys may have errors but that should not cause miner
-        to fail manufacturing.
-        """
-        response = {
-            'diagnostics_passed': False,
-            'errors': ['BN', 'PF'],
-            'serial_number': '0000000021aabbcc',
-            'ECC': True,
-            'E0': 'F0:4C:D5:58:E0:E1',
-            'eth_mac_address': 'F0:4C:D5:58:E0:E1',
-            'FR': '915',
-            'FREQ': '915',
-            'FW': '2021.11.22.0-1',
-            'FIRMWARE_VERSION': '2021.11.22.0-1',
-            'VA': 'NEBHNT-OUT1',
-            'VARIANT': 'NEBHNT-OUT1',
-            'BT': True,
-            'bluetooth': True,
-            'LTE': False,
-            'LOR': False,
-            'lora': False,
-            'PF': False,
-            'legacy_pass_fail': False
-        }
-
-        report = DiagnosticsReport.from_json_dict(response)
-        assert len(report.has_manufacturing_errors()) == 0
 
     def test_assert_diagnostics_present(self):
         diagnostics_report = DiagnosticsReport.from_json_dict({
@@ -160,75 +128,3 @@ class TestDiagnostic(unittest.TestCase):
 
         missing_keys = diagnostics_report.get_missing_keys({'missing_key'})
         self.assertEqual(missing_keys, {'missing_key'})
-
-    def test_validate_gateway_transaction_not_present(self):
-        """
-        Test validate_gateway_transaction passes if report contains no
-        transaction data.
-        """
-        report = DiagnosticsReport.from_json_dict({
-            'foo': 'bar'
-        })
-
-        assert [] == report.validate_gateway_transaction_if_present()
-
-    def test_validate_gateway_transaction_fails_on_no_payload(self):
-        report = DiagnosticsReport.from_json_dict({
-            'foo': 'bar',
-            DiagnosticsReport.ADD_GATEWAY_TXN_NAME_KEY: 'Acme Inc.'
-        })
-
-        assert [DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY] == \
-            report.validate_gateway_transaction_if_present()
-
-    def test_validate_gateway_transaction_fails_on_invalid_payload(self):
-        report = DiagnosticsReport.from_json_dict({
-            'foo': 'bar',
-            DiagnosticsReport.ADD_GATEWAY_TXN_NAME_KEY: 'Acme Inc.',
-            DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY: {
-                "address": "",
-                "fee": 65000,
-                "payer": "138LbePH4r7hWPuTnK6HXVJ8ATM2QU",
-                "staking fee": None,
-                "txn": "CrkBCiEBrlImpYLbJ0z0hw5b4g9isRyPrgbXs9X"
-            }
-        })
-
-        payload_key = DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY
-        expected_keys = [
-            payload_key + '.' + 'address',
-            payload_key + '.' + 'owner',
-            payload_key + '.' + 'staking fee'
-        ]
-        assert expected_keys == \
-            report.validate_gateway_transaction_if_present()
-
-    def test_validate_gateway_transaction_fails_on_empty_payload(self):
-        report = DiagnosticsReport.from_json_dict({
-            'foo': 'bar',
-            DiagnosticsReport.ADD_GATEWAY_TXN_NAME_KEY: 'Acme Inc.',
-            DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY: {}
-        })
-
-        expected_keys = [
-            DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY + '.' + k
-            for k in DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_CONTENT_KEYS
-        ]
-        assert expected_keys == \
-            report.validate_gateway_transaction_if_present()
-
-    def test_validate_gateway_transaction_on_valid_payload(self):
-        report = DiagnosticsReport.from_json_dict({
-            'foo': 'bar',
-            DiagnosticsReport.ADD_GATEWAY_TXN_NAME_KEY: 'Acme Inc.',
-            DiagnosticsReport.ADD_GATEWAY_TXN_PAYLOAD_KEY: {
-                "address": "11TL62V8NYvSTXmV5CZCjaucskvN",
-                "fee": 65000,
-                "owner": "14GWyFj9FjLHzoN3aX7Tq7PL6fEg4d",
-                "payer": "138LbePH4r7hWPuTnK6HXVJ8ATM2QU",
-                "staking fee": 4000000,
-                "txn": "CrkBCiEBrlImpYLbJ0z0hw5b4g9isRyPrgbXs9X"
-            }
-        })
-
-        assert [] == report.validate_gateway_transaction_if_present()
