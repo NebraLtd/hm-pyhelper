@@ -2,12 +2,12 @@ import requests
 import base64
 import base58
 
-from hm_pyhelper.protos import blockchain_txn_pb2
-from hm_pyhelper.protos import blockchain_txn_add_gateway_v1_pb2
-from hm_pyhelper.miner_json_rpc.exceptions import MinerConnectionError
-from hm_pyhelper.miner_json_rpc.exceptions import MinerMalformedURL
-from hm_pyhelper.miner_json_rpc.exceptions import MinerRegionUnset
-from hm_pyhelper.miner_json_rpc.exceptions import MinerMalformedAddGatewayTxn
+from hm_pyhelper.protos import blockchain_txn_pb2, \
+                               blockchain_txn_add_gateway_v1_pb2
+from hm_pyhelper.miner_json_rpc.exceptions import MinerConnectionError, \
+                                                  MinerMalformedURL, \
+                                                  MinerRegionUnset, \
+                                                  MinerMalformedAddGatewayTxn
 
 
 class Client(object):
