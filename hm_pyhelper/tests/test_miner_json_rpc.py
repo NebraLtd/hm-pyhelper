@@ -203,7 +203,11 @@ class TestMinerJSONRPC(unittest.TestCase):
     add_gateway_response = {
         "jsonrpc": "2.0",
         "result": {
-            "result": "CroBCiEBwPbb63LQD8x/m/ZDLLyOLgtxypQIjh+xPPS+d8g/i24SIQB8XdzWqrIF201DNKHpXKFtsMtgvZeqBBc1wOk9sV2j4SJGMEQCIGE82gHbn0z/AOyaDXsuQDptC/I15fHCF//QEgzoxodrAiBsoRUiw8zMVttkPhEOoMfM0smmdCZPKX6tVOgK0s/0KiohAVHXaw1kNly2VOt47MlzTfkCIUTOgW34Orw1LSJt+9mCOICS9AFA6PsD"  # noqa: E501
+            "result": "CroBCiEBwPbb63LQD8x/m/ZDLLyOLgtxypQIjh+xPPS+d8g/i24SIQB"
+                      "8XdzWqrIF201DNKHpXKFtsMtgvZeqBBc1wOk9sV2j4SJGMEQCIGE82g"
+                      "Hbn0z/AOyaDXsuQDptC/I15fHCF//QEgzoxodrAiBsoRUiw8zMVttkP"
+                      "hEOoMfM0smmdCZPKX6tVOgK0s/0KiohAVHXaw1kNly2VOt47MlzTfkC"
+                      "IUTOgW34Orw1LSJt+9mCOICS9AFA6PsD"
         },
         "id": "1"
     }
@@ -230,7 +234,11 @@ class TestMinerJSONRPC(unittest.TestCase):
 
             'fee': 65000,
             'staking_fee': 4000000,
-            'txn': "CroBCiEBwPbb63LQD8x/m/ZDLLyOLgtxypQIjh+xPPS+d8g/i24SIQB8XdzWqrIF201DNKHpXKFtsMtgvZeqBBc1wOk9sV2j4SJGMEQCIGE82gHbn0z/AOyaDXsuQDptC/I15fHCF//QEgzoxodrAiBsoRUiw8zMVttkPhEOoMfM0smmdCZPKX6tVOgK0s/0KiohAVHXaw1kNly2VOt47MlzTfkCIUTOgW34Orw1LSJt+9mCOICS9AFA6PsD"  # noqa: E501
+            'txn': "CroBCiEBwPbb63LQD8x/m/ZDLLyOLgtxypQIjh+xPPS+d8g/i24SIQB8Xd"
+                   "zWqrIF201DNKHpXKFtsMtgvZeqBBc1wOk9sV2j4SJGMEQCIGE82gHbn0z/"
+                   "AOyaDXsuQDptC/I15fHCF//QEgzoxodrAiBsoRUiw8zMVttkPhEOoMfM0s"
+                   "mmdCZPKX6tVOgK0s/0KiohAVHXaw1kNly2VOt47MlzTfkCIUTOgW34Orw1"
+                   "LSJt+9mCOICS9AFA6PsD"
         }
 
         self.assertDictEqual(actual_result, expected_result)

@@ -2,9 +2,8 @@ import requests
 import base64
 import base58
 
-import hm_pyhelper.protos.blockchain_txn_pb2 as blockchain_txn_pb2
-import hm_pyhelper.protos.blockchain_txn_add_gateway_v1_pb2 \
-        as blockchain_txn_add_gateway_v1_pb2
+from hm_pyhelper.protos import blockchain_txn_pb2
+from hm_pyhelper.protos import blockchain_txn_add_gateway_v1_pb2
 from hm_pyhelper.miner_json_rpc.exceptions import MinerConnectionError
 from hm_pyhelper.miner_json_rpc.exceptions import MinerMalformedURL
 from hm_pyhelper.miner_json_rpc.exceptions import MinerRegionUnset
@@ -136,6 +135,20 @@ def get_address_from_add_gateway_txn(add_gateway_txn:
                                      blockchain_txn_add_gateway_v1_pb2,
                                      address_type: str,
                                      expected_address: str = None):
+    """
+    Deserializes specified field in the blockchain_txn_add_gateway_v1_pb2
+    protobuf to a base58 Helium address.
+
+    Pararms:
+        - add_gateway_txn: The blockchain_txn_add_gateway_v1_pb2 to
+                           inspect.
+        - address_type: 'owner', 'gateway', or 'payer'.
+        - expected_address (optional): Value we expect to be returned.
+
+    Raises:
+        MinerMalformedAddGatewayTxn if expected_address supplied and
+        does not match the return value.
+    """
 
     # Addresses returned by the RPC response are missing a leading
     # byte for the version. The version is currently always 0.
