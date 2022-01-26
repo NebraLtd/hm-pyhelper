@@ -3,7 +3,7 @@ from os.path import join, dirname
 
 setup(
     name='hm_pyhelper',
-    version='0.13.3',
+    version='0.13.4',
     author="Nebra Ltd",
     author_email="support@nebra.com",
     description="Helium Python Helper",
@@ -12,8 +12,9 @@ setup(
     url="https://github.com/NebraLtd/hm-pyhelper",
     install_requires=[
         'requests>=2.26.0',
-        'jsonrpcclient==4.0.2',
-        'retry==0.9.2'
+        'retry==0.9.2',
+        'base58==2.1.1',
+        'protobuf==3.19.3'
     ],
     project_urls={
         "Bug Tracker": "https://github.com/NebraLtd/hm-pyhelper/issues",
