@@ -1,0 +1,14 @@
+// Removed all unused tranactions from original:
+// https://github.com/helium/proto/blob/6dc60a9933628c3baf9d2f5386481f20a5d79bb8/src/blockchain_txn.proto
+  
+syntax = "proto3";
+
+package helium;
+
+import "blockchain_txn_add_gateway_v1.proto";
+
+message blockchain_txn {
+  oneof txn {
+    blockchain_txn_add_gateway_v1 add_gateway = 1;
+  }
+}
