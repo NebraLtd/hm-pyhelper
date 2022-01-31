@@ -1,0 +1,2 @@
+DESTINATION_NAME_KEY = 'destination_shipping_label'
+DESTINATION_ADD_GATEWAY_TXN_KEY = 'destination_shipping_add_gateway_txn'
