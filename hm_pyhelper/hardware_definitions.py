@@ -308,7 +308,7 @@ variant_definitions = {
         'FRIENDLY': 'RAK Hotspot',
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'RESET': 17,
+        'RESET': 25,
         'MAC': 'wlan0',
         'STATUS': 20,
         'BUTTON': 21,
