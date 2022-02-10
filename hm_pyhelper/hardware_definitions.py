@@ -347,7 +347,7 @@ variant_definitions = {
         'RESET': 17,
         'MAC': 'wlan0',
         'STATUS': 20,
-        'BUTTON': 21,
+        'BUTTON': 27,
         'ECCOB': True,
         'TYPE': 'Full',
         'CELLULAR': False,
