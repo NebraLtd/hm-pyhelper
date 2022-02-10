@@ -1,3 +1,4 @@
+from typing import Union
 import json
 
 # Name of key in diagnostics containing meta-information about
@@ -10,11 +11,6 @@ DIAGNOSTICS_ERRORS_KEY = 'errors'
 
 
 class DiagnosticsReport(dict):
-
-    KEYS_TO_CHECK_IN_MANUFACTUING = {
-        'ECC', 'onboarding_key', 'eth_mac_address', 'wifi_mac_address',
-        'public_key', 'bluetooth', 'VARIANT', 'FREQ', 'serial_number'
-    }
 
     def __init__(self, diagnostics=[], **kwargs):
         """
@@ -50,8 +46,26 @@ class DiagnosticsReport(dict):
     def append_error(self, key):
         self.__getitem__(DIAGNOSTICS_ERRORS_KEY).append(key)
 
-    def get_errors(self):
-        return self[DIAGNOSTICS_ERRORS_KEY]
+    def has_errors(self, keys_to_check: Union[tuple, list, set] = None) -> set:
+        """
+        Return list of keys that have errors (don't have valid values).
+
+        Args:
+            keys_to_check (Union[tuple, list, set, None]): If not None then
+                only keys present in this set are returned if they are also
+                found in the diagnostics errors keys list. If None, all errors
+                present in returned.
+
+        Returns:
+            set: Set of key names that have errors.
+        """
+        if keys_to_check is None:
+            return self[DIAGNOSTICS_ERRORS_KEY]
+
+        if not isinstance(keys_to_check, set):
+            keys_to_check = set(keys_to_check)
+
+        return keys_to_check.intersection(self[DIAGNOSTICS_ERRORS_KEY])
 
     def get_missing_keys(self, required_keys: set) -> set:
         """
@@ -64,20 +78,6 @@ class DiagnosticsReport(dict):
             set: Of keys that are missing
         """
         return required_keys.difference(self.keys())
-
-    def has_manufacturing_errors(self) -> list:
-        # Check only a subset of keys that are required for manufacturing
-        # tests. If these don't have errors then we can conclude that device
-        # is good from manufacturing point-of-view.
-        errors = self.get_errors()
-
-        if errors:
-            manufacturing_errors = \
-                self.KEYS_TO_CHECK_IN_MANUFACTUING.intersection(errors)
-
-            return manufacturing_errors
-
-        return []
 
     def perform_diagnostics(self):
         self.__setitem__(DIAGNOSTICS_PASSED_KEY, True)
@@ -119,7 +119,7 @@ class DiagnosticsReport(dict):
         def get_error_message(key):
             return "%s Error: %s" % (key, self.__getitem__(key))
 
-        error_messages = map(get_error_message, self.get_errors())
+        error_messages = map(get_error_message, self.has_errors())
         return ("\n").join(error_messages)
 
     @staticmethod

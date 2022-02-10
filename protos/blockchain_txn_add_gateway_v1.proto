@@ -1,0 +1,17 @@
+// Copied from:
+// https://github.com/helium/proto/blob/master/src/blockchain_txn_add_gateway_v1.proto
+
+syntax = "proto3";
+
+package helium;
+
+message blockchain_txn_add_gateway_v1 {
+  bytes owner = 1;
+  bytes gateway = 2;
+  bytes owner_signature = 3;
+  bytes gateway_signature = 4;
+  bytes payer = 5;
+  bytes payer_signature = 6;
+  uint64 staking_fee = 7;
+  uint64 fee = 8;
+}
