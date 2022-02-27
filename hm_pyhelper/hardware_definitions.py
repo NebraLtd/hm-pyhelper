@@ -1,31 +1,14 @@
-import os
+import hm_pyhelper.sbc as sbc
 from hm_pyhelper.exceptions import UnknownVariantException, \
-                                   UnknownVariantAttributeException
+    UnknownVariantAttributeException
 
 
-def is_rockpi():
-    return 'rockpi-4b-rk3399' in os.getenv('BALENA_DEVICE_TYPE')
+def is_rockpi() -> bool:
+    return sbc.is_sbc_type(sbc.DeviceVendorID.ROCK_PI)
 
 
-def is_raspberry_pi():
-    """
-    Pulled from
-    https://www.balena.io/docs/reference/base-images/devicetypes/
-    """
-    device_type = os.getenv('BALENA_DEVICE_TYPE')
-    device_type_match = [
-        'raspberry-pi2',
-        'raspberrypi3',
-        'raspberrypi3-64',
-        'raspberrypi4-64',
-        'nebra-hnt',
-        'raspberrypicm4-ioboard'
-    ]
-
-    for device in device_type_match:
-        if device in device_type:
-            return True
-    return False
+def is_raspberry_pi() -> bool:
+    return sbc.is_sbc_type(sbc.DeviceVendorID.RASPBERRY_PI)
 
 
 variant_definitions = {
