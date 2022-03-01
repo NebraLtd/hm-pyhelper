@@ -385,7 +385,7 @@ variant_definitions = {
         'FRIENDLY': 'Controllino Hotspot',
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'RESET': 17,
+        'RESET': 4,
         'MAC': 'wlan0',
         'STATUS_LED': {
             'TYPE': 'RGB',
