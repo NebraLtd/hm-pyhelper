@@ -380,6 +380,29 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
+    # Embit / Controllino
+    'COMP-CONTROLLINO': {
+        'FRIENDLY': 'Controllino Hotspot',
+        'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'RESET': 17,
+        'MAC': 'wlan0',
+        'STATUS_LED': {
+            'TYPE': 'RGB',
+            'GPIO_NUMBERS_RGB': [20, 26, 7],
+            'GPIO_NUMBER_SINGLE': 20
+         },
+        'STATUS': 20,
+        'BUTTON': False,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
     # DIY Pi Supply Hotspot HAT
     'DIY-PISLGH': {
         'FRIENDLY': 'DIY Pi Supply Hotspot HAT',
