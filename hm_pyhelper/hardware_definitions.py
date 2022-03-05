@@ -311,7 +311,7 @@ variant_definitions = {
         'RESET': 25,
         'MAC': 'wlan0',
         'STATUS': 20,
-        'BUTTON': 21,
+        'BUTTON': 7,
         'ECCOB': True,
         'TYPE': 'Full',
         'CELLULAR': False,
@@ -371,6 +371,24 @@ variant_definitions = {
          },
         'STATUS': 20,
         'BUTTON': 16,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
+    # Pisces P100 Hotspot
+    'COMP-PISCESP100': {
+        'FRIENDLY': 'Pisces P100',
+        'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-0',
+        'RESET': 23,
+        'MAC': 'eth0',
+        'STATUS': 17,
+        'BUTTON': 22,
         'ECCOB': True,
         'TYPE': 'Full',
         'CELLULAR': False,
