@@ -20,16 +20,13 @@ def get_payload_from_clearsigned_message(message: str) -> str:
 
     start_idx = 3  # Payload starts from 3rd line in clearsigned messages
     end_idx = None
-    prev_line = ""
 
     for idx, line in enumerate(lines[3:]):
-        if line.strip() == '-----BEGIN PGP SIGNATURE-----' and prev_line.strip() == "":
+        if line.strip() == '-----BEGIN PGP SIGNATURE-----':
             end_idx = idx + start_idx
             break
-
-        prev_line = line
 
     if end_idx is None:
         raise RuntimeError("Invalid message format, no --BEGIN PGP SIGNATURE-- section")
 
-    return "\n".join(lines[start_idx: end_idx-1])
+    return "\n".join(lines[start_idx: end_idx])
