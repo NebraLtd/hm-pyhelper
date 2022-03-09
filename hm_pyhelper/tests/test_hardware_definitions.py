@@ -1,12 +1,17 @@
+import os
 import pytest
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 
 from hm_pyhelper.exceptions import UnknownVariantException, \
-                                   UnknownVariantAttributeException
+    UnknownVariantAttributeException
 
-from hm_pyhelper.hardware_definitions import variant_definitions, \
-                                            get_variant_attribute
+from hm_pyhelper.hardware_definitions import is_rockpi, variant_definitions, \
+    get_variant_attribute, is_raspberry_pi
+from hm_pyhelper.sbc import BALENA_ENV_RASPBERRY_PI_MODELS, \
+    BALENA_ENV_ROCKPI_MODELS
+
+BUILTINS_OPEN_LITERAL = "builtins.open"
 
 
 class TestHardwareDefinitions(TestCase):
@@ -73,3 +78,65 @@ class TestHardwareDefinitions(TestCase):
     def test_get_variant_attribute_unknown_attribute(self):
         with pytest.raises(UnknownVariantAttributeException):
             get_variant_attribute('NEBHNT-XYZ', 'Nonexistant')
+
+    # raspberry pi model names picked from pi kernel sources
+    # https://github.com/raspberrypi/linux
+    # grep -ir "raspberry" linux/arch/arm*  | grep "model ="  | cut -d "=" -f2
+    mock_known_dts_pi_models = [
+        "Raspberry Pi Model B+",
+        "Raspberry Pi Model B",
+        "Raspberry Pi Compute Module",
+        "Raspberry Pi Zero",
+        "Raspberry Pi 2 Model B rev 1.2",
+        "Raspberry Pi Compute Module 3",
+        "Raspberry Pi Zero 2 W",
+        "Raspberry Pi 4 Model B",
+        "Raspberry Pi 400",
+        "Raspberry Pi Compute Module 4",
+        "Raspberry Pi Compute Module 4S",
+        "Raspberry Pi Model A+",
+        "Raspberry Pi Model A",
+        "Raspberry Pi Model B rev2",
+        "Raspberry Pi Compute Module IO board rev1",
+        "Raspberry Pi Zero W",
+        "Raspberry Pi 2 Model B",
+        "Raspberry Pi 3 Model A+",
+        "Raspberry Pi 3 Model B+",
+        "Raspberry Pi 3 Model B",
+        "Raspberry Pi Compute Module 3 IO board V3.0"
+    ]
+
+    def test_is_raspberry_pi(self):
+        for model in self.mock_known_dts_pi_models:
+            with patch(BUILTINS_OPEN_LITERAL, new_callable=mock_open, read_data=model):
+                self.assertTrue(is_raspberry_pi())
+            with patch(BUILTINS_OPEN_LITERAL, new_callable=mock_open, read_data="Rock something"):
+                self.assertFalse(is_raspberry_pi())
+
+        # test balena env based detection
+        for model in BALENA_ENV_RASPBERRY_PI_MODELS:
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': model}):
+                self.assertTrue(is_raspberry_pi())
+            # in absence of the env, it should look for /proc/device-tree/model
+            # which will not exist on test environment.
+            with self.assertRaises(FileNotFoundError):
+                self.assertFalse(is_raspberry_pi())
+
+    mock_known_rock_dts_models = ["ROCK PI 4B"]
+
+    def test_is_rock_pi(self):
+        for model in self.mock_known_rock_dts_models:
+            with patch(BUILTINS_OPEN_LITERAL, new_callable=mock_open, read_data=model):
+                self.assertTrue(is_rockpi())
+            with patch(BUILTINS_OPEN_LITERAL, new_callable=mock_open,
+                       read_data="raspberry something"):
+                self.assertFalse(is_rockpi())
+
+        # test balena env based detection
+        for model in BALENA_ENV_ROCKPI_MODELS:
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': model}):
+                self.assertTrue(is_rockpi())
+            # in absence of the env, it should look for /proc/device-tree/model
+            # which will not exist on test environment.
+            with self.assertRaises(FileNotFoundError):
+                self.assertFalse(is_rockpi())
