@@ -416,7 +416,7 @@ variant_definitions = {
         'IC_IDS': [],
         'CONTAINS_IC_IDS': []
         },
-    
+
     # Linxdot CM4
     'COMP-LINXDOTCM4': {
         'FRIENDLY': 'Linxdot',
