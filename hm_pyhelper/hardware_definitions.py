@@ -415,6 +415,24 @@ variant_definitions = {
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
         'CONTAINS_IC_IDS': []
+        },
+    
+    # Linxdot CM4
+    'COMP-LINXDOTCM4': {
+        'FRIENDLY': 'Linxdot',
+        'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'RESET': 17,
+        'MAC': 'wlan0',
+        'STATUS': 22,
+        'BUTTON': 27,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
         }
 }
 
