@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package helium.local;
+
+message pubkey_res { bytes address = 1; }
+message pubkey_req {}
+
+message sign_req { bytes data = 1; }
+message sign_res { bytes signature = 1; }
+
+message ecdh_req { bytes address = 1; }
+message ecdh_res { bytes secret = 1; }
+
+message config_req { repeated string keys = 1; }
+message config_res { repeated config_value values = 1; }
+
+message config_value {
+  string name = 1;
+  string type = 2;
+  bytes value = 3;
+}
+
+message keyed_uri {
+  bytes address = 1;
+  string uri = 2;
+}
+
+message height_req {}
+message height_res {
+  uint64 height = 1;
+  uint64 block_age = 2;
+  keyed_uri gateway = 3;
+}
+
+message region_req {}
+message region_res { int32 region = 1; }
+
+enum gateway_staking_mode {
+  dataonly = 0;
+  full = 1;
+  light = 2;
+}
+message add_gateway_req {
+  bytes owner = 1;
+  bytes payer = 2;
+  gateway_staking_mode staking_mode = 3;
+}
+
+message add_gateway_res { bytes add_gateway_txn = 1; }
+
+service api {
+  rpc pubkey(pubkey_req) returns (pubkey_res);
+  rpc sign(sign_req) returns (sign_res);
+  rpc ecdh(ecdh_req) returns (ecdh_res);
+  rpc config(config_req) returns (config_res);
+  rpc height(height_req) returns (height_res);
+  rpc region(region_req) returns (region_res);
+  rpc add_gateway(add_gateway_req) returns (add_gateway_res);
+}
