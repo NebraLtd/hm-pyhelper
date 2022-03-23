@@ -18,6 +18,10 @@ class MinerFailedToFetchMacAddress(Exception):
     pass
 
 
+class MinerFailedToFetchEthernetAddress(Exception):
+    pass
+
+
 class UnknownVariantException(Exception):
     pass
 
