@@ -16,3 +16,5 @@ DST_DIR=/PATH/TO/hm-pyhelper/hm_pyhelper/protos
 protoc -I=$SRC_DIR --python_out=$DST_DIR $SRC_DIR/blockchain_txn.proto
 protoc -I=$SRC_DIR --python_out=$DST_DIR $SRC_DIR/blockchain_txn_add_gateway_v1.proto
 ```
+
+For frequently changing proto files, we use [this] (https://github.com/NebraLtd/hm-pyhelper/blob/master/protos/update_protos.sh) script to download and generate the python code.

@@ -8,8 +8,6 @@ from hm_pyhelper.exceptions import MalformedRegionException, \
     SPIUnavailableException, ECCMalfunctionException, \
     GatewayMFRFileNotFoundException, \
     MinerFailedToFetchMacAddress
-from hm_pyhelper.miner_json_rpc.exceptions import \
-     MinerFailedToFetchEthernetAddress
 from hm_pyhelper.hardware_definitions import get_variant_attribute, \
     UnknownVariantException, UnknownVariantAttributeException
 
@@ -170,7 +168,7 @@ def did_gateway_mfr_test_result_include_miner_key_pass(
 
 
 def get_ethernet_addresses(diagnostics):
-    # Get ethernet MAC and WIFI address
+    # Get ethernet and wlan MAC address
 
     # The order of the values in the lists is important!
     # It determines which value will be available for which key
@@ -182,13 +180,10 @@ def get_ethernet_addresses(diagnostics):
     for (path, key) in zip(path_to_files, keys):
         try:
             diagnostics[key] = get_mac_address(path)
-        except MinerFailedToFetchMacAddress as e:
-            diagnostics[key] = False
-            LOGGER.error(e)
         except Exception as e:
             diagnostics[key] = False
             LOGGER.error(e)
-            raise MinerFailedToFetchEthernetAddress(str(e))
+            raise MinerFailedToFetchMacAddress(str(e))
 
 
 def get_mac_address(path):
@@ -206,8 +201,6 @@ def get_mac_address(path):
              The path must be a string value")
     try:
         file = open(path)
-    except MinerFailedToFetchMacAddress as e:
-        LOGGER.exception(str(e))
     except FileNotFoundError as e:
         LOGGER.exception("Failed to find Miner"
                          "Mac Address file at path %s" % path)

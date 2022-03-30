@@ -179,7 +179,7 @@ and formatted the same way as the [smartphone app expects](https://docs.helium.c
 
 Usage:
 ```
-client = MinerClient()
+client = GatewayClient()
 result = client.create_add_gateway_txn('owner_address', 'payer_address', 'gateway_address')
 ```
 
