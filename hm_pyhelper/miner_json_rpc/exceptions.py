@@ -22,5 +22,9 @@ class MinerFailedToFetchEthernetAddress(MinerJSONRPCException):
     pass
 
 
+class MinerFailedToFetchTemperature(Exception):
+    pass
+
+
 class MinerMalformedAddGatewayTxn(MinerJSONRPCException):
     pass

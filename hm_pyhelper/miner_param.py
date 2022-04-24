@@ -9,10 +9,10 @@ from hm_pyhelper.exceptions import MalformedRegionException, \
     GatewayMFRFileNotFoundException, \
     MinerFailedToFetchMacAddress
 from hm_pyhelper.miner_json_rpc.exceptions import \
-     MinerFailedToFetchEthernetAddress
+    MinerFailedToFetchEthernetAddress, \
+    MinerFailedToFetchTemperature
 from hm_pyhelper.hardware_definitions import get_variant_attribute, \
     UnknownVariantException, UnknownVariantAttributeException
-
 
 LOGGER = get_logger(__name__)
 REGION_INVALID_SLEEP_SECONDS = 30
@@ -60,7 +60,7 @@ def run_gateway_mfr(args):
     except ResourceBusyError as e:
         err_str = "resource busy error: %s"
         LOGGER.exception(err_str % str(e))
-        raise ResourceBusyError(e)\
+        raise ResourceBusyError(e) \
             .with_traceback(e.__traceback__)
     except Exception as e:
         err_str = "Exception occured on running gateway_mfr %s" \
@@ -191,6 +191,40 @@ def get_ethernet_addresses(diagnostics):
             raise MinerFailedToFetchEthernetAddress(str(e))
 
 
+def get_temperatures(diagnostics):
+    path_to_temp_file = "/sys/class/thermal/thermal_zone0/temp"
+
+    key = "CPU0"
+
+    try:
+        file = open(path_to_temp_file)
+    except FileNotFoundError as e:
+        LOGGER.exception("Failed to find Miner"
+                         "Temperature file at path %s" % path_to_temp_file)
+        diagnostics[key] = False
+        raise MinerFailedToFetchTemperature("Failed to find file"
+                                            "containing miner CPU Temperature."
+                                            "Exception: %s" % str(e)) \
+            .with_traceback(e.__traceback__)
+    except PermissionError as e:
+        LOGGER.exception("Permissions invalid for Miner"
+                         "Temperature file at path %s" % path_to_temp_file)
+        diagnostics[key] = False
+        raise MinerFailedToFetchTemperature("Failed to fetch"
+                                            "miner temperature. "
+                                            "Invalid permissions to access "
+                                            "file. Exception: %s" % str(e)) \
+            .with_traceback(e.__traceback__)
+    except Exception as e:
+        LOGGER.exception(e)
+        diagnostics[key] = False
+        raise MinerFailedToFetchTemperature("Failed to fetch miner"
+                                            "temperature. "
+                                            "Exception: %s" % str(e)) \
+            .with_traceback(e.__traceback__)
+    diagnostics[key] = float(file.readline().strip()) / 1000
+
+
 def get_mac_address(path):
     """
     input: path to the file with the location of the mac address
@@ -213,22 +247,22 @@ def get_mac_address(path):
                          "Mac Address file at path %s" % path)
         raise MinerFailedToFetchMacAddress("Failed to find file"
                                            "containing miner mac address."
-                                           "Exception: %s" % str(e))\
-              .with_traceback(e.__traceback__)
+                                           "Exception: %s" % str(e)) \
+            .with_traceback(e.__traceback__)
     except PermissionError as e:
         LOGGER.exception("Permissions invalid for Miner"
                          "Mac Address file at path %s" % path)
         raise MinerFailedToFetchMacAddress("Failed to fetch"
                                            "miner mac address. "
                                            "Invalid permissions to access "
-                                           "file. Exception: %s" % str(e))\
-              .with_traceback(e.__traceback__)
+                                           "file. Exception: %s" % str(e)) \
+            .with_traceback(e.__traceback__)
     except Exception as e:
         LOGGER.exception(e)
         raise MinerFailedToFetchMacAddress("Failed to fetch miner"
                                            "mac address. "
-                                           "Exception: %s" % str(e))\
-              .with_traceback(e.__traceback__)
+                                           "Exception: %s" % str(e)) \
+            .with_traceback(e.__traceback__)
 
     return file.readline().strip().upper()
 
