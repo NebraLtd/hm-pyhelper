@@ -192,6 +192,7 @@ def get_ethernet_addresses(diagnostics):
 
 
 def get_temperatures(diagnostics):
+    # File with the Celsius temperature of the CPU
     path_to_temp_file = "/sys/class/thermal/thermal_zone0/temp"
 
     key = "CPU0"
@@ -222,6 +223,7 @@ def get_temperatures(diagnostics):
                                             "temperature. "
                                             "Exception: %s" % str(e)) \
             .with_traceback(e.__traceback__)
+    # Temperature is an integer with 3 decimal places
     diagnostics[key] = float(file.readline().strip()) / 1000
 
 
