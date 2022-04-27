@@ -13,3 +13,13 @@ DISK_IMAGE_KEY = 'disk_image'
 LTE_KEY = 'lte'
 PF_KEY = 'legacy_pass_fail'
 LORA_KEY = 'lora'
+
+# gatewayrs diagnostic keys
+VALIDATOR_ADDRESS_KEY = 'validator_address'
+VALIDATOR_URI_KEY = 'validator_uri'
+VALIDATOR_BLOCK_HEIGHT_KEY = 'validator_height'
+VALIDATOR_BLOCK_HEIGHT_SHORT_KEY = 'MH'
+VALIDATOR_BLOCK_AGE = 'validator_block_age'
+GATEWAY_PUBKEY_KEY = 'gateway_pubkey'
+GATEWAY_REGION_KEY = 'gateway_region'
+GATEWAY_REGION_SHORT_KEY = 'RE'
