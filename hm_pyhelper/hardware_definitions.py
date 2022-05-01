@@ -134,7 +134,7 @@ variant_definitions = {
         'APPNAME': 'Radxa 0 Light',
         'SPIBUS': 'spidev1.0',
         'KEY_STORAGE_BUS': '/dev/i2c-3',
-        'RESET': 22,
+        'RESET': 503,
         'MAC': 'wlan0',
         'STATUS': 500,
         'BUTTON': 502,
