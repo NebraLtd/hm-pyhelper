@@ -128,6 +128,27 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
+    # Nebra Radxa 0 Light Hotspot SPI Ethernet
+    'NEBHNT-LGT-RADXA': {
+        'FRIENDLY': 'Nebra Radxa 0 Light Hotspot SE',
+        'APPNAME': 'Radxa 0 Light',
+        'SPIBUS': 'spidev1.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-3',
+        'RESET': 22,
+        'MAC': 'wlan0',
+        'STATUS': 500,
+        'BUTTON': 502,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'GPIO_PIN_LED': 18,
+        'GPIO_PIN_BUTTON': 16,
+        'FCC_IDS': ['2AZDM-HNTLGTMC-RADXA'],
+        'CONTAINS_FCC_IDS': ['2A3PA-RADXA-ZERO', '2ARPP-GL5712UX'],
+        'IC_IDS': ['27187-HNTLGTMC-RADXA'],
+        'CONTAINS_IC_IDS': []
+        },
+
     # Nebra Beaglebone Light Hotspot
     'NEBHNT-BBB': {
         'FRIENDLY': 'Nebra Beaglebone Light Hotspot',
