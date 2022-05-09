@@ -94,7 +94,7 @@ variant_definitions = {
     'NEBHNT-LGT-ZS': {
         'FRIENDLY': 'Nebra Pi 0 Light Hotspot SE',
         'APPNAME': 'Pi 0 Light',
-        'SPIBUS': 'spidev0.0',
+        'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 22,
         'MAC': 'wlan0',
@@ -113,7 +113,7 @@ variant_definitions = {
     'NEBHNT-LGT-ZX': {
         'FRIENDLY': 'Nebra Pi 0 Light Hotspot XE',
         'APPNAME': 'Pi 0 Light',
-        'SPIBUS': 'spidev0.0',
+        'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 22,
         'MAC': 'wlan0',
