@@ -50,29 +50,29 @@ def run_gateway_mfr(args):
             'gateway_mfr response stderr: %s' % run_gateway_mfr_result.stderr)
     except subprocess.CalledProcessError as e:
         err_str = "gateway_mfr exited with a non-zero status"
-        LOGGER.exception(err_str)
+        LOGGER.warning(err_str)
         raise ECCMalfunctionException(err_str).with_traceback(e.__traceback__)
     except (FileNotFoundError, NotADirectoryError) as e:
         err_str = "file/directory for gateway_mfr was not found"
-        LOGGER.exception(err_str)
+        LOGGER.warning(err_str)
         raise GatewayMFRFileNotFoundException(err_str) \
             .with_traceback(e.__traceback__)
     except ResourceBusyError as e:
         err_str = "resource busy error: %s"
-        LOGGER.exception(err_str % str(e))
+        LOGGER.warning(err_str % str(e))
         raise ResourceBusyError(e)\
             .with_traceback(e.__traceback__)
     except Exception as e:
         err_str = "Exception occured on running gateway_mfr %s" \
                   % str(e)
-        LOGGER.exception(e)
+        LOGGER.warning(e)
         raise ECCMalfunctionException(err_str).with_traceback(e.__traceback__)
 
     try:
         return json.loads(run_gateway_mfr_result.stdout)
     except json.JSONDecodeError as e:
         err_str = "Unable to parse JSON from gateway_mfr"
-        LOGGER.exception(err_str)
+        LOGGER.warning(err_str)
         raise ECCMalfunctionException(err_str).with_traceback(e.__traceback__)
 
 
