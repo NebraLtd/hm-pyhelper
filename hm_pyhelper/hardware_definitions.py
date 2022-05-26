@@ -361,6 +361,24 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
+    # Panther X1
+    'COMP-PANTHERX1': {
+        'FRIENDLY': 'Panther X1',
+        'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'RESET': 23,
+        'MAC': 'wlan0',
+        'STATUS': 22,
+        'BUTTON': 21,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
     # Smart Mimic / Mimiq Finestra
     'COMP-FINESTRA': {
         'FRIENDLY': 'Finestra Miner',
