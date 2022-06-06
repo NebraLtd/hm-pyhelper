@@ -424,7 +424,7 @@ variant_definitions = {
     'COMP-COTX3': {
         'FRIENDLY': 'COTX X3',
         'SPIBUS': 'spidev0.0',  # There is a CSN1 pin which is connected to GPIO6 (HAT Pin 31)
-        'KEY_STORAGE_BUS': '/dev/i2c-0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 22,
         'MAC': 'eth0',
         'STATUS': 21,  # Stub. There is no status LED on X3. I2C-3 is used for display
