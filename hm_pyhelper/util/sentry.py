@@ -1,35 +1,24 @@
 from typing import Dict, Union
-import hashlib
+from collections import Counter
 
 EVENT_COUNT_KEY = "event_count"
 SUPPRESSION_COUNT_KEY = "suppression_count"
 
 # per session event counters, didn't feel the need to persist them
-event_counters = {}
+event_counters: Dict[str, Counter] = {}
 
 # maximum suppression interval. It grows exponentially till this value is reached.
 max_suppression_count = 128
 
 
 def sentry_fingerprint(hints: Dict) -> Union[str, None]:
-    """ return sha256 of log_record/exc_info as fingerprint"""
-    fingerprint_info_key = 'log_record'
-    if 'exc_info' in hints:
-        fingerprint_info_key = 'exc_info'
+    """ return sha256 of log_record as fingerprint"""
 
-    value_to_fingerprint = hints.get(fingerprint_info_key, None)
-
-    if not value_to_fingerprint:
+    if 'log_record' not in hints:
         return None
 
-    # using sha256 only to get a consistent length fingerprint
-    # if it is deemed a performance issue, we can replace it with
-    # with a truncated string as well
-    fingerprint_bytes = str(value_to_fingerprint).encode('utf-8')
-    sha256_hash = hashlib.sha256()
-    sha256_hash.update(fingerprint_bytes)
-    fingerprint = sha256_hash.hexdigest()
-
+    log_record = hints.get('log_record', None)
+    fingerprint = f"{log_record.filename}:{log_record.lineno}:{log_record.funcName}"
     return fingerprint
 
 
@@ -47,15 +36,15 @@ def process_fingerprint(fingerprint: str) -> bool:
         if event_count % suppression_count == 0:
             send_event = True
             suppression_count = min(suppression_count*2, max_suppression_count)
-        event_counters[fingerprint] = {
+        event_counters[fingerprint] = Counter({
             EVENT_COUNT_KEY: event_count,
             SUPPRESSION_COUNT_KEY:  suppression_count
-        }
+        })
     else:
-        event_counters[fingerprint] = {
+        event_counters[fingerprint] = Counter({
             EVENT_COUNT_KEY: 1,
             SUPPRESSION_COUNT_KEY:  1
-            }
+            })
         send_event = True
 
     return send_event
@@ -72,6 +61,11 @@ def before_send_filter(event: Dict, hints: Dict) -> Union[Dict, None]:
     current event count for that unique event which is determined by its fingerprint
     calculated with sentry_fingerprint().
     One can find the event_count in event data @ event["extra"][event_count]
+
+    Args:
+        event: sentry event to be filtered
+        hints: additional metadata from sentry for the hint. This will not be pushed
+        cloud. it is only to help us with context.
 
     Returns:
         event: if event is allowed to propagate

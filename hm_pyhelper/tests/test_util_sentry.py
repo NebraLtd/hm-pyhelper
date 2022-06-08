@@ -1,3 +1,4 @@
+from logging import LogRecord
 from unittest import TestCase
 import hm_pyhelper.util.sentry as sentry_util
 import json
@@ -15,6 +16,10 @@ class TestSentryUtil(TestCase):
         self.error_logging_event = json.load(open(error_logging_event_filename, "r"))
         self.exception_event = json.load(open(exception_event_filename, "r"))
         self.logging_hints = json.load(open(logging_hints_filename, "r"))
+        self.logging_hints['log_record'] = LogRecord(name='error log', level=3,
+                                                     pathname='./test_file.py',
+                                                     lineno=93, msg='error',
+                                                     args={}, exc_info=None)
 
     def test_exception_event(self):
         # reset accumulated counters at start of test.
