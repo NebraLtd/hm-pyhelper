@@ -11,9 +11,17 @@ def is_raspberry_pi() -> bool:
     return sbc.is_sbc_type(sbc.DeviceVendorID.RASPBERRY_PI)
 
 
+# The variant name is determined by following rules:
+# - Format : <vendor>-<model>
+# - All lower case.
+# - Models are named v1,v2...vn, based on release chronology.
+# - Any new models should be added to the end of the list and follow this naming convention.
+# - Three are some names here that don't follow this convention.
+#   These historical names are all capital letters are historical.
+#   We don't consider them in use.
 variant_definitions = {
     # Nebra Indoor Hotspot Gen1
-    'NEBHNT-IN1': {
+    'nebra-indoor1': {
         'FRIENDLY': 'Nebra Indoor Hotspot Gen 1',
         'APPNAME': 'Indoor',
         'SPIBUS': 'spidev1.2',
@@ -51,7 +59,7 @@ variant_definitions = {
         },
 
     # Nebra Outdoor Hotspot Gen1
-    'NEBHNT-OUT1': {
+    'nebra-outdoor1': {
         'FRIENDLY': 'Nebra Outdoor Hotspot Gen 1',
         'APPNAME': 'Outdoor',
         'SPIBUS': 'spidev1.2',
@@ -91,7 +99,7 @@ variant_definitions = {
         },
 
     # Nebra Pi 0 Light Hotspot SPI Ethernet
-    'NEBHNT-LGT-ZS': {
+    'nebra-light1': {
         'FRIENDLY': 'Nebra Pi 0 Light Hotspot SE',
         'APPNAME': 'Pi 0 Light',
         'SPIBUS': 'spidev1.2',
@@ -129,7 +137,7 @@ variant_definitions = {
         },
 
     # Nebra Radxa 0 Light Hotspot SPI Ethernet
-    'NEBHNT-LGT-RADXA': {
+    'nebra-light2': {
         'FRIENDLY': 'Nebra Radxa 0 Light Hotspot SE',
         'APPNAME': 'Radxa 0 Light',
         'SPIBUS': 'spidev1.0',
@@ -188,7 +196,7 @@ variant_definitions = {
         },
 
     # Nebra Hotspot HAT ROCK Pi 4 Indoor
-    'NEBHNT-HHRK4': {
+    'nebra-indoor2': {
         'FRIENDLY': 'Nebra ROCK Pi 4 Indoor',
         'APPNAME': 'ROCK Pi',
         'SPIBUS': 'spidev32766.0',
@@ -209,7 +217,7 @@ variant_definitions = {
         },
 
     # Nebra Hotspot HAT ROCK Pi 4 Outdoor
-    'NEBHNT-HHRK4-OUT': {
+    'nebra-outdoor2': {
         'FRIENDLY': 'Nebra ROCK Pi 4 Outdoor',
         'APPNAME': 'ROCK Pi',
         'SPIBUS': 'spidev32766.0',
@@ -308,7 +316,7 @@ variant_definitions = {
         },
 
     # RAKwireless Hotspot Miner
-    'COMP-RAKHM': {
+    'rak-v1': {
         'FRIENDLY': 'RAK Hotspot',
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -326,7 +334,7 @@ variant_definitions = {
         },
 
     # Helium Hotspot
-    'COMP-HELIUM': {
+    'helium-v1': {
         'FRIENDLY': 'Helium Hotspot',
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -344,7 +352,7 @@ variant_definitions = {
         },
 
     # SenseCAP M1 Hotspot
-    'COMP-SENSECAPM1': {
+    'senscap-v1': {
         'FRIENDLY': 'SenseCAP M1',
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -362,7 +370,7 @@ variant_definitions = {
         },
 
     # Panther X1
-    'COMP-PANTHERX1': {
+    'panther-v1': {
         'FRIENDLY': 'Panther X1',
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -380,7 +388,7 @@ variant_definitions = {
         },
 
     # Smart Mimic / Mimiq Finestra
-    'COMP-FINESTRA': {
+    'finestra-v1': {
         'FRIENDLY': 'Finestra Miner',
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -403,7 +411,7 @@ variant_definitions = {
         },
 
     # Pisces P100 Hotspot
-    'COMP-PISCESP100': {
+    'pisces-v1': {
         'FRIENDLY': 'Pisces P100',
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-0',
@@ -414,25 +422,6 @@ variant_definitions = {
         'ECCOB': True,
         'TYPE': 'Full',
         'CELLULAR': False,
-        'FCC_IDS': [],
-        'CONTAINS_FCC_IDS': [],
-        'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
-        },
-
-    # COTX X3 Hotspot
-    'COMP-COTX3': {
-        'FRIENDLY': 'COTX X3',
-        'SPIBUS': 'spidev0.0',  # There is a CSN1 pin which is connected to GPIO6 (HAT Pin 31)
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'RESET': 22,
-        'MAC': 'eth0',
-        'STATUS': 21,  # Stub. There is no status LED on X3. I2C-3 is used for display
-                       # communication (HAT pins 5,7)
-        'BUTTON': 23,
-        'ECCOB': True,
-        'TYPE': 'Full',
-        'CELLULAR': False,  # There is a 4G option on the HAT board.
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
@@ -473,8 +462,43 @@ variant_definitions = {
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
         'CONTAINS_IC_IDS': []
-        }
+        },
+
+    # COTX X3 Hotspot
+    'cotx3-v1': {
+        'FRIENDLY': 'COTX X3',
+        'SPIBUS': 'spidev0.0',  # There is a CSN1 pin which is connected to GPIO6 (HAT Pin 31)
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'RESET': 22,
+        'MAC': 'eth0',
+        'STATUS': 21,  # Stub. There is no status LED on X3. I2C-3 is used for display
+                       # communication (HAT pins 5,7)
+        'BUTTON': 23,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,  # There is a 4G option on the HAT board.
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
 }
+
+# Note: Maintain old names for backward compatibility, should be removed at some
+# point of time.
+variant_definitions['NEBHNT-IN1'] = variant_definitions['nebra-indoor1']
+variant_definitions['NEBHNT-OUT1'] = variant_definitions['nebra-outdoor1']
+variant_definitions['NEBHNT-LGT-ZS'] = variant_definitions['nebra-light1']
+variant_definitions['NEBHNT-LGT-RADXA'] = variant_definitions['nebra-light2']
+variant_definitions['NEBHNT-HHRK4'] = variant_definitions['nebra-indoor2']
+variant_definitions['NEBHNT-HHRK4-OUT'] = variant_definitions['nebra-outdoor2']
+variant_definitions['COMP-RAKHM'] = variant_definitions['rak-v1']
+variant_definitions['COMP-HELIUM'] = variant_definitions['helium-v1']
+variant_definitions['COMP-SENSECAPM1'] = variant_definitions['senscap-v1']
+variant_definitions['COMP-PANTHERX1'] = variant_definitions['panther-v1']
+variant_definitions['COMP-FINESTRA'] = variant_definitions['finestra-v1']
+variant_definitions['COMP-PISCESP100'] = variant_definitions['pisces-v1']
+variant_definitions['COMP-COTX3'] = variant_definitions['cotx3-v1']
 
 
 def get_variant_attribute(variant_name, attribute_key):
