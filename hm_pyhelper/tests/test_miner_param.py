@@ -1,14 +1,17 @@
+import json
+import unittest
+import pytest
+from unittest.mock import ANY, mock_open, patch
+from packaging.version import Version
 from hm_pyhelper.exceptions import ECCMalfunctionException, \
-    MinerFailedToFetchMacAddress
+    MinerFailedToFetchMacAddress, GatewayMFRInvalidVersion, GatewayMFRExecutionException, \
+    GatewayMFRFileNotFoundException
 from hm_pyhelper.lock_singleton import ResourceBusyError
-from hm_pyhelper.miner_param import get_gateway_mfr_test_result, \
-    retry_get_region, await_spi_available, \
+from hm_pyhelper.miner_param import retry_get_region, await_spi_available, \
     provision_key, run_gateway_mfr, \
     did_gateway_mfr_test_result_include_miner_key_pass, \
-    get_mac_address
-import unittest
-from unittest.mock import mock_open, patch
-import pytest
+    get_mac_address, get_public_keys_rust, get_gateway_mfr_version, get_gateway_mfr_command
+
 
 ALL_PASS_GATEWAY_MFR_TESTS = [
     {
@@ -76,54 +79,219 @@ NONE_PASS_GATEWAY_MFR_TESTS = [
     }
   ]
 
-mock_variant_definitions = {
-        'NEBHNT-WITHKSB': {
+MOCK_VARIANT_DEFINITIONS = {
+        'NEBHNT-WITH-ECC-ADDRESS': {
             'KEY_STORAGE_BUS': '/dev/i2c-X',
+            'SWARM_KEY_URI': 'ecc://i2c-X:96?slot=0',
         },
-        'NEBHNT-NOKSB': {
+        'NEBHNT-NO-ECC-ADDRESS': {
             'NO_KEY_STORAGE_BUS': '/dev/i2c-X',
+            'NO_KEY_SWARM_KEY_URI': 'ecc://i2c-X:96?slot=0',
         }
     }
 
 
-class GatewayMfrProvisionMock:
-    stderr = "example error"
-
-    stdout = """{
-          "provision": "example"
-        }"""
+class SubprocessResult(object):
+    def __init__(self, stdout=None, stderr=None):
+        self.stdout = stdout
+        self.stderr = stderr
 
 
-@patch.dict('os.environ', {"VARIANT": "NEBHNT-WITHKSB"})
+@patch.dict('os.environ', {"VARIANT": "NEBHNT-WITH-ECC-ADDRESS"})
 @patch('hm_pyhelper.hardware_definitions.variant_definitions',
-       mock_variant_definitions)
+       MOCK_VARIANT_DEFINITIONS)
 class TestMinerParam(unittest.TestCase):
-    @patch('subprocess.run', return_value=GatewayMfrProvisionMock())
-    def test_run_gateway_mfr(self, subprocess_run):
-        run_gateway_mfr(["unittest"])
-        self.assertEqual(
-            subprocess_run.call_args[0][0][1:], [
-                "--path",
-                mock_variant_definitions['NEBHNT-WITHKSB']['KEY_STORAGE_BUS'],
-                "unittest"
-            ]
-        )
 
-    @patch.dict('os.environ', {"VARIANT": "NEBHNT-NOKSB"})
-    @patch('subprocess.run', return_value=GatewayMfrProvisionMock())
-    def test_run_gateway_mfr_no_ksb_attribute(self, subprocess_run):
-        run_gateway_mfr(["unittest"])
-        self.assertEqual(
-            subprocess_run.call_args[0][0][1:], ["unittest"]
-        )
+    @patch('subprocess.run', side_effect=FileNotFoundError("File Not Found Error"))
+    def test_get_gateway_mfr_version_exception(self, mocked_subprocess_run):
+        with self.assertRaises(GatewayMFRExecutionException):
+            get_gateway_mfr_version()
+
+        mocked_subprocess_run.assert_called_once_with(
+            [ANY, '--version'], capture_output=True, check=True)
+
+    @patch('subprocess.run', return_value=SubprocessResult(stdout='invalid version'))
+    def test_get_gateway_mfr_version_invalid_version(self, mocked_subprocess_run):
+        with self.assertRaises(GatewayMFRInvalidVersion):
+            get_gateway_mfr_version()
+
+        mocked_subprocess_run.assert_called_once_with(
+            [ANY, '--version'], capture_output=True, check=True)
+
+    @patch('subprocess.run', return_value=SubprocessResult(stdout='gateway_mfr 0.1.7'))
+    def test_get_gateway_mfr_version_v017(self, mocked_subprocess_run):
+        version = get_gateway_mfr_version()
+
+        self.assertEqual(version.major, 0)
+        self.assertEqual(version.minor, 1)
+        self.assertEqual(version.micro, 7)
+
+        mocked_subprocess_run.assert_called_once_with(
+            [ANY, '--version'], capture_output=True, check=True)
+
+    @patch('subprocess.run', return_value=SubprocessResult(stdout='gateway_mfr 0.2.1'))
+    def test_get_gateway_mfr_version_v021(self, mocked_subprocess_run):
+        version = get_gateway_mfr_version()
+
+        self.assertEqual(version.major, 0)
+        self.assertEqual(version.minor, 2)
+        self.assertEqual(version.micro, 1)
+
+        mocked_subprocess_run.assert_called_once_with(
+            [ANY, '--version'], capture_output=True, check=True)
+
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.1.7'))
+    def test_get_gateway_mfr_command_v017(self, mocked_get_gateway_mfr_version):
+        actual_result = get_gateway_mfr_command('key')
+        expected_result = [ANY, '--path', '/dev/i2c-X', 'key', '0']
+        self.assertListEqual(actual_result, expected_result)
+        mocked_get_gateway_mfr_version.assert_called_once()
+
+        actual_result = get_gateway_mfr_command('info')
+        expected_result = [ANY, '--path', '/dev/i2c-X', 'info']
+        self.assertListEqual(actual_result, expected_result)
 
     @patch.dict('os.environ', {"VARIANT": "NEBHNT-INVALID"})
-    @patch('subprocess.run', return_value=GatewayMfrProvisionMock())
-    def test_run_gateway_mfr_no_variant(self, subprocess_run):
-        run_gateway_mfr(["unittest"])
-        self.assertEqual(
-            subprocess_run.call_args[0][0][1:], ["unittest"]
-        )
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.1.7'))
+    def test_get_gateway_mfr_command_v017_no_variant(self, mocked_get_gateway_mfr_version):
+        actual_result = get_gateway_mfr_command('key')
+        expected_result = [ANY, 'key', '0']
+        self.assertListEqual(actual_result, expected_result)
+        mocked_get_gateway_mfr_version.assert_called_once()
+
+        actual_result = get_gateway_mfr_command('info')
+        expected_result = [ANY, 'info']
+        self.assertListEqual(actual_result, expected_result)
+
+    @patch.dict('os.environ', {"VARIANT": "NEBHNT-NO-ECC-ADDRESS"})
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.1.7'))
+    def test_get_gateway_mfr_command_v017_no_KEY_STORAGE_BUS(self, mocked_get_gateway_mfr_version):
+        actual_result = get_gateway_mfr_command('key')
+        expected_result = [ANY, 'key', '0']
+        self.assertListEqual(actual_result, expected_result)
+        mocked_get_gateway_mfr_version.assert_called_once()
+
+        actual_result = get_gateway_mfr_command('info')
+        expected_result = [ANY, 'info']
+        self.assertListEqual(actual_result, expected_result)
+
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.2.1'))
+    def test_get_gateway_mfr_command_v021(self, mocked_get_gateway_mfr_version):
+        actual_result = get_gateway_mfr_command('key')
+        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=0', 'key']
+        self.assertListEqual(actual_result, expected_result)
+        mocked_get_gateway_mfr_version.assert_called_once()
+
+        actual_result = get_gateway_mfr_command('info')
+        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=0', 'info']
+        self.assertListEqual(actual_result, expected_result)
+
+    @patch.dict('os.environ', {"VARIANT": "NEBHNT-INVALID"})
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.2.1'))
+    def test_get_gateway_mfr_command_v021_no_variant(self, mocked_get_gateway_mfr_version):
+        actual_result = get_gateway_mfr_command('key')
+        expected_result = [ANY, 'key']
+        self.assertListEqual(actual_result, expected_result)
+        mocked_get_gateway_mfr_version.assert_called_once()
+
+        actual_result = get_gateway_mfr_command('test')
+        expected_result = [ANY, 'test']
+        self.assertListEqual(actual_result, expected_result)
+
+    @patch.dict('os.environ', {"VARIANT": "NEBHNT-NO-ECC-ADDRESS"})
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.2.1'))
+    def test_get_gateway_mfr_command_v021_no_SWARM_KEY_URI(self, mocked_get_gateway_mfr_version):
+        actual_result = get_gateway_mfr_command('key')
+        expected_result = [ANY, 'key']
+        self.assertListEqual(actual_result, expected_result)
+        mocked_get_gateway_mfr_version.assert_called_once()
+
+        actual_result = get_gateway_mfr_command('test')
+        expected_result = [ANY, 'test']
+        self.assertListEqual(actual_result, expected_result)
+
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_command',
+           return_value=['gateway_mfr', 'arg1', 'arg2'])
+    @patch('subprocess.run', side_effect=FileNotFoundError())
+    def test_run_gateway_mfr_GatewayMFRFileNotFoundException(
+            self,
+            mocked_subprocess_run,
+            mocked_get_gateway_mfr_command
+    ):
+        with self.assertRaises(GatewayMFRFileNotFoundException):
+            run_gateway_mfr("unittest")
+
+        mocked_get_gateway_mfr_command.assert_called_once_with('unittest')
+        mocked_subprocess_run.assert_called_once_with(
+            ['gateway_mfr', 'arg1', 'arg2'],
+            capture_output=True, check=True)
+
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_command',
+           return_value=['gateway_mfr', 'arg1', 'arg2'])
+    @patch('subprocess.run', side_effect=Exception())
+    def test_run_gateway_mfr_ECCMalfunctionException(
+            self,
+            mocked_subprocess_run,
+            mocked_get_gateway_mfr_command
+    ):
+        with self.assertRaises(ECCMalfunctionException):
+            run_gateway_mfr("unittest")
+
+        mocked_get_gateway_mfr_command.assert_called_once_with('unittest')
+        mocked_subprocess_run.assert_called_once_with(
+            ['gateway_mfr', 'arg1', 'arg2'],
+            capture_output=True, check=True)
+
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_command',
+           return_value=['gateway_mfr', 'arg1', 'arg2'])
+    @patch('subprocess.run', side_effect=ResourceBusyError())
+    def test_run_gateway_mfr_ResourceBusyError(
+            self,
+            mocked_subprocess_run,
+            mocked_get_gateway_mfr_command
+    ):
+        with self.assertRaises(ResourceBusyError):
+            run_gateway_mfr("unittest")
+
+        mocked_get_gateway_mfr_command.assert_called_once_with('unittest')
+        mocked_subprocess_run.assert_called_once_with(
+            ['gateway_mfr', 'arg1', 'arg2'],
+            capture_output=True, check=True)
+
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_command',
+           return_value=['gateway_mfr', 'arg1', 'arg2'])
+    @patch('subprocess.run',
+           return_value=SubprocessResult(
+               stdout=json.dumps({
+                   "key": "ABCD123456789",
+                   "name": "formal-magenta-anteater",
+                   "slot": 0
+               })
+           ))
+    def test_get_public_keys_rust(
+            self,
+            mocked_subprocess_run,
+            mocked_get_gateway_mfr_command
+    ):
+        actual_result = get_public_keys_rust()
+        expected_result = {
+            "key": "ABCD123456789",
+            "name": "formal-magenta-anteater",
+            "slot": 0
+        }
+
+        self.assertDictEqual(actual_result, expected_result)
+
+        mocked_get_gateway_mfr_command.assert_called_once_with('key')
+        mocked_subprocess_run.assert_called_once_with(
+            ['gateway_mfr', 'arg1', 'arg2'],
+            capture_output=True, check=True)
 
     @patch(
             'hm_pyhelper.miner_param.get_gateway_mfr_test_result',
@@ -132,10 +300,13 @@ class TestMinerParam(unittest.TestCase):
                 "tests": ALL_PASS_GATEWAY_MFR_TESTS
                 }
     )
-    def test_provision_key_all_passed(self, get_gateway_mfr_test_result):
+    def test_provision_key_all_passed(
+            self,
+            mocked_get_gateway_mfr_test_result
+    ):
         self.assertTrue(provision_key())
+        mocked_get_gateway_mfr_test_result.assert_called_once()
 
-    @patch('subprocess.run', return_value=GatewayMfrProvisionMock())
     @patch(
             'hm_pyhelper.miner_param.get_gateway_mfr_test_result',
             return_value={
@@ -143,12 +314,16 @@ class TestMinerParam(unittest.TestCase):
                 "tests": NONE_PASS_GATEWAY_MFR_TESTS
             }
     )
+    @patch('hm_pyhelper.miner_param.run_gateway_mfr')
     def test_provision_key_none_passed(
             self,
-            get_gateway_mfr_test_result,
-            subprocess_run
+            mocked_get_gateway_mfr_test_result,
+            mocked_run_gateway_mfr
     ):
         self.assertTrue(provision_key())
+
+        mocked_get_gateway_mfr_test_result.assert_called_once()
+        mocked_run_gateway_mfr.assert_called_once()
 
     @patch(
             'hm_pyhelper.miner_param.get_gateway_mfr_test_result',
@@ -223,24 +398,3 @@ class TestMinerParam(unittest.TestCase):
     def test_error_mac_address(self):
         with pytest.raises(MinerFailedToFetchMacAddress):
             get_mac_address("test/path")
-
-    @patch(
-      'hm_pyhelper.miner_param.run_gateway_mfr',
-      side_effect=FileNotFoundError("File Not Found Error"))
-    def test_filenotfound_exception(self, mock):
-        with pytest.raises(FileNotFoundError):
-            get_gateway_mfr_test_result()
-
-    @patch(
-      'hm_pyhelper.miner_param.run_gateway_mfr',
-      side_effect=ECCMalfunctionException("File Not Found Error"))
-    def test_eccmalfunction_exception(self, mock):
-        with pytest.raises(ECCMalfunctionException):
-            get_gateway_mfr_test_result()
-
-    @patch(
-      'hm_pyhelper.miner_param.run_gateway_mfr',
-      side_effect=ResourceBusyError("Resource Busy Error"))
-    def test_resourcebusy_exception(self, mock):
-        with pytest.raises(ResourceBusyError):
-            get_gateway_mfr_test_result()
