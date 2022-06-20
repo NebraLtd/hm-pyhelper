@@ -84,12 +84,12 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
-    # Nebra Pi 0 Light Hotspot SPI Ethernet
+    # Nebra Pi Zero Light Hotspot SPI Ethernet
     'nebra-light1': {
-        'FRIENDLY': 'Nebra Pi 0 Light Hotspot SE',
+        'FRIENDLY': 'Nebra Pi Zero Light Hotspot SE',
         'CPU_ARCH': 'armv6hf',
         'BALENA_DEVICE_TYPE': ['raspberry-pi'],
-        'APPNAME': 'Pi 0 Light',
+        'APPNAME': 'Pi Zero Light',
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 22,
@@ -97,7 +97,7 @@ variant_definitions = {
         'STATUS': 24,
         'BUTTON': 23,
         'ECCOB': True,
-        'TYPE': 'Full',
+        'TYPE': 'Light',
         'CELLULAR': False,
         'FCC_IDS': ['2AZDM-HNTLGTMC'],
         'CONTAINS_FCC_IDS': ['2ABCB-RPI0W', '2ARPP-GL5712UX'],
@@ -126,27 +126,46 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
-    # Nebra Radxa 0 Light Hotspot SPI Ethernet
+    # Nebra Radxa Zero Light Hotspot II SPI Ethernet
     'nebra-light2': {
-        'FRIENDLY': 'Nebra Radxa 0 Light Hotspot SE',
+        'FRIENDLY': 'Nebra Radxa Zero Light Hotspot II SE',
         'CPU_ARCH': 'aarch64',
         'BALENA_DEVICE_TYPE': ['radxa-zero'],
-        'APPNAME': 'Radxa 0 Light',
-        'SPIBUS': 'spidev1.0',
+        'APPNAME': 'Radxa Zero Light',
+        'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-3',
-        'RESET': 503,
+        'RESET': 415,
         'MAC': 'wlan0',
-        'STATUS': 500,
-        'BUTTON': 502,
+        'STATUS': 421,
+        'BUTTON': 416,
         'ECCOB': True,
-        'TYPE': 'Full',
+        'TYPE': 'Light',
         'CELLULAR': False,
-        'GPIO_PIN_LED': 18,
-        'GPIO_PIN_BUTTON': 16,
         'FCC_IDS': ['2AZDM-HNTLGTMC-RADXA'],
         'CONTAINS_FCC_IDS': ['2A3PA-RADXA-ZERO', '2ARPP-GL5712UX'],
         'IC_IDS': ['27187-HNTLGTMC-RADXA'],
         'CONTAINS_IC_IDS': []
+        },
+
+    # Nebra Raspberry Pi Zero Light Hotspot II SPI Ethernet
+    'nebra-light3': {
+        'FRIENDLY': 'Nebra Raspberry Pi Zero Light Hotspot II SE',
+        'CPU_ARCH': 'armv6hf',
+        'BALENA_DEVICE_TYPE': ['raspberry-pi'],
+        'APPNAME': 'RPi Zero Light II',
+        'SPIBUS': 'spidev1.2',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'RESET': 4,
+        'MAC': 'wlan0',
+        'STATUS': 26,
+        'BUTTON': 12,
+        'ECCOB': True,
+        'TYPE': 'Light',
+        'CELLULAR': False,
+        'FCC_IDS': ['2AZDM-HNTLGTMC'],
+        'CONTAINS_FCC_IDS': ['2ABCB-RPI0W', '2ARPP-GL5712UX'],
+        'IC_IDS': ['27187-HNTLGTMC'],
+        'CONTAINS_IC_IDS': ['20953-RPI0W']
         },
 
     # Nebra Beaglebone Light Hotspot
