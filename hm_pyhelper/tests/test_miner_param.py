@@ -5,7 +5,7 @@ from unittest.mock import ANY, mock_open, patch
 from packaging.version import Version
 from hm_pyhelper.exceptions import ECCMalfunctionException, \
     MinerFailedToFetchMacAddress, GatewayMFRInvalidVersion, GatewayMFRExecutionException, \
-    GatewayMFRFileNotFoundException
+    GatewayMFRFileNotFoundException, UnsupportedGatewayMfrVersion
 from hm_pyhelper.lock_singleton import ResourceBusyError
 from hm_pyhelper.miner_param import retry_get_region, await_spi_available, \
     provision_key, run_gateway_mfr, \
@@ -215,6 +215,35 @@ class TestMinerParam(unittest.TestCase):
         actual_result = get_gateway_mfr_command('test')
         expected_result = [ANY, 'test']
         self.assertListEqual(actual_result, expected_result)
+
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.2.0'))
+    def test_get_gateway_mfr_command_v020(self, mocked_get_gateway_mfr_version):
+        actual_result = get_gateway_mfr_command('key')
+        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=0', 'key']
+        self.assertListEqual(actual_result, expected_result)
+        mocked_get_gateway_mfr_version.assert_called_once()
+
+        actual_result = get_gateway_mfr_command('info')
+        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=0', 'info']
+
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.3.9'))
+    def test_get_gateway_mfr_command_v021_upward(self, mocked_get_gateway_mfr_version):
+        actual_result = get_gateway_mfr_command('key')
+        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=0', 'key']
+        self.assertListEqual(actual_result, expected_result)
+        mocked_get_gateway_mfr_version.assert_called_once()
+
+        actual_result = get_gateway_mfr_command('info')
+        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=0', 'info']
+
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.0.0'))
+    def test_get_gateway_mfr_command_unsupported_version(self, mocked_get_gateway_mfr_version):
+        with self.assertRaises(UnsupportedGatewayMfrVersion):
+            get_gateway_mfr_command('key')
+        mocked_get_gateway_mfr_version.assert_called_once()
 
     @patch('hm_pyhelper.miner_param.get_gateway_mfr_command',
            return_value=['gateway_mfr', 'arg1', 'arg2'])
