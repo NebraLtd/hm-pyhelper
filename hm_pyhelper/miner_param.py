@@ -9,7 +9,8 @@ from hm_pyhelper.logger import get_logger
 from hm_pyhelper.exceptions import MalformedRegionException, \
     SPIUnavailableException, ECCMalfunctionException, \
     GatewayMFRFileNotFoundException, \
-    MinerFailedToFetchMacAddress, GatewayMFRExecutionException, GatewayMFRInvalidVersion
+    MinerFailedToFetchMacAddress, GatewayMFRExecutionException, GatewayMFRInvalidVersion, \
+    UnsupportedGatewayMfrVersion
 from hm_pyhelper.miner_json_rpc.exceptions import \
      MinerFailedToFetchEthernetAddress
 from hm_pyhelper.hardware_definitions import get_variant_attribute, \
@@ -104,7 +105,7 @@ def get_gateway_mfr_command(sub_command: str) -> list:
     command = [gateway_mfr_path]
 
     gateway_mfr_version = get_gateway_mfr_version()
-    if gateway_mfr_version.minor == 1:
+    if Version('0.1.1') < gateway_mfr_version < Version('0.2.0'):
         try:
             device_arg = [
                 '--path',
@@ -120,7 +121,7 @@ def get_gateway_mfr_command(sub_command: str) -> list:
         if sub_command == "key":
             command.append("0")
 
-    elif gateway_mfr_version.minor == 2:
+    elif gateway_mfr_version >= Version('0.2.0'):
         try:
             device_arg = [
                 '--device',
@@ -131,6 +132,8 @@ def get_gateway_mfr_command(sub_command: str) -> list:
             LOGGER.warning(str(e) + ' Omitting --device arg.')
 
         command.append(sub_command)
+    else:
+        raise UnsupportedGatewayMfrVersion(f"Unsupported gateway_mfr version {gateway_mfr_version}")
 
     return command
 

@@ -32,3 +32,7 @@ class GatewayMFRExecutionException(Exception):
 
 class GatewayMFRInvalidVersion(Exception):
     pass
+
+
+class UnsupportedGatewayMfrVersion(Exception):
+    pass
