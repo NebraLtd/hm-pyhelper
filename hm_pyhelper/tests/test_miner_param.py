@@ -118,7 +118,7 @@ class TestMinerParam(unittest.TestCase):
         mocked_subprocess_run.assert_called_once_with(
             [ANY, '--version'], capture_output=True, check=True)
 
-    @patch('subprocess.run', return_value=SubprocessResult(stdout='gateway_mfr 0.1.7'))
+    @patch('subprocess.run', return_value=SubprocessResult(stdout=b'gateway_mfr 0.1.7'))
     def test_get_gateway_mfr_version_v017(self, mocked_subprocess_run):
         version = get_gateway_mfr_version()
 
@@ -129,7 +129,7 @@ class TestMinerParam(unittest.TestCase):
         mocked_subprocess_run.assert_called_once_with(
             [ANY, '--version'], capture_output=True, check=True)
 
-    @patch('subprocess.run', return_value=SubprocessResult(stdout='gateway_mfr 0.2.1'))
+    @patch('subprocess.run', return_value=SubprocessResult(stdout=b'gateway_mfr 0.2.1'))
     def test_get_gateway_mfr_version_v021(self, mocked_subprocess_run):
         version = get_gateway_mfr_version()
 

@@ -90,7 +90,7 @@ def get_gateway_mfr_version() -> Version:
 
     # Parse gateway_mfr version
     try:
-        version_str = run_gateway_mfr_result.stdout.rpartition(' ')[-1]
+        version_str = run_gateway_mfr_result.stdout.decode().rpartition(' ')[-1]
         gateway_mfr_version = Version(version_str)
 
         return gateway_mfr_version
