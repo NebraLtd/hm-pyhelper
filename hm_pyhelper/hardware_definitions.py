@@ -23,25 +23,9 @@ variant_definitions = {
     # Nebra Indoor Hotspot Gen1
     'nebra-indoor1': {
         'FRIENDLY': 'Nebra Indoor Hotspot Gen 1',
-        'APPNAME': 'Indoor',
-        'SPIBUS': 'spidev1.2',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'RESET': 38,
-        'MAC': 'eth0',
-        'STATUS': 25,
-        'BUTTON': 26,
-        'ECCOB': True,
-        'TYPE': 'Full',
-        'CELLULAR': False,
-        'FCC_IDS': ['2AZDM-HNTIN'],
-        'CONTAINS_FCC_IDS': ['2AHRD-EPN8531', '2AB8JCSR40', '2ARPP-GL5712UX'],
-        'IC_IDS': ['27187-HNTIN'],
-        'CONTAINS_IC_IDS': []
-        },
-
-    # Nebra Indoor Hotspot, Old identifier
-    'Indoor': {
-        'FRIENDLY': 'Nebra Indoor Hotspot Gen 1',
+        'SUPPORTED_MODELS': ['Nebra Indoor Hotspot Gen 1'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi3-64'],
         'APPNAME': 'Indoor',
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -61,6 +45,9 @@ variant_definitions = {
     # Nebra Outdoor Hotspot Gen1
     'nebra-outdoor1': {
         'FRIENDLY': 'Nebra Outdoor Hotspot Gen 1',
+        'SUPPORTED_MODELS': ['Nebra Outdoor Hotspot Gen 1'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi3-64'],
         'APPNAME': 'Outdoor',
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -78,29 +65,37 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
-    # Nebra Outdoor Hotspot Old Identifier
-    'Outdoor': {
-        'FRIENDLY': 'Nebra Outdoor Hotspot Gen 1',
-        'APPNAME': 'Outdoor',
-        'SPIBUS': 'spidev1.2',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'RESET': 38,
-        'MAC': 'eth0',
-        'STATUS': 25,
-        'BUTTON': 24,
+    # Nebra Outdoor Hotspot Gen2
+    # Note:: assuming outdoor2 is equivalent to light miner 2
+    'nebra-outdoor2': {
+        'FRIENDLY': 'Nebra Outdoor Hotspot Gen 2',
+        'SUPPORTED_MODELS': ['Nebra Outdoor Hotspot Gen 2'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['radxa-zero'],
+        'APPNAME': 'Radxa 0 Light',
+        'SPIBUS': 'spidev1.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-3',
+        'RESET': 503,
+        'MAC': 'wlan0',
+        'STATUS': 500,
+        'BUTTON': 502,
         'ECCOB': True,
         'TYPE': 'Full',
-        'CELLULAR': True,
-        'FCC_IDS': ['2AZDM-HNTOUT'],
-        'CONTAINS_FCC_IDS': ['2ARPP-GL5712UX', '2AZDM-CSR8510',
-                             'XMR201903EG25G', '2AZDM-WIFIRP'],
-        'IC_IDS': ['27187-HNTOUT'],
+        'CELLULAR': False,
+        'GPIO_PIN_LED': 18,
+        'GPIO_PIN_BUTTON': 16,
+        'FCC_IDS': ['2AZDM-HNTLGTMC-RADXA'],
+        'CONTAINS_FCC_IDS': ['2A3PA-RADXA-ZERO', '2ARPP-GL5712UX'],
+        'IC_IDS': ['27187-HNTLGTMC-RADXA'],
         'CONTAINS_IC_IDS': []
         },
 
     # Nebra Pi 0 Light Hotspot SPI Ethernet
     'nebra-light1': {
         'FRIENDLY': 'Nebra Pi 0 Light Hotspot SE',
+        'SUPPORTED_MODELS': ['Nebra Pi 0 Light Hotspot SE'],
+        'CPU_ARCH': 'armv6hf',
+        'BALENA_DEVICE_TYPE': ['raspberry-pi'],
         'APPNAME': 'Pi 0 Light',
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -120,6 +115,9 @@ variant_definitions = {
     # Nebra Pi 0 Light Hotspot USB Ethernet
     'NEBHNT-LGT-ZX': {
         'FRIENDLY': 'Nebra Pi 0 Light Hotspot XE',
+        'SUPPORTED_MODELS': ['Nebra Pi 0 Light Hotspot XE'],
+        'CPU_ARCH': 'armv6hf',
+        'BALENA_DEVICE_TYPE': ['raspberry-pi'],
         'APPNAME': 'Pi 0 Light',
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -136,30 +134,56 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
-    # Nebra Radxa 0 Light Hotspot SPI Ethernet
+    # Nebra Radxa Zero Light Hotspot II SPI Ethernet
     'nebra-light2': {
-        'FRIENDLY': 'Nebra Radxa 0 Light Hotspot SE',
-        'APPNAME': 'Radxa 0 Light',
-        'SPIBUS': 'spidev1.0',
+        'FRIENDLY': 'Nebra Radxa Zero Light Hotspot II SE',
+        'SUPPORTED_MODELS': ['Nebra Radxa Zero Light Hotspot II SE'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['radxa-zero'],
+        'APPNAME': 'Radxa Zero Light',
+        'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-3',
-        'RESET': 503,
+        'RESET': 415,
         'MAC': 'wlan0',
-        'STATUS': 500,
-        'BUTTON': 502,
+        'STATUS': 421,
+        'BUTTON': 416,
         'ECCOB': True,
-        'TYPE': 'Full',
+        'TYPE': 'Light',
         'CELLULAR': False,
-        'GPIO_PIN_LED': 18,
-        'GPIO_PIN_BUTTON': 16,
         'FCC_IDS': ['2AZDM-HNTLGTMC-RADXA'],
         'CONTAINS_FCC_IDS': ['2A3PA-RADXA-ZERO', '2ARPP-GL5712UX'],
         'IC_IDS': ['27187-HNTLGTMC-RADXA'],
         'CONTAINS_IC_IDS': []
         },
 
+    # Nebra Raspberry Pi Zero Light Hotspot II SPI Ethernet
+    'nebra-light3': {
+        'FRIENDLY': 'Nebra Raspberry Pi Zero Light Hotspot II SE',
+        'SUPPORTED_MODELS': ['Nebra Raspberry Pi Zero Light Hotspot II SE'],
+        'CPU_ARCH': 'armv6hf',
+        'BALENA_DEVICE_TYPE': ['raspberry-pi'],
+        'APPNAME': 'RPi Zero Light II',
+        'SPIBUS': 'spidev1.2',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'RESET': 4,
+        'MAC': 'wlan0',
+        'STATUS': 26,
+        'BUTTON': 12,
+        'ECCOB': True,
+        'TYPE': 'Light',
+        'CELLULAR': False,
+        'FCC_IDS': ['2AZDM-HNTLGTMC'],
+        'CONTAINS_FCC_IDS': ['2ABCB-RPI0W', '2ARPP-GL5712UX'],
+        'IC_IDS': ['27187-HNTLGTMC'],
+        'CONTAINS_IC_IDS': ['20953-RPI0W']
+        },
+
     # Nebra Beaglebone Light Hotspot
     'NEBHNT-BBB': {
         'FRIENDLY': 'Nebra Beaglebone Light Hotspot',
+        'SUPPORTED_MODELS': ['Nebra Beaglebone Light Hotspot'],
+        'CPU_ARCH': 'armv7hf',
+        'BALENA_DEVICE_TYPE': ['beaglebone-black'],
         'APPNAME': 'Beaglebone Light',
         'SPIBUS': 'spidev1.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -179,6 +203,9 @@ variant_definitions = {
     # Nebra Pocket Beagle Light Hotspot
     'NEBHNT-PBB': {
         'FRIENDLY': 'Nebra Pocket Beagle Light Hotspot',
+        'SUPPORTED_MODELS': ['Nebra Pocket Beagle Light Hotspot'],
+        'CPU_ARCH': 'armv7hf',
+        'BALENA_DEVICE_TYPE': ['beaglebone-pocket'],
         'APPNAME': 'PB Light',
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -198,6 +225,9 @@ variant_definitions = {
     # Nebra Hotspot HAT ROCK Pi 4 Indoor
     'nebra-indoor2': {
         'FRIENDLY': 'Nebra ROCK Pi 4 Indoor',
+        'SUPPORTED_MODELS': ['Nebra ROCK Pi 4 Indoor'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['rockpi-4b-rk3399'],
         'APPNAME': 'ROCK Pi',
         'SPIBUS': 'spidev32766.0',
         'KEY_STORAGE_BUS': '/dev/i2c-7',
@@ -216,70 +246,12 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
-    # Nebra Hotspot HAT ROCK Pi 4 Outdoor
-    'nebra-outdoor2': {
-        'FRIENDLY': 'Nebra ROCK Pi 4 Outdoor',
-        'APPNAME': 'ROCK Pi',
-        'SPIBUS': 'spidev32766.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-7',
-        'RESET': 149,
-        'MAC': 'eth0',
-        'STATUS': 156,
-        'BUTTON': 154,
-        'ECCOB': True,
-        'TYPE': 'Full',
-        'CELLULAR': True,
-        'GPIO_PIN_LED': 18,
-        'GPIO_PIN_BUTTON': 16,
-        'FCC_IDS': ['2AZDM-HHRK4-OUT'],
-        'CONTAINS_FCC_IDS': ['2ARPP-GL5712UX',
-                             '2A3PA-ROCKPI4',
-                             'XMR201903EG25G'],
-        'IC_IDS': ['27187-HHRK4-OUT'],
-        'CONTAINS_IC_IDS': []
-        },
-
-    # Nebra Hotspot HAT RPi 3/4 Full
-    'NEBHNT-HHRPI': {
-        'FRIENDLY': 'Nebra Hotspot HAT RPi',
-        'APPNAME': 'RPi',
-        'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'RESET': 22,
-        'MAC': 'eth0',
-        'STATUS': 24,
-        'BUTTON': 23,
-        'ECCOB': True,
-        'TYPE': 'Full',
-        'CELLULAR': False,
-        'FCC_IDS': [],
-        'CONTAINS_FCC_IDS': [],
-        'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
-        },
-
-    # Nebra Hotspot HAT RPi Light
-    'NEBHNT-HHRPL': {
-        'FRIENDLY': 'Nebra Hotspot HAT RPi Light',
-        'APPNAME': 'Light RPi',
-        'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'RESET': 22,
-        'MAC': 'eth0',
-        'STATUS': 24,
-        'BUTTON': 23,
-        'ECCOB': True,
-        'TYPE': 'Light',
-        'CELLULAR': False,
-        'FCC_IDS': [],
-        'CONTAINS_FCC_IDS': [],
-        'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
-        },
-
     # Nebra Hotspot HAT Tinkerboard 1
     'NEBHNT-HHTK': {
         'FRIENDLY': 'Nebra Hotspot HAT Tinkerboard Light',
+        'SUPPORTED_MODELS': ['Nebra Hotspot HAT Tinkerboard Light'],
+        'CPU_ARCH': 'armv7hf',
+        'BALENA_DEVICE_TYPE': ['asus-tinker-board'],
         'APPNAME': 'Tinkerboard Light',
         'SPIBUS': 'spidev2.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -296,28 +268,12 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
-    # Nebra Hotspot HAT Tinkerboard 2
-    'NEBHNT-HHTK2': {
-        'FRIENDLY': 'Nebra Hotspot HAT Tinkerboard 2',
-        'APPNAME': 'Tinkerboard',
-        'SPIBUS': 'spidev2.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'RESET': 167,
-        'MAC': 'eth0',
-        'STATUS': 163,
-        'BUTTON': 162,
-        'ECCOB': True,
-        'TYPE': 'Full',
-        'CELLULAR': False,
-        'FCC_IDS': [],
-        'CONTAINS_FCC_IDS': [],
-        'IC_IDS': [],
-        'CONTAINS_IC_IDS': []
-        },
-
     # RAKwireless Hotspot Miner
     'rak-v1': {
         'FRIENDLY': 'RAK Hotspot',
+        'SUPPORTED_MODELS': ['RAK v1.5', 'RAK v2', 'RAK MNTD'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 25,
@@ -336,6 +292,9 @@ variant_definitions = {
     # Helium Hotspot
     'helium-v1': {
         'FRIENDLY': 'Helium Hotspot',
+        'SUPPORTED_MODELS': ['Helium Hotspot'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi3-64', 'raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 25,
@@ -354,6 +313,9 @@ variant_definitions = {
     # SenseCAP M1 Hotspot
     'senscap-v1': {
         'FRIENDLY': 'SenseCAP M1',
+        'SUPPORTED_MODELS': ['SenseCAP M1'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 17,
@@ -372,6 +334,9 @@ variant_definitions = {
     # Panther X1
     'panther-v1': {
         'FRIENDLY': 'Panther X1',
+        'SUPPORTED_MODELS': ['Panther X1'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 23,
@@ -390,6 +355,9 @@ variant_definitions = {
     # Smart Mimic / Mimiq Finestra
     'finestra-v1': {
         'FRIENDLY': 'Finestra Miner',
+        'SUPPORTED_MODELS': ['Finestra Miner'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 17,
@@ -413,6 +381,9 @@ variant_definitions = {
     # Pisces P100 Hotspot
     'pisces-v1': {
         'FRIENDLY': 'Pisces P100',
+        'SUPPORTED_MODELS': ['Pisces P100'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-0',
         'RESET': 23,
@@ -431,6 +402,11 @@ variant_definitions = {
     # DIY Pi Supply Hotspot HAT
     'DIY-PISLGH': {
         'FRIENDLY': 'DIY Pi Supply Hotspot HAT',
+        'SUPPORTED_MODELS': ['Raspberry Pi DIY Pi Supply Hotspot HAT'],
+        'CPU_ARCH': '',
+        'BALENA_DEVICE_TYPE': ['raspberry-pi', 'raspberry-pi2',
+                               'raspberrypi0-2w-64', 'raspberrypi3-64',
+                               'raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 22,
@@ -449,6 +425,11 @@ variant_definitions = {
     # Nebra Indoor Hotspot
     'DIY-RAK2287': {
         'FRIENDLY': 'DIY RAK2247/RAK2287 HAT',
+        'SUPPORTED_MODELS': ['Raspberry Pi DIY RAK2247/RAK2287 HAT'],
+        'CPU_ARCH': '',
+        'BALENA_DEVICE_TYPE': ['raspberry-pi', 'raspberry-pi2',
+                               'raspberrypi0-2w-64', 'raspberrypi3-64',
+                               'raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 17,
@@ -467,6 +448,9 @@ variant_definitions = {
     # COTX X3 Hotspot
     'cotx3-v1': {
         'FRIENDLY': 'COTX X3',
+        'SUPPORTED_MODELS': ['COTX X3'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',  # There is a CSN1 pin which is connected to GPIO6 (HAT Pin 31)
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 22,
@@ -486,8 +470,10 @@ variant_definitions = {
 
 # Note: Maintain old names for backward compatibility, should be removed at some
 # point of time.
+variant_definitions['Indoor'] = variant_definitions['nebra-indoor1']
 variant_definitions['NEBHNT-IN1'] = variant_definitions['nebra-indoor1']
 variant_definitions['NEBHNT-OUT1'] = variant_definitions['nebra-outdoor1']
+variant_definitions['Outdoor'] = variant_definitions['nebra-outdoor1']
 variant_definitions['NEBHNT-LGT-ZS'] = variant_definitions['nebra-light1']
 variant_definitions['NEBHNT-LGT-RADXA'] = variant_definitions['nebra-light2']
 variant_definitions['NEBHNT-HHRK4'] = variant_definitions['nebra-indoor2']
