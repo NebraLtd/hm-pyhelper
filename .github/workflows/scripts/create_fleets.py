@@ -1,4 +1,6 @@
 """
+Before running this script latest hm-pyhelper with desired variant definitions should be
+in pypi as triggered github actions will make use of those.
 This script creates:
 1. Github repositories for backing openfleets.
 2. Openfleets and commercial fleets based on a consistent format.
