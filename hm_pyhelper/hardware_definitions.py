@@ -25,7 +25,6 @@ variant_definitions = {
         'SUPPORTED_MODELS': ['Nebra Indoor Hotspot Gen 1'],
         'CPU_ARCH': 'aarch64',
         'BALENA_DEVICE_TYPE': ['raspberrypi3-64'],
-        'APPNAME': 'Indoor',
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
@@ -48,7 +47,6 @@ variant_definitions = {
         'SUPPORTED_MODELS': ['Nebra Outdoor Hotspot Gen 1'],
         'CPU_ARCH': 'aarch64',
         'BALENA_DEVICE_TYPE': ['raspberrypi3-64'],
-        'APPNAME': 'Outdoor',
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
@@ -73,7 +71,6 @@ variant_definitions = {
         'SUPPORTED_MODELS': ['Nebra Outdoor Hotspot Gen 2'],
         'CPU_ARCH': 'aarch64',
         'BALENA_DEVICE_TYPE': ['radxa-zero'],
-        'APPNAME': 'Radxa 0 Light',
         'SPIBUS': 'spidev1.0',
         'KEY_STORAGE_BUS': '/dev/i2c-3',
         'RESET': 503,
@@ -97,7 +94,6 @@ variant_definitions = {
         'SUPPORTED_MODELS': ['Nebra Pi 0 Light Hotspot SE'],
         'CPU_ARCH': 'armv6hf',
         'BALENA_DEVICE_TYPE': ['raspberry-pi'],
-        'APPNAME': 'Pi 0 Light',
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
@@ -120,7 +116,6 @@ variant_definitions = {
         'SUPPORTED_MODELS': ['Nebra Pi 0 Light Hotspot XE'],
         'CPU_ARCH': 'armv6hf',
         'BALENA_DEVICE_TYPE': ['raspberry-pi'],
-        'APPNAME': 'Pi 0 Light',
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
@@ -143,7 +138,6 @@ variant_definitions = {
         'SUPPORTED_MODELS': ['Nebra Radxa Zero Light Hotspot II SE'],
         'CPU_ARCH': 'aarch64',
         'BALENA_DEVICE_TYPE': ['radxa-zero'],
-        'APPNAME': 'Radxa Zero Light',
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-3',
         'SWARM_KEY_URI': 'ecc://i2c-3:96?slot=0',
@@ -166,7 +160,6 @@ variant_definitions = {
         'SUPPORTED_MODELS': ['Nebra Raspberry Pi Zero Light Hotspot II SE'],
         'CPU_ARCH': 'armv6hf',
         'BALENA_DEVICE_TYPE': ['raspberry-pi'],
-        'APPNAME': 'RPi Zero Light II',
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'RESET': 4,
@@ -188,7 +181,6 @@ variant_definitions = {
         'SUPPORTED_MODELS': ['Nebra Beaglebone Light Hotspot'],
         'CPU_ARCH': 'armv7hf',
         'BALENA_DEVICE_TYPE': ['beaglebone-black'],
-        'APPNAME': 'Beaglebone Light',
         'SPIBUS': 'spidev1.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
@@ -211,7 +203,6 @@ variant_definitions = {
         'SUPPORTED_MODELS': ['Nebra Pocket Beagle Light Hotspot'],
         'CPU_ARCH': 'armv7hf',
         'BALENA_DEVICE_TYPE': ['beaglebone-pocket'],
-        'APPNAME': 'PB Light',
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
@@ -234,7 +225,6 @@ variant_definitions = {
         'SUPPORTED_MODELS': ['Nebra ROCK Pi 4 Indoor'],
         'CPU_ARCH': 'aarch64',
         'BALENA_DEVICE_TYPE': ['rockpi-4b-rk3399'],
-        'APPNAME': 'ROCK Pi',
         'SPIBUS': 'spidev32766.0',
         'KEY_STORAGE_BUS': '/dev/i2c-7',
         'SWARM_KEY_URI': 'ecc://i2c-7:96?slot=0',
@@ -259,7 +249,6 @@ variant_definitions = {
         'SUPPORTED_MODELS': ['Nebra Hotspot HAT Tinkerboard Light'],
         'CPU_ARCH': 'armv7hf',
         'BALENA_DEVICE_TYPE': ['asus-tinker-board'],
-        'APPNAME': 'Tinkerboard Light',
         'SPIBUS': 'spidev2.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
         'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
@@ -500,7 +489,7 @@ variant_definitions['COMP-SENSECAPM1'] = variant_definitions['senscap-fl1']
 variant_definitions['COMP-PANTHERX1'] = variant_definitions['panther-fl1']
 variant_definitions['COMP-FINESTRA'] = variant_definitions['finestra-fl1']
 variant_definitions['COMP-PISCESP100'] = variant_definitions['pisces-fl1']
-variant_definitions['COMP-COTX3'] = variant_definitions['cotx3-fl1']
+variant_definitions['COMP-COTX3'] = variant_definitions['cotx-fl1']
 
 
 def get_variant_attribute(variant_name, attribute_key):
