@@ -271,8 +271,10 @@ def get_mac_address(path):
     except MinerFailedToFetchMacAddress as e:
         LOGGER.exception(str(e))
     except FileNotFoundError as e:
-        LOGGER.exception("Failed to find Miner"
-                         "Mac Address file at path %s" % path)
+        # logging as warning because some people remove wifi from their outdoor units.
+        # We can't do anything about these errors even if they were failing wifi units.
+        LOGGER.warning("Failed to find Miner"
+                       "Mac Address file at path %s" % path)
         raise MinerFailedToFetchMacAddress("Failed to find file"
                                            "containing miner mac address."
                                            "Exception: %s" % str(e))\
