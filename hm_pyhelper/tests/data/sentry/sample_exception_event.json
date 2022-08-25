@@ -1,0 +1,130 @@
+{
+    "level": 40,
+    "exception": {
+        "values": [
+            {
+                "module": null,
+                "type": "KeyboardInterrupt",
+                "value": "",
+                "mechanism": {
+                    "type": "excepthook",
+                    "handled": false
+                },
+                "stacktrace": {
+                    "frames": [
+                        {
+                            "filename": "download.py",
+                            "abs_path": "/home/pritam/nebra/sentry-test/download.py",
+                            "function": "<module>",
+                            "module": "__main__",
+                            "lineno": 164,
+                            "pre_context": [
+                                "    ",
+                                "    if loop_count % 20 == 0:",
+                                "        print(\"let sentry sync\")",
+                                "        sleep(2)",
+                                "        print('done waiting for sentry to sync')"
+                            ],
+                            "context_line": "        sleep(2)",
+                            "post_context": [
+                                "        print(f\"all of global: {event_counts}\")",
+                                "    ",
+                                "    "
+                            ],
+                            "vars": {
+                                "__name__": "'__main__'",
+                                "__doc__": "None",
+                                "__package__": "None",
+                                "__loader__": "<_frozen_importlib_external.SourceFileLoader object at 0x7f09a918dc10>",
+                                "__spec__": "None",
+                                "__annotations__": {},
+                                "__builtins__": "<module 'builtins' (built-in)>",
+                                "__file__": "'/home/pritam/nebra/sentry-test/download.py'",
+                                "__cached__": "None",
+                                "E": "'e'"
+                            },
+                            "in_app": true
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "event_id": "90852c73ca3746e2bc208c89cc9c920f",
+    "timestamp": "2022-06-06T15:37:13.098786Z",
+    "breadcrumbs": {
+        "values": [
+            {
+                "type": "log",
+                "level": "error",
+                "category": "root",
+                "message": "Error one",
+                "timestamp": "2022-06-06T15:37:05.368709Z",
+                "data": {}
+            }
+        ]
+    },
+    "contexts": {
+        "runtime": {
+            "name": "CPython",
+            "version": "3.9.7",
+            "build": "3.9.7 (default, Sep 10 2021, 14:59:43) \n[GCC 11.2.0]"
+        }
+    },
+    "modules": {
+        "urllib3": "1.26.9",
+        "setuptools": "44.1.1",
+        "sentry-sdk": "1.5.12",
+        "pkg-resources": "0.0.0",
+        "pip": "20.3.4",
+        "certifi": "2021.10.8"
+    },
+    "extra": {
+        "sys.argv": [
+            "/home/pritam/nebra/sentry-test/download.py"
+        ]
+    },
+    "environment": "production",
+    "server_name": "GL552VW",
+    "sdk": {
+        "name": "sentry.python",
+        "version": "1.5.12",
+        "packages": [
+            {
+                "name": "pypi:sentry-sdk",
+                "version": "1.5.12"
+            }
+        ],
+        "integrations": [
+            "argv",
+            "atexit",
+            "dedupe",
+            "excepthook",
+            "logging",
+            "modules",
+            "redis",
+            "stdlib",
+            "threading"
+        ]
+    },
+    "platform": "python",
+    "_meta": {
+        "exception": {
+            "values": {
+                "0": {
+                    "stacktrace": {
+                        "frames": {
+                            "0": {
+                                "vars": {
+                                    "": {
+                                        "len": 26
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
