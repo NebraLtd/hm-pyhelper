@@ -130,7 +130,7 @@ def provision_key():
         if retries >= max_retries:
             break
 
-        sleep(randint(1, 5))
+        sleep(randint(1, 5))  # NOSONAR
         LOGGER.info("[ECC Provisioning] Retrying ...")
 
     return provisioning_successful
