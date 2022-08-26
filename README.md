@@ -179,6 +179,9 @@ and formatted the same way as the [smartphone app expects](https://docs.helium.c
 
 Usage:
 ```
+While using miner container, use json rpc client
+client = MinerClient()
+While using gateway-rs container, use grpc client
 client = GatewayClient()
 result = client.create_add_gateway_txn('owner_address', 'payer_address', 'gateway_address')
 ```
