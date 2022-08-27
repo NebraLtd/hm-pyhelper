@@ -1,8 +1,6 @@
 import os
 import subprocess
 import json
-from time import sleep
-from random import randint
 from packaging.version import Version
 
 from retry import retry
@@ -170,31 +168,19 @@ def provision_key():
     if did_gateway_mfr_test_result_include_miner_key_pass(test_results):
         return True
 
-    provisioning_successful = False
-    retries = 0
-    max_retries = 5
+    try:
+        gateway_mfr_result = run_gateway_mfr(["provision"])
+        LOGGER.info("[ECC Provisioning] %s", gateway_mfr_result)
 
-    while not provisioning_successful:
-        try:
-            gateway_mfr_result = run_gateway_mfr(["provision"])
-            LOGGER.info("[ECC Provisioning] %s", gateway_mfr_result)
-            provisioning_successful = True
-            break
+    except subprocess.CalledProcessError:
+        LOGGER.error("[ECC Provisioning] Exited with a non-zero status")
+        return False
 
-        except subprocess.CalledProcessError:
-            LOGGER.error("[ECC Provisioning] Exited with a non-zero status")
+    except Exception as exp:
+        LOGGER.error("[ECC Provisioning] Error during provisioning. %s" % str(exp))
+        return False
 
-        except Exception as exp:
-            LOGGER.error("[ECC Provisioning] Error during provisioning. %s" % str(exp))
-
-        retries += 1
-        if retries >= max_retries:
-            break
-
-        sleep(randint(1, 5))  # NOSONAR
-        LOGGER.info("[ECC Provisioning] Retrying ...")
-
-    return provisioning_successful
+    return True
 
 
 def did_gateway_mfr_test_result_include_miner_key_pass(
