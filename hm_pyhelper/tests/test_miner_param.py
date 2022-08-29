@@ -13,71 +13,57 @@ from hm_pyhelper.miner_param import retry_get_region, await_spi_available, \
     get_mac_address, get_public_keys_rust, get_gateway_mfr_version, get_gateway_mfr_command
 
 
-ALL_PASS_GATEWAY_MFR_TESTS = [
-    {
-        "output": "ok",
-        "result": "pass",
-        "test": "serial"
+ALL_PASS_GATEWAY_MFR_TESTS = {
+    'ecdh(0)': {'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
+    'key_config(0)': {
+        'checks': {
+            'auth_key': '0',
+            'intrusion_disable': 'false',
+            'key_type': 'ecc',
+            'lockable': 'true',
+            'private': 'true',
+            'pub_info': 'true',
+            'req_auth': 'false',
+            'req_random': 'false',
+            'x509_index': '0'
+        },
+        'result': 'pass'
     },
-    {
-        "output": "ok",
-        "result": "pass",
-        "test": "zone_locked(data)"
+    'miner_key(0)': {'checks': 'ok', 'result': 'pass'},
+    'sign(0)': {'checks': 'ok', 'result': 'pass'},
+    'slot_config(0)': {
+        'checks': {
+            'ecdh_operation': 'true',
+            'encrypt_read': 'false',
+            'external_signatures': 'true',
+            'internal_signatures': 'true',
+            'limited_use': 'false',
+            'secret': 'true'
+        },
+        'result': 'pass'
     },
-    {
-        "output": "ok",
-        "result": "pass",
-        "test": "zone_locked(config)"
-    },
-    {
-        "output": "ok",
-        "result": "pass",
-        "test": "slot_config(0..=15, ecc)"
-    },
-    {
-        "output": "ok",
-        "result": "pass",
-        "test": "key_config(0..=15, ecc)"
-    },
-    {
-        "output": "ok",
-        "result": "pass",
-        "test": "miner_key(0)"
-    }
-]
+    'zone_locked(config)': {'checks': 'ok', 'result': 'pass'},
+    'zone_locked(data)': {'checks': 'ok', 'result': 'pass'}
+}
 
-NONE_PASS_GATEWAY_MFR_TESTS = [
-    {
-        "output": "timeout/retry error",
-        "result": "fail",
-        "test": "serial"
-    },
-    {
-        "output": "timeout/retry error",
-        "result": "fail",
-        "test": "zone_locked(data)"
-    },
-    {
-        "output": "timeout/retry error",
-        "result": "fail",
-        "test": "zone_locked(config)"
-    },
-    {
-        "output": "timeout/retry error",
-        "result": "fail",
-        "test": "slot_config(0..=15, ecc)"
-    },
-    {
-        "output": "timeout/retry error",
-        "result": "fail",
-        "test": "key_config(0..=15, ecc)"
-    },
-    {
-        "output": "timeout/retry error",
-        "result": "fail",
-        "test": "miner_key(0)"
-    }
-  ]
+
+NONE_PASS_GATEWAY_MFR_TESTS = {
+    'ecdh(0)': {
+        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
+    'key_config(0)': {
+        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
+    'miner_key(0)': {
+        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
+    'sign(0)': {
+        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
+    'slot_config(0)': {
+        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
+    'zone_locked(config)': {
+        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
+    'zone_locked(data)': {
+        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'}
+}
+
 
 MOCK_VARIANT_DEFINITIONS = {
         'NEBHNT-WITH-ECC-ADDRESS': {
@@ -374,38 +360,7 @@ class TestMinerParam(unittest.TestCase):
     def test_did_gateway_mfr_test_result_include_miner_key_pass(self):
         get_gateway_mfr_test_result = {
             "result": "fail",
-            "tests": [
-                {
-                    "output": "timeout/retry error",
-                    "result": "fail",
-                    "test": "serial"
-                },
-                {
-                    "output": "timeout/retry error",
-                    "result": "fail",
-                    "test": "zone_locked(data)"
-                },
-                {
-                    "output": "timeout/retry error",
-                    "result": "fail",
-                    "test": "zone_locked(config)"
-                },
-                {
-                    "output": "timeout/retry error",
-                    "result": "fail",
-                    "test": "slot_config(0..=15, ecc)"
-                },
-                {
-                    "output": "timeout/retry error",
-                    "result": "fail",
-                    "test": "key_config(0..=15, ecc)"
-                },
-                {
-                    "output": "ok",
-                    "result": "pass",
-                    "test": "miner_key(0)"
-                }
-            ]
+            "tests": ALL_PASS_GATEWAY_MFR_TESTS
         }
         self.assertTrue(
                 did_gateway_mfr_test_result_include_miner_key_pass(
