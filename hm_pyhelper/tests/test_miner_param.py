@@ -46,24 +46,17 @@ ALL_PASS_GATEWAY_MFR_TESTS = {
     'zone_locked(data)': {'checks': 'ok', 'result': 'pass'}
 }
 
+ERROR_MESSAGE = 'decode error\n\nCaused by:\n    not a compact key'
 
 NONE_PASS_GATEWAY_MFR_TESTS = {
-    'ecdh(0)': {
-        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
-    'key_config(0)': {
-        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
-    'miner_key(0)': {
-        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
-    'sign(0)': {
-        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
-    'slot_config(0)': {
-        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
-    'zone_locked(config)': {
-        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
-    'zone_locked(data)': {
-        'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'}
+    'ecdh(0)': {'error': ERROR_MESSAGE, 'result': 'fail'},
+    'key_config(0)': {'error': ERROR_MESSAGE, 'result': 'fail'},
+    'miner_key(0)': {'error': ERROR_MESSAGE, 'result': 'fail'},
+    'sign(0)': {'error': ERROR_MESSAGE, 'result': 'fail'},
+    'slot_config(0)': {'error': ERROR_MESSAGE, 'result': 'fail'},
+    'zone_locked(config)': {'error': ERROR_MESSAGE, 'result': 'fail'},
+    'zone_locked(data)': {'error': ERROR_MESSAGE, 'result': 'fail'}
 }
-
 
 MOCK_VARIANT_DEFINITIONS = {
         'NEBHNT-WITH-ECC-ADDRESS': {
