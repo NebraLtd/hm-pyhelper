@@ -132,7 +132,11 @@ def get_gateway_mfr_command(sub_command: str) -> list:
         except (UnknownVariantException, UnknownVariantAttributeException) as e:
             LOGGER.warning(str(e) + ' Omitting --device arg.')
 
-        command.append(sub_command)
+        if ' ' in sub_command:
+            command += sub_command.split(' ')
+        else:
+            command.append(sub_command)
+
     else:
         raise UnsupportedGatewayMfrVersion(f"Unsupported gateway_mfr version {gateway_mfr_version}")
 
@@ -168,73 +172,48 @@ def provision_key():
     if did_gateway_mfr_test_result_include_miner_key_pass(test_results):
         return True
 
+    provisioning_successful = False
+
     try:
-        gateway_mfr_result = run_gateway_mfr(["provision"])
+        gateway_mfr_result = run_gateway_mfr("provision")
         LOGGER.info("[ECC Provisioning] %s", gateway_mfr_result)
+        provisioning_successful = True
 
     except subprocess.CalledProcessError:
         LOGGER.error("[ECC Provisioning] Exited with a non-zero status")
-        return False
+        provisioning_successful = False
 
     except Exception as exp:
         LOGGER.error("[ECC Provisioning] Error during provisioning. %s" % str(exp))
-        return False
+        provisioning_successful = False
 
-    return True
+    # Try key generation.
+    if provisioning_successful is False:
+        try:
+            gateway_mfr_result = run_gateway_mfr("key --generate")
+            provisioning_successful = True
+
+        except Exception as exp:
+            LOGGER.error("[ECC Provisioning] key --generate failed: %s" % str(exp))
+
+    return provisioning_successful
 
 
 def did_gateway_mfr_test_result_include_miner_key_pass(
         gateway_mfr_test_result
 ):
     """
-    Returns true if gateway_mfr_test_result["tests"] has an entry where
-    "test": "miner_key(0)" and "result": "pass"
-    Input: {
-        "result": "pass",
-        "tests": [
-            {
-            "output": "ok",
-            "result": "pass",
-            "test": "serial"
-            },
-            {
-            "output": "ok",
-            "result": "pass",
-            "test": "zone_locked(data)"
-            },
-            {
-            "output": "ok",
-            "result": "pass",
-            "test": "zone_locked(config)"
-            },
-            {
-            "output": "ok",
-            "result": "pass",
-            "test": "slot_config(0..=15, ecc)"
-            },
-            {
-            "output": "ok",
-            "result": "pass",
-            "test": "key_config(0..=15, ecc)"
-            },
-            {
-            "output": "ok",
-            "result": "pass",
-            "test": "miner_key(0)"
-            }
-        ]
+    Returns true if gateway_mfr_test_result["tests"] has an key "miner_key(0)" with value
+    being a dict that contains result key value set to pass.
+
+    {
+        'result': 'pass',
+        'tests': 'miner_key(0)': {'result': 'pass'}
     }
     """
 
-    def is_miner_key_and_passed(test_result):
-        return test_result['test'] == 'miner_key(0)' and \
-               test_result['result'] == 'pass'
-
-    results_is_miner_key_and_passed = map(
-        is_miner_key_and_passed,
-        gateway_mfr_test_result['tests']
-    )
-    return any(results_is_miner_key_and_passed)
+    return gateway_mfr_test_result.get(
+        'tests', {}).get('miner_key(0)', {}).get('result', 'fail') == 'pass'
 
 
 def get_ethernet_addresses(diagnostics):
