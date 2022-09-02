@@ -187,15 +187,6 @@ def provision_key():
         LOGGER.error("[ECC Provisioning] Error during provisioning. %s" % str(exp))
         provisioning_successful = False
 
-    # Try key generation.
-    if provisioning_successful is False:
-        try:
-            gateway_mfr_result = run_gateway_mfr("key --generate")
-            provisioning_successful = True
-
-        except Exception as exp:
-            LOGGER.error("[ECC Provisioning] key --generate failed: %s" % str(exp))
-
     return provisioning_successful
 
 
