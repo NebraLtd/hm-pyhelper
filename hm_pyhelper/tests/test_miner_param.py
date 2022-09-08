@@ -235,7 +235,7 @@ class TestMinerParam(unittest.TestCase):
         with self.assertRaises(GatewayMFRFileNotFoundException):
             run_gateway_mfr("unittest")
 
-        mocked_get_gateway_mfr_command.assert_called_once_with('unittest')
+        mocked_get_gateway_mfr_command.assert_called_once_with('unittest', slot=0)
         mocked_subprocess_run.assert_called_once_with(
             ['gateway_mfr', 'arg1', 'arg2'],
             capture_output=True, check=True)
@@ -251,7 +251,7 @@ class TestMinerParam(unittest.TestCase):
         with self.assertRaises(ECCMalfunctionException):
             run_gateway_mfr("unittest")
 
-        mocked_get_gateway_mfr_command.assert_called_once_with('unittest')
+        mocked_get_gateway_mfr_command.assert_called_once_with('unittest', slot=0)
         mocked_subprocess_run.assert_called_once_with(
             ['gateway_mfr', 'arg1', 'arg2'],
             capture_output=True, check=True)
@@ -267,7 +267,7 @@ class TestMinerParam(unittest.TestCase):
         with self.assertRaises(ResourceBusyError):
             run_gateway_mfr("unittest")
 
-        mocked_get_gateway_mfr_command.assert_called_once_with('unittest')
+        mocked_get_gateway_mfr_command.assert_called_once_with('unittest', slot=0)
         mocked_subprocess_run.assert_called_once_with(
             ['gateway_mfr', 'arg1', 'arg2'],
             capture_output=True, check=True)
@@ -296,41 +296,18 @@ class TestMinerParam(unittest.TestCase):
 
         self.assertDictEqual(actual_result, expected_result)
 
-        mocked_get_gateway_mfr_command.assert_called_once_with('key')
+        mocked_get_gateway_mfr_command.assert_called_once_with('key', slot=0)
         mocked_subprocess_run.assert_called_once_with(
             ['gateway_mfr', 'arg1', 'arg2'],
             capture_output=True, check=True)
 
-    @patch(
-            'hm_pyhelper.miner_param.get_gateway_mfr_test_result',
-            return_value={
-                "result": "pass",
-                "tests": ALL_PASS_GATEWAY_MFR_TESTS
-                }
-    )
-    def test_provision_key_all_passed(
-            self,
-            mocked_get_gateway_mfr_test_result
-    ):
-        self.assertTrue(provision_key())
-        mocked_get_gateway_mfr_test_result.assert_called_once()
+    def test_provision_key_all_passed(self):
+        self.assertTrue(provision_key(slot=0))
 
-    @patch(
-            'hm_pyhelper.miner_param.get_gateway_mfr_test_result',
-            return_value={
-                "result": "fail",
-                "tests": NONE_PASS_GATEWAY_MFR_TESTS
-            }
-    )
     @patch('hm_pyhelper.miner_param.run_gateway_mfr')
-    def test_provision_key_none_passed(
-            self,
-            mocked_get_gateway_mfr_test_result,
-            mocked_run_gateway_mfr
-    ):
-        self.assertTrue(provision_key())
+    def test_provision_key_none_passed(self, mocked_run_gateway_mfr):
+        self.assertTrue(provision_key(slot=0))
 
-        mocked_get_gateway_mfr_test_result.assert_called_once()
         mocked_run_gateway_mfr.assert_called_once()
 
     @patch(
