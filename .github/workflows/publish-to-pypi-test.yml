@@ -17,7 +17,7 @@ jobs:
 
       - name: Fetch gateway-mfr-rs
         env:
-          GATEWAY_MFR_RS_RELEASE: v0.2.1
+          GATEWAY_MFR_RS_RELEASE: v0.2.2
         run: |
           wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz"
           wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum"
