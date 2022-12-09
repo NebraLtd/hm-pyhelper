@@ -24,3 +24,15 @@ class UnknownVariantException(Exception):
 
 class UnknownVariantAttributeException(Exception):
     pass
+
+
+class GatewayMFRExecutionException(Exception):
+    pass
+
+
+class GatewayMFRInvalidVersion(Exception):
+    pass
+
+
+class UnsupportedGatewayMfrVersion(Exception):
+    pass

@@ -9,7 +9,7 @@ class TestLogger(TestCase):
         logger = get_logger(__name__)
 
         with self.assertLogs() as captured:
-            logger.debug("Hello world.")
+            logger.info("Hello world.")
 
         # check that there is only one log message
         self.assertEqual(len(captured.records), 1)
@@ -20,7 +20,7 @@ class TestLogger(TestCase):
         # Do not check timestamp and filepath because those change
         # based on the environment and run time
         expected_partial_output_regex = re.escape(
-            " - [DEBUG] - hm_pyhelper.tests.test_logger -" +
+            " - [INFO] - hm_pyhelper.tests.test_logger -" +
             " (test_logger.py).test_get_logger -- ")
         expected_output_regex = ".*" + \
             expected_partial_output_regex + ".*" + \
