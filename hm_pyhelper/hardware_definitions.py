@@ -520,6 +520,7 @@ variant_definitions['COMP-PANTHERX1'] = variant_definitions['panther-fl1']
 variant_definitions['COMP-FINESTRA'] = variant_definitions['finestra-fl1']
 variant_definitions['COMP-PISCESP100'] = variant_definitions['pisces-fl1']
 variant_definitions['COMP-COTX3'] = variant_definitions['cotx-fl1']
+variant_definitions['COMP-CONTROLLINO'] = variant_definitions['controllino-fl1']
 
 
 def get_variant_attribute(variant_name, attribute_key):
