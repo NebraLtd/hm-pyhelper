@@ -405,6 +405,33 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
+    # Embit / Controllino
+    'controllino-fl1': {
+        'FRIENDLY': 'Controllino Hotspot',
+        'SUPPORTED_MODELS': ['Controllino Hotspot'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
+        'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'RESET': 4,
+        'MAC': 'wlan0',
+        'STATUS_LED': {
+            'TYPE': 'RGB',
+            'GPIO_NUMBERS_RGB': [20, 26, 7],
+            'GPIO_NUMBER_SINGLE': 20
+         },
+        'STATUS': 20,
+        'BUTTON': False,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
     # DIY Pi Supply Hotspot HAT
     'DIY-PISLGH': {
         'FRIENDLY': 'DIY Pi Supply Hotspot HAT',
@@ -493,6 +520,7 @@ variant_definitions['COMP-PANTHERX1'] = variant_definitions['panther-fl1']
 variant_definitions['COMP-FINESTRA'] = variant_definitions['finestra-fl1']
 variant_definitions['COMP-PISCESP100'] = variant_definitions['pisces-fl1']
 variant_definitions['COMP-COTX3'] = variant_definitions['cotx-fl1']
+variant_definitions['COMP-CONTROLLINO'] = variant_definitions['controllino-fl1']
 
 
 def get_variant_attribute(variant_name, attribute_key):
