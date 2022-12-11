@@ -1,13 +1,17 @@
 import os
 import subprocess
 import json
+from packaging.version import Version
+
 from retry import retry
+
 from hm_pyhelper.lock_singleton import ResourceBusyError, lock_ecc
 from hm_pyhelper.logger import get_logger
 from hm_pyhelper.exceptions import MalformedRegionException, \
     SPIUnavailableException, ECCMalfunctionException, \
     GatewayMFRFileNotFoundException, \
-    MinerFailedToFetchMacAddress
+    MinerFailedToFetchMacAddress, GatewayMFRExecutionException, GatewayMFRInvalidVersion, \
+    UnsupportedGatewayMfrVersion
 from hm_pyhelper.miner_json_rpc.exceptions import \
      MinerFailedToFetchEthernetAddress
 from hm_pyhelper.hardware_definitions import get_variant_attribute, \
@@ -21,22 +25,8 @@ SPI_UNAVAILABLE_SLEEP_SECONDS = 60
 
 
 @lock_ecc()
-def run_gateway_mfr(args):
-    direct_path = os.path.dirname(os.path.abspath(__file__))
-    gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
-
-    command = [gateway_mfr_path]
-
-    try:
-        path_arg = [
-            '--path',
-            get_variant_attribute(os.getenv('VARIANT'), 'KEY_STORAGE_BUS')
-        ]
-        command.extend(path_arg)
-    except (UnknownVariantException, UnknownVariantAttributeException) as e:
-        LOGGER.warning(str(e) + ' Omitting --path arg.')
-
-    command.extend(args)
+def run_gateway_mfr(sub_command: str, slot: int = 0) -> dict:
+    command = get_gateway_mfr_command(sub_command, slot=slot)
 
     try:
         run_gateway_mfr_result = subprocess.run(
@@ -63,7 +53,7 @@ def run_gateway_mfr(args):
         raise ResourceBusyError(e)\
             .with_traceback(e.__traceback__)
     except Exception as e:
-        err_str = "Exception occured on running gateway_mfr %s" \
+        err_str = "Exception occurred on running gateway_mfr %s" \
                   % str(e)
         LOGGER.exception(e)
         raise ECCMalfunctionException(err_str).with_traceback(e.__traceback__)
@@ -76,97 +66,166 @@ def run_gateway_mfr(args):
         raise ECCMalfunctionException(err_str).with_traceback(e.__traceback__)
 
 
+def get_gateway_mfr_path() -> str:
+    direct_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(direct_path, 'gateway_mfr')
+
+
+def get_gateway_mfr_version() -> Version:
+    """
+    Returns version of gateway_mfr
+    """
+    gateway_mfr_path = get_gateway_mfr_path()
+    command = [gateway_mfr_path, '--version']
+
+    try:
+        run_gateway_mfr_result = subprocess.run(
+            command,
+            capture_output=True,
+            check=True
+        )
+    except Exception as e:
+        err_str = f"Exception occurred on running gateway_mfr --version: {e}"
+        LOGGER.exception(err_str)
+        raise GatewayMFRExecutionException(err_str).with_traceback(e.__traceback__)
+
+    # Parse gateway_mfr version
+    try:
+        version_str = run_gateway_mfr_result.stdout.decode().rpartition(' ')[-1]
+        gateway_mfr_version = Version(version_str)
+
+        return gateway_mfr_version
+    except Exception as e:
+        err_str = f"Exception occurred while parsing gateway_mfr version: {e}"
+        LOGGER.exception(err_str)
+        raise GatewayMFRInvalidVersion(err_str).with_traceback(e.__traceback__)
+
+
+def get_gateway_mfr_command(sub_command: str, slot: int = 0) -> list:
+    gateway_mfr_path = get_gateway_mfr_path()
+    command = [gateway_mfr_path]
+
+    gateway_mfr_version = get_gateway_mfr_version()
+    if Version('0.1.1') < gateway_mfr_version < Version('0.2.0'):
+        try:
+            device_arg = [
+                '--path',
+                get_variant_attribute(os.getenv('VARIANT'), 'KEY_STORAGE_BUS')
+            ]
+            command.extend(device_arg)
+        except (UnknownVariantException, UnknownVariantAttributeException) as e:
+            LOGGER.warning(str(e) + ' Omitting --path arg.')
+
+        command.append(sub_command)
+
+        # In case of "key" command, append the slot number 0 at the end.
+        if sub_command == "key":
+            command.append("0")
+
+    elif gateway_mfr_version >= Version('0.2.0'):
+        try:
+            device_arg = [
+                '--device',
+                get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
+            ]
+            command.extend(device_arg)
+        except (UnknownVariantException, UnknownVariantAttributeException) as e:
+            LOGGER.warning(str(e) + ' Omitting --device arg.')
+
+        slot_str = f'slot={slot}'
+        command[-1] = command[-1].replace('slot=0', slot_str)
+
+        if ' ' in sub_command:
+            command += sub_command.split(' ')
+        else:
+            command.append(sub_command)
+
+    else:
+        raise UnsupportedGatewayMfrVersion(f"Unsupported gateway_mfr version {gateway_mfr_version}")
+
+    return command
+
+
 def get_public_keys_rust():
     """
     Run gateway_mfr and report back the key.
     """
-    return run_gateway_mfr(["key", "0"])
+    return run_gateway_mfr("key")
 
 
 def get_getway_mfr_info():
     """
     Run gateway_mfr info.
     """
-    return run_gateway_mfr(["info"])
+    return run_gateway_mfr("info")
 
 
 def get_gateway_mfr_test_result():
     """
     Run gateway_mfr test and report back.
     """
-    return run_gateway_mfr(["test"])
+    return run_gateway_mfr("test")
 
 
-def provision_key():
+def provision_key(slot: int, force: bool = False):
     """
     Attempt to provision key.
+
+    :param slot: The ECC key slot to use
+    :param force: If set to True then try `key --generate` if `provision` action fails.
+
+    :return: A 2 element tuple, first one specifying provisioning success (True/False) and
+             second element contains gateway mfr output or error response.
     """
-    test_results = get_gateway_mfr_test_result()
-    if did_gateway_mfr_test_result_include_miner_key_pass(test_results):
-        return True
+
+    provisioning_successful = False
+    response = ''
 
     try:
-        gateway_mfr_result = run_gateway_mfr(["provision"])
+        gateway_mfr_result = run_gateway_mfr("provision", slot=slot)
         LOGGER.info("[ECC Provisioning] %s", gateway_mfr_result)
+        provisioning_successful = True
+        response = gateway_mfr_result
 
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as exp:
         LOGGER.error("[ECC Provisioning] Exited with a non-zero status")
-        return False
-    return True
+        provisioning_successful = False
+        response = str(exp)
+
+    except Exception as exp:
+        LOGGER.error("[ECC Provisioning] Error during provisioning. %s" % str(exp))
+        provisioning_successful = False
+        response = str(exp)
+
+    # Try key generation.
+    if provisioning_successful is False and force is True:
+        try:
+            gateway_mfr_result = run_gateway_mfr("key --generate", slot=slot)
+            provisioning_successful = True
+            response = gateway_mfr_result
+
+        except Exception as exp:
+            LOGGER.error("[ECC Provisioning] key --generate failed: %s" % str(exp))
+            response = str(exp)
+
+    return provisioning_successful, response
 
 
 def did_gateway_mfr_test_result_include_miner_key_pass(
         gateway_mfr_test_result
 ):
     """
-    Returns true if gateway_mfr_test_result["tests"] has an entry where
-    "test": "miner_key(0)" and "result": "pass"
-    Input: {
-        "result": "pass",
-        "tests": [
-            {
-            "output": "ok",
-            "result": "pass",
-            "test": "serial"
-            },
-            {
-            "output": "ok",
-            "result": "pass",
-            "test": "zone_locked(data)"
-            },
-            {
-            "output": "ok",
-            "result": "pass",
-            "test": "zone_locked(config)"
-            },
-            {
-            "output": "ok",
-            "result": "pass",
-            "test": "slot_config(0..=15, ecc)"
-            },
-            {
-            "output": "ok",
-            "result": "pass",
-            "test": "key_config(0..=15, ecc)"
-            },
-            {
-            "output": "ok",
-            "result": "pass",
-            "test": "miner_key(0)"
-            }
-        ]
+    Returns true if gateway_mfr_test_result["tests"] has an key "miner_key(0)" with value
+    being a dict that contains result key value set to pass.
+
+    {
+        'result': 'pass',
+        'tests': 'miner_key(0)': {'result': 'pass'}
     }
     """
 
-    def is_miner_key_and_passed(test_result):
-        return test_result['test'] == 'miner_key(0)' and \
-               test_result['result'] == 'pass'
-
-    results_is_miner_key_and_passed = map(
-        is_miner_key_and_passed,
-        gateway_mfr_test_result['tests']
-    )
-    return any(results_is_miner_key_and_passed)
+    return gateway_mfr_test_result.get(
+        'tests', {}).get('miner_key(0)', {}).get('result', 'fail') == 'pass'
 
 
 def get_ethernet_addresses(diagnostics):
@@ -209,8 +268,10 @@ def get_mac_address(path):
     except MinerFailedToFetchMacAddress as e:
         LOGGER.exception(str(e))
     except FileNotFoundError as e:
-        LOGGER.exception("Failed to find Miner"
-                         "Mac Address file at path %s" % path)
+        # logging as warning because some people remove wifi from their outdoor units.
+        # We can't do anything about these errors even if they were failing wifi units.
+        LOGGER.warning("Failed to find Miner"
+                       "Mac Address file at path %s" % path)
         raise MinerFailedToFetchMacAddress("Failed to find file"
                                            "containing miner mac address."
                                            "Exception: %s" % str(e))\

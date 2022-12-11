@@ -21,17 +21,17 @@ class DeviceVendorID(Enum):
     RASPBERRY_PI = auto()
 
 
+# Pulled from
+# https://www.balena.io/docs/reference/base-images/devicetypes/
 BALENA_ENV_RASPBERRY_PI_MODELS = [
-    """
-    Pulled from
-    https://www.balena.io/docs/reference/base-images/devicetypes/
-    """
+    'raspberry-pi',
     'raspberry-pi2',
     'raspberrypi3',
     'raspberrypi3-64',
     'raspberrypi4-64',
     'nebra-hnt',
-    'raspberrypicm4-ioboard'
+    'raspberrypicm4-ioboard',
+    'raspberrypi0-2w-64'
 ]
 
 BALENA_ENV_ROCKPI_MODELS = ['rockpi-4b-rk3399']
