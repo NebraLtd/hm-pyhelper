@@ -479,7 +479,7 @@ variant_definitions = {
         'IC_IDS': [],
         'CONTAINS_IC_IDS': []
         },
-        
+
     # Linxdot CM4
     'linxdot-fl1': {
         'FRIENDLY': 'Linxdot Hotspot',
