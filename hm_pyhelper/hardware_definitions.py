@@ -405,10 +405,10 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
-    # Embit / Controllino
+    # Embit / Controllino / Conelcom
     'controllino-fl1': {
-        'FRIENDLY': 'Controllino Hotspot',
-        'SUPPORTED_MODELS': ['Controllino Hotspot'],
+        'FRIENDLY': 'Controllino  (Conelcom) Hotspot',
+        'SUPPORTED_MODELS': ['Controllino Hotspot', 'Conelcom Hotspot'],
         'CPU_ARCH': 'aarch64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
