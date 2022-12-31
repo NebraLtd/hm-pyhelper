@@ -502,6 +502,28 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
+    # Pycom CM4
+    'pycom-fl1': {
+        'FRIENDLY': 'Pycom Hotspot',
+        'SUPPORTED_MODELS': ['Pycom Hotspot'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
+        'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-10',
+        'SWARM_KEY_URI': 'ecc://i2c-10:96?slot=0',
+        'RESET': 17,
+        'MAC': 'wlan0',
+        'STATUS': 22,
+        'BUTTON': 27,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
     # COTX X3 Hotspot
     'cotx-fl1': {
         'FRIENDLY': 'COTX X3',
@@ -545,6 +567,7 @@ variant_definitions['COMP-PISCESP100'] = variant_definitions['pisces-fl1']
 variant_definitions['COMP-COTX3'] = variant_definitions['cotx-fl1']
 variant_definitions['COMP-CONTROLLINO'] = variant_definitions['controllino-fl1']
 variant_definitions['COMP-LINXDOTCM4'] = variant_definitions['linxdot-fl1']
+variant_definitions['COMP-PYCOM'] = variant_definitions['pycom-fl1']
 
 
 def get_variant_attribute(variant_name, attribute_key):
