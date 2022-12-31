@@ -511,7 +511,7 @@ variant_definitions = {
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-10',
         'SWARM_KEY_URI': 'ecc://i2c-10:96?slot=0',
-        'RESET': 17,
+        'RESET': 23,
         'MAC': 'wlan0',
         'STATUS': 22,
         'BUTTON': 27,
