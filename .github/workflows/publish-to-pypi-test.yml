@@ -5,13 +5,13 @@ on: [push]
 jobs:
   build-n-publish:
     name: Build and publish Python 🐍 distribution 📦 to TestPyPI
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
 
       - name: Set up Python 3.7
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: 3.7
 
@@ -51,13 +51,13 @@ jobs:
         run: |
           python -m build --sdist --wheel --outdir dist/ .
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: wheels
           path: ./dist/*
 
       - name: Publish distribution 📦 to Test PyPI
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@v1
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
