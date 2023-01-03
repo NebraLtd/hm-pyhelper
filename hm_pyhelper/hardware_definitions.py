@@ -524,6 +524,28 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
+    # Syncrobit CM4
+    'syncrobit-fl1': {
+        'FRIENDLY': 'Syncrobit Hotspot',
+        'SUPPORTED_MODELS': ['Syncrobit Hotspot'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
+        'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'RESET': 17,
+        'MAC': 'wlan0',
+        'STATUS': 22,
+        'BUTTON': 27,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
     # COTX X3 Hotspot
     'cotx-fl1': {
         'FRIENDLY': 'COTX X3',
@@ -568,6 +590,7 @@ variant_definitions['COMP-COTX3'] = variant_definitions['cotx-fl1']
 variant_definitions['COMP-CONTROLLINO'] = variant_definitions['controllino-fl1']
 variant_definitions['COMP-LINXDOTCM4'] = variant_definitions['linxdot-fl1']
 variant_definitions['COMP-PYCOM'] = variant_definitions['pycom-fl1']
+variant_definitions['COMP-SYNCROBITCM4'] = variant_definitions['syncrobit-fl1']
 
 
 def get_variant_attribute(variant_name, attribute_key):
