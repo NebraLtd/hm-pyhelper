@@ -11,11 +11,11 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/NebraLtd/hm-pyhelper",
     install_requires=[
-        'requests>=2.26.0',
+        'requests>=2.28.1',
         'retry==0.9.2',
         'base58==2.1.1',
         'protobuf==3.20.3',
-        'packaging>=21.3'
+        'packaging>=22.0'
     ],
     project_urls={
         "Bug Tracker": "https://github.com/NebraLtd/hm-pyhelper/issues",
