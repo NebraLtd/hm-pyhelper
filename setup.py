@@ -14,7 +14,7 @@ setup(
         'requests>=2.28.1',
         'retry==0.9.2',
         'base58==2.1.1',
-        'protobuf==3.20.3',
+        'protobuf==4.21.12',
         'packaging>=22.0'
     ],
     project_urls={
