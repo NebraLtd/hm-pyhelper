@@ -48,7 +48,7 @@ def run_gateway_mfr(sub_command: str, slot: int = 0) -> dict:
     except ResourceBusyError as e:
         err_str = "resource busy error: %s"
         LOGGER.exception(err_str % str(e))
-        raise ResourceBusyError(e)\
+        raise ResourceBusyError(e) \
             .with_traceback(e.__traceback__)
     except Exception as e:
         err_str = "Exception occurred on running gateway_mfr %s" \
@@ -266,23 +266,23 @@ def get_mac_address(path):
         LOGGER.warning("Failed to find Miner"
                        "Mac Address file at path %s" % path)
         raise MinerFailedToFetchMacAddress("Failed to find file"
-                                           "containing miner mac address."
-                                           "Exception: %s" % str(e))\
-              .with_traceback(e.__traceback__)
+                                           "containing miner mac address. "
+                                           "Exception: %s" % str(e)) \
+            .with_traceback(e.__traceback__)
     except PermissionError as e:
         LOGGER.exception("Permissions invalid for Miner"
                          "Mac Address file at path %s" % path)
         raise MinerFailedToFetchMacAddress("Failed to fetch"
                                            "miner mac address. "
                                            "Invalid permissions to access "
-                                           "file. Exception: %s" % str(e))\
-              .with_traceback(e.__traceback__)
+                                           "file. Exception: %s" % str(e)) \
+            .with_traceback(e.__traceback__)
     except Exception as e:
         LOGGER.exception(e)
         raise MinerFailedToFetchMacAddress("Failed to fetch miner"
                                            "mac address. "
-                                           "Exception: %s" % str(e))\
-              .with_traceback(e.__traceback__)
+                                           "Exception: %s" % str(e)) \
+            .with_traceback(e.__traceback__)
 
     return file.readline().strip().upper()
 

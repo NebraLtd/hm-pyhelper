@@ -405,6 +405,33 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
+    # Embit / Controllino / Conelcom
+    'controllino-fl1': {
+        'FRIENDLY': 'Controllino  (Conelcom) Hotspot',
+        'SUPPORTED_MODELS': ['Controllino Hotspot', 'Conelcom Hotspot'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
+        'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'RESET': 4,
+        'MAC': 'wlan0',
+        'STATUS_LED': {
+            'TYPE': 'RGB',
+            'GPIO_NUMBERS_RGB': [20, 26, 7],
+            'GPIO_NUMBER_SINGLE': 20
+         },
+        'STATUS': 20,
+        'BUTTON': False,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
     # DIY Pi Supply Hotspot HAT
     'DIY-PISLGH': {
         'FRIENDLY': 'DIY Pi Supply Hotspot HAT',
@@ -453,6 +480,72 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
+    # Linxdot CM4
+    'linxdot-fl1': {
+        'FRIENDLY': 'Linxdot Hotspot',
+        'SUPPORTED_MODELS': ['Linxdot Hotspot'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
+        'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'RESET': 17,
+        'MAC': 'wlan0',
+        'STATUS': 22,
+        'BUTTON': 27,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
+    # Pycom CM4
+    'pycom-fl1': {
+        'FRIENDLY': 'Pycom Hotspot',
+        'SUPPORTED_MODELS': ['Pycom Hotspot'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
+        'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-10',
+        'SWARM_KEY_URI': 'ecc://i2c-10:96?slot=0',
+        'RESET': 23,
+        'MAC': 'wlan0',
+        'STATUS': 22,
+        'BUTTON': 27,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
+    # Syncrobit CM4
+    'syncrobit-fl1': {
+        'FRIENDLY': 'Syncrobit Hotspot',
+        'SUPPORTED_MODELS': ['Syncrobit Hotspot'],
+        'CPU_ARCH': 'aarch64',
+        'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
+        'SPIBUS': 'spidev0.0',
+        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'RESET': 17,
+        'MAC': 'wlan0',
+        'STATUS': 22,
+        'BUTTON': 27,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
     # COTX X3 Hotspot
     'cotx-fl1': {
         'FRIENDLY': 'COTX X3',
@@ -461,6 +554,7 @@ variant_definitions = {
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',  # There is a CSN1 pin which is connected to GPIO6 (HAT Pin 31)
         'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
         'RESET': 22,
         'MAC': 'eth0',
         'STATUS': 21,  # Stub. There is no status LED on X3. I2C-3 is used for display
@@ -473,7 +567,7 @@ variant_definitions = {
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
         'CONTAINS_IC_IDS': []
-        },
+        }
 }
 
 # Note: Maintain old names for backward compatibility, should be removed at some
@@ -493,6 +587,10 @@ variant_definitions['COMP-PANTHERX1'] = variant_definitions['panther-fl1']
 variant_definitions['COMP-FINESTRA'] = variant_definitions['finestra-fl1']
 variant_definitions['COMP-PISCESP100'] = variant_definitions['pisces-fl1']
 variant_definitions['COMP-COTX3'] = variant_definitions['cotx-fl1']
+variant_definitions['COMP-CONTROLLINO'] = variant_definitions['controllino-fl1']
+variant_definitions['COMP-LINXDOTCM4'] = variant_definitions['linxdot-fl1']
+variant_definitions['COMP-PYCOM'] = variant_definitions['pycom-fl1']
+variant_definitions['COMP-SYNCROBITCM4'] = variant_definitions['syncrobit-fl1']
 
 
 def get_variant_attribute(variant_name, attribute_key):
