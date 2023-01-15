@@ -22,16 +22,16 @@ jobs:
         env:
           GATEWAY_MFR_RS_RELEASE: v0.3.2
         run: |
-          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz"
-          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum"
-          SHA256=$( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz" | awk '{print $1}')
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf-ecc608.tar.gz"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf-ecc608.checksum"
+          SHA256=$( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf-ecc608.tar.gz" | awk '{print $1}')
           echo "Generated checksum: ${SHA256}"
 
           # Verify the checksum 
-          if grep -q "${SHA256}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum"; then
+          if grep -q "${SHA256}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf-ecc608.checksum"; then
             echo "Checksum verified for gateway_mfr. Unpacking tarball..."
             # Unpack the tarball
-            tar -xvf "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz"
+            tar -xvf "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf-ecc608.tar.gz"
             exit 0
           else
             echo "Checksum does not match. Please check download manually and rerun!"
