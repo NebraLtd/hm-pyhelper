@@ -1,6 +1,7 @@
 import os
 import subprocess
 import json
+import platform
 from packaging.version import Version
 
 from retry import retry
@@ -68,7 +69,13 @@ def run_gateway_mfr(sub_command: str, slot: int = 0) -> dict:
 
 def get_gateway_mfr_path() -> str:
     direct_path = os.path.dirname(os.path.abspath(__file__))
-    return os.path.join(direct_path, 'gateway_mfr')
+    machine = platform.machine()
+
+    if 'aarch64' in machine:
+        gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr_aarch64')
+    else:
+        gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
+    return gateway_mfr_path
 
 
 def get_gateway_mfr_version() -> Version:
