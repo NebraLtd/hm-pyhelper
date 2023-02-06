@@ -34,6 +34,7 @@ jobs:
           echo "Generated checksum ARM: ${SHA256_ARM}"
           echo "Generated checksum AARCH64: ${SHA256_AARCH64}"
           echo "Generated checksum X86_64: ${SHA256_X86_64}"
+
           # Verify the checksums
           if grep -q "${SHA256_ARM}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf-ecc608.checksum" && grep -q "${SHA256_AARCH64}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu-ecc608.checksum" && grep -q "${SHA256_X86_64}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-unknown-linux-gnu-ecc608.checksum"; then
             echo "Checksum verified for gateway_mfr. Unpacking tarball..."
@@ -49,6 +50,7 @@ jobs:
             echo "Checksum does not match. Please check download manually and rerun!"
             exit 1
           fi
+
       - name: Change permissions on gateway_mfr
         run: |
           chmod +x gateway_mfr_arm
