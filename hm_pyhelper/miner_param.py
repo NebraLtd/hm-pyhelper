@@ -73,6 +73,8 @@ def get_gateway_mfr_path() -> str:
 
     if 'aarch64' in machine:
         gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr_aarch64')
+    elif 'x86_64' in machine:
+        gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr_x86_64')
     else:
         gateway_mfr_path = os.path.join(direct_path, 'gateway_mfr')
     return gateway_mfr_path
