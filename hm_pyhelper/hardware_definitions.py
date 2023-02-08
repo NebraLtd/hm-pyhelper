@@ -23,7 +23,7 @@ variant_definitions = {
     'nebra-indoor1': {
         'FRIENDLY': 'Nebra Indoor Hotspot Gen 1',
         'SUPPORTED_MODELS': ['Nebra Indoor Hotspot Gen 1'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi3-64'],
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -45,7 +45,7 @@ variant_definitions = {
     'nebra-outdoor1': {
         'FRIENDLY': 'Nebra Outdoor Hotspot Gen 1',
         'SUPPORTED_MODELS': ['Nebra Outdoor Hotspot Gen 1'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi3-64'],
         'SPIBUS': 'spidev1.2',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -69,7 +69,7 @@ variant_definitions = {
     'nebra-outdoor2': {
         'FRIENDLY': 'Nebra ROCK Pi 4 Outdoor',
         'SUPPORTED_MODELS': ['Nebra ROCK Pi 4 Outdoor'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['rockpi-4b-rk3399'],
         'SPIBUS': 'spidev32766.0',
         'KEY_STORAGE_BUS': '/dev/i2c-7',
@@ -139,7 +139,7 @@ variant_definitions = {
     'nebra-light2': {
         'FRIENDLY': 'Nebra Radxa Zero Light Hotspot II SE',
         'SUPPORTED_MODELS': ['Nebra Radxa Zero Light Hotspot II SE'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['radxa-zero'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-3',
@@ -226,7 +226,7 @@ variant_definitions = {
     'nebra-indoor2': {
         'FRIENDLY': 'Nebra ROCK Pi 4 Indoor',
         'SUPPORTED_MODELS': ['Nebra ROCK Pi 4 Indoor'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['rockpi-4b-rk3399'],
         'SPIBUS': 'spidev32766.0',
         'KEY_STORAGE_BUS': '/dev/i2c-7',
@@ -272,7 +272,7 @@ variant_definitions = {
     'rak-fl1': {
         'FRIENDLY': 'RAK Hotspot',
         'SUPPORTED_MODELS': ['RAK v1.5', 'RAK v2', 'RAK MNTD'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -294,7 +294,7 @@ variant_definitions = {
     'helium-fl1': {
         'FRIENDLY': 'Helium Hotspot',
         'SUPPORTED_MODELS': ['Helium Hotspot'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi3-64', 'raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -316,7 +316,7 @@ variant_definitions = {
     'senscap-fl1': {
         'FRIENDLY': 'SenseCAP M1',
         'SUPPORTED_MODELS': ['SenseCAP M1'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -338,7 +338,7 @@ variant_definitions = {
     'panther-fl1': {
         'FRIENDLY': 'Panther X1',
         'SUPPORTED_MODELS': ['Panther X1'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -360,7 +360,7 @@ variant_definitions = {
     'finestra-fl1': {
         'FRIENDLY': 'Finestra Miner',
         'SUPPORTED_MODELS': ['Finestra Miner'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -387,7 +387,7 @@ variant_definitions = {
     'pisces-fl1': {
         'FRIENDLY': 'Pisces P100',
         'SUPPORTED_MODELS': ['Pisces P100'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-0',
@@ -409,7 +409,7 @@ variant_definitions = {
     'controllino-fl1': {
         'FRIENDLY': 'Controllino  (Conelcom) Hotspot',
         'SUPPORTED_MODELS': ['Controllino Hotspot', 'Conelcom Hotspot'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -484,7 +484,7 @@ variant_definitions = {
     'linxdot-fl1': {
         'FRIENDLY': 'Linxdot Hotspot',
         'SUPPORTED_MODELS': ['Linxdot Hotspot'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -506,7 +506,7 @@ variant_definitions = {
     'pycom-fl1': {
         'FRIENDLY': 'Pycom Hotspot',
         'SUPPORTED_MODELS': ['Pycom Hotspot'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-10',
@@ -528,7 +528,7 @@ variant_definitions = {
     'syncrobit-fl1': {
         'FRIENDLY': 'Syncrobit Hotspot',
         'SUPPORTED_MODELS': ['Syncrobit Hotspot'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
@@ -550,7 +550,7 @@ variant_definitions = {
     'cotx-fl1': {
         'FRIENDLY': 'COTX X3',
         'SUPPORTED_MODELS': ['COTX X3'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',  # There is a CSN1 pin which is connected to GPIO6 (HAT Pin 31)
         'KEY_STORAGE_BUS': '/dev/i2c-1',
