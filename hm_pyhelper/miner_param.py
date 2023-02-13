@@ -133,11 +133,19 @@ def get_gateway_mfr_command(sub_command: str, slot: int = 0) -> list:
 
     elif gateway_mfr_version >= Version('0.2.0'):
         try:
-            device_arg = [
-                '--device',
-                get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
-            ]
-            command.extend(device_arg)
+            if len(get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')) == 1:
+                device_arg = [
+                    '--device',
+                    get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
+                ]
+                command.extend(device_arg)
+            else:
+                for keyslot in get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI'):
+                    device_arg = [
+                        '--device',
+                        keyslot
+                    ]
+                    command.extend(device_arg)
         except (UnknownVariantException, UnknownVariantAttributeException) as e:
             LOGGER.warning(str(e) + ' Omitting --device arg.')
 
