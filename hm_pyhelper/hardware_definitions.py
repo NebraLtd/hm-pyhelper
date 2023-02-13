@@ -532,7 +532,7 @@ variant_definitions = {
         'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
         'SPIBUS': 'spidev0.0',
         'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0', 'ecc://i2c-1:88?slot=0'],
         'RESET': 17,
         'MAC': 'wlan0',
         'STATUS': 22,
