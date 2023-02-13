@@ -133,15 +133,16 @@ def get_gateway_mfr_command(sub_command: str, slot: int = 0) -> list:
 
     elif gateway_mfr_version >= Version('0.2.0'):
         try:
-            if len(get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')) == 1:
-                device_arg = [
-                    '--device',
-                    get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
-                ]
-                command.extend(device_arg)
-            else:
-                for keyslot in get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI'):
+            key_uri = get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
+                if len(key_uri) == 1:
                     device_arg = [
+                        '--device',
+                        get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
+                    ]
+                    command.extend(device_arg)
+                else:
+                    for keyslot in key_uri:
+                        device_arg = [
                         '--device',
                         keyslot
                     ]
