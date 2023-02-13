@@ -145,10 +145,10 @@ def get_gateway_mfr_command(sub_command: str, slot: int = 0) -> list:
                 for keyslot in key_uri:
                     try:
                         device_arg = [
-                        '--device',
-                        keyslot
-                    ]
-                    command.extend(device_arg)
+                            '--device',
+                            keyslot
+                        ]
+                        command.extend(device_arg)
         except (UnknownVariantException, UnknownVariantAttributeException) as e:
             LOGGER.warning(str(e) + ' Omitting --device arg.')
 
