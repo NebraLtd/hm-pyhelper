@@ -570,8 +570,8 @@ variant_definitions = {
         },
     # Midas CM4
     'midas-fl1': {
-        'FRIENDLY': 'Syncrobit Hotspot',
-        'SUPPORTED_MODELS': ['Syncrobit Hotspot'],
+        'FRIENDLY': 'Midas Hotspot',
+        'SUPPORTED_MODELS': ['Midas Hotspot'],
         'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
         'SPIBUS': 'spidev0.0',
