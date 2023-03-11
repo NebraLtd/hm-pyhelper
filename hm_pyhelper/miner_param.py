@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 import json
 import platform
@@ -26,7 +27,7 @@ SPI_UNAVAILABLE_SLEEP_SECONDS = 60
 
 
 @lock_ecc()
-def run_gateway_mfr(sub_command: str, slot: int = 0) -> dict:
+def run_gateway_mfr(sub_command: str, slot: int = False) -> dict:
     command = get_gateway_mfr_command(sub_command, slot=slot)
 
     try:
@@ -110,39 +111,31 @@ def get_gateway_mfr_version() -> Version:
         raise GatewayMFRInvalidVersion(err_str).with_traceback(e.__traceback__)
 
 
-def get_gateway_mfr_command(sub_command: str, slot: int = 0) -> list:
+def get_gateway_mfr_command(sub_command: str, slot: int = False) -> list:
     gateway_mfr_path = get_gateway_mfr_path()
     command = [gateway_mfr_path]
 
     gateway_mfr_version = get_gateway_mfr_version()
-    if Version('0.1.1') < gateway_mfr_version < Version('0.2.0'):
+
+    if gateway_mfr_version >= Version('0.2.0'):
         try:
-            device_arg = [
-                '--path',
-                get_variant_attribute(os.getenv('VARIANT'), 'KEY_STORAGE_BUS')
-            ]
-            command.extend(device_arg)
-        except (UnknownVariantException, UnknownVariantAttributeException) as e:
-            LOGGER.warning(str(e) + ' Omitting --path arg.')
+            if os.getenv('SWARM_KEY_URI_OVERRIDE'):
+                ecc_location = os.getenv('SWARM_KEY_URI_OVERRIDE')
+            else:
+                ecc_location = get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
 
-        command.append(sub_command)
-
-        # In case of "key" command, append the slot number 0 at the end.
-        if sub_command == "key":
-            command.append("0")
-
-    elif gateway_mfr_version >= Version('0.2.0'):
-        try:
             device_arg = [
                 '--device',
-                get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
+                ecc_location
             ]
             command.extend(device_arg)
         except (UnknownVariantException, UnknownVariantAttributeException) as e:
             LOGGER.warning(str(e) + ' Omitting --device arg.')
 
-        slot_str = f'slot={slot}'
-        command[-1] = command[-1].replace('slot=0', slot_str)
+        if slot:
+            slot_str = f'slot={slot}'
+            slot_pattern = r'(slot=\d+)'
+            command[-1] = re.sub(slot_pattern, slot_str, command[-1])
 
         if ' ' in sub_command:
             command += sub_command.split(' ')
