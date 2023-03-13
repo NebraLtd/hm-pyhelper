@@ -287,6 +287,7 @@ variant_definitions = {
         'BALENA_DEVICE_TYPE': ['raspberrypi3-64', 'raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
         'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'ONBOARDING_KEY_URI': 'ecc://i2c-1:96?slot=15',
         'RESET': 25,
         'MAC': 'wlan0',
         'STATUS': 20,
