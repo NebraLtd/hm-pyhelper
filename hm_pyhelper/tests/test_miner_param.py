@@ -8,7 +8,7 @@ from hm_pyhelper.exceptions import ECCMalfunctionException, \
     GatewayMFRFileNotFoundException, UnsupportedGatewayMfrVersion
 from hm_pyhelper.lock_singleton import ResourceBusyError
 from hm_pyhelper.miner_param import retry_get_region, await_spi_available, \
-    provision_key, run_gateway_mfr, \
+    provision_key, run_gateway_mfr, get_gateway_mfr_path, \
     did_gateway_mfr_test_result_include_miner_key_pass, \
     get_mac_address, get_public_keys_rust, get_gateway_mfr_version, get_gateway_mfr_command
 
@@ -120,44 +120,6 @@ class TestMinerParam(unittest.TestCase):
             [ANY, '--version'], capture_output=True, check=True)
 
     @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
-           return_value=Version('0.1.7'))
-    def test_get_gateway_mfr_command_v017(self, mocked_get_gateway_mfr_version):
-        actual_result = get_gateway_mfr_command('key')
-        expected_result = [ANY, '--path', '/dev/i2c-X', 'key', '0']
-        self.assertListEqual(actual_result, expected_result)
-        mocked_get_gateway_mfr_version.assert_called_once()
-
-        actual_result = get_gateway_mfr_command('info')
-        expected_result = [ANY, '--path', '/dev/i2c-X', 'info']
-        self.assertListEqual(actual_result, expected_result)
-
-    @patch.dict('os.environ', {"VARIANT": "NEBHNT-INVALID"})
-    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
-           return_value=Version('0.1.7'))
-    def test_get_gateway_mfr_command_v017_no_variant(self, mocked_get_gateway_mfr_version):
-        actual_result = get_gateway_mfr_command('key')
-        expected_result = [ANY, 'key', '0']
-        self.assertListEqual(actual_result, expected_result)
-        mocked_get_gateway_mfr_version.assert_called_once()
-
-        actual_result = get_gateway_mfr_command('info')
-        expected_result = [ANY, 'info']
-        self.assertListEqual(actual_result, expected_result)
-
-    @patch.dict('os.environ', {"VARIANT": "NEBHNT-NO-ECC-ADDRESS"})
-    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
-           return_value=Version('0.1.7'))
-    def test_get_gateway_mfr_command_v017_no_KEY_STORAGE_BUS(self, mocked_get_gateway_mfr_version):
-        actual_result = get_gateway_mfr_command('key')
-        expected_result = [ANY, 'key', '0']
-        self.assertListEqual(actual_result, expected_result)
-        mocked_get_gateway_mfr_version.assert_called_once()
-
-        actual_result = get_gateway_mfr_command('info')
-        expected_result = [ANY, 'info']
-        self.assertListEqual(actual_result, expected_result)
-
-    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
            return_value=Version('0.2.1'))
     def test_get_gateway_mfr_command_v021(self, mocked_get_gateway_mfr_version):
         actual_result = get_gateway_mfr_command('key')
@@ -165,8 +127,8 @@ class TestMinerParam(unittest.TestCase):
         self.assertListEqual(actual_result, expected_result)
         mocked_get_gateway_mfr_version.assert_called_once()
 
-        actual_result = get_gateway_mfr_command('info')
-        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=0', 'info']
+        actual_result = get_gateway_mfr_command('test', 9)
+        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=9', 'test']
         self.assertListEqual(actual_result, expected_result)
 
     @patch.dict('os.environ', {"VARIANT": "NEBHNT-INVALID"})
@@ -205,6 +167,7 @@ class TestMinerParam(unittest.TestCase):
 
         actual_result = get_gateway_mfr_command('info')
         expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=0', 'info']
+        self.assertListEqual(actual_result, expected_result)
 
     @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
            return_value=Version('0.3.9'))
@@ -216,6 +179,19 @@ class TestMinerParam(unittest.TestCase):
 
         actual_result = get_gateway_mfr_command('info')
         expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=0', 'info']
+        self.assertListEqual(actual_result, expected_result)
+
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.3.9'))
+    def test_get_gateway_mfr_command_slot_force(self, mocked_get_gateway_mfr_version):
+        actual_result = get_gateway_mfr_command('key', 3)
+        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=3', 'key']
+        self.assertListEqual(actual_result, expected_result)
+        mocked_get_gateway_mfr_version.assert_called_once()
+
+        actual_result = get_gateway_mfr_command('info', 15)
+        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=15', 'info']
+        self.assertListEqual(actual_result, expected_result)
 
     @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
            return_value=Version('0.0.0'))
@@ -352,3 +328,12 @@ class TestMinerParam(unittest.TestCase):
     def test_error_mac_address(self):
         with pytest.raises(MinerFailedToFetchMacAddress):
             get_mac_address("test/path")
+
+    @patch('platform.machine')
+    @patch('os.path.dirname')
+    def test_get_gateway_mfr_path(self, mock_dir, mock_platform):
+        mock_dir.return_value = "/test/this/works"
+        mock_platform.return_value = "aarch64"
+        actual_result = get_gateway_mfr_path()
+        expected_result = "/test/this/works/gateway_mfr_aarch64"
+        self.assertEqual(actual_result, expected_result)
