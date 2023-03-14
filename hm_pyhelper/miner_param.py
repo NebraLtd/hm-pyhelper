@@ -3,6 +3,7 @@ import re
 import subprocess
 import json
 import platform
+from urllib.parse import urlparse
 from packaging.version import Version
 
 from retry import retry
@@ -111,6 +112,28 @@ def get_gateway_mfr_version() -> Version:
         raise GatewayMFRInvalidVersion(err_str).with_traceback(e.__traceback__)
 
 
+def get_ecc_location() -> str:
+    ecc_list = get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
+
+    if os.getenv('SWARM_KEY_URI_OVERRIDE'):
+        ecc_location = os.getenv('SWARM_KEY_URI_OVERRIDE')
+    elif len(ecc_list) == 1:
+        ecc_location = ecc_list[0]
+    else:
+        for location in ecc_list:
+            parse_result = urlparse(location)
+            i2c_bus = parse_i2c_bus(parse_result.hostname)
+            i2c_address = parse_i2c_address(parse_result.port)
+            command = f'i2cdetect -y {i2c_bus}'
+            parameter = f'{i2c_address} --'
+
+            if config_search_param(command, parameter):
+                ecc_location = location
+                return ecc_location
+
+    return ecc_location
+
+
 def get_gateway_mfr_command(sub_command: str, slot: int = False) -> list:
     gateway_mfr_path = get_gateway_mfr_path()
     command = [gateway_mfr_path]
@@ -119,14 +142,9 @@ def get_gateway_mfr_command(sub_command: str, slot: int = False) -> list:
 
     if gateway_mfr_version >= Version('0.2.0'):
         try:
-            if os.getenv('SWARM_KEY_URI_OVERRIDE'):
-                ecc_location = os.getenv('SWARM_KEY_URI_OVERRIDE')
-            else:
-                ecc_location = get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
-
             device_arg = [
                 '--device',
-                ecc_location
+                get_ecc_location()
             ]
             command.extend(device_arg)
         except (UnknownVariantException, UnknownVariantAttributeException) as e:
@@ -334,3 +352,41 @@ def await_spi_available(spi_bus):
         return True
     else:
         raise SPIUnavailableException("SPI bus %s not found!" % spi_bus)
+
+
+@lock_ecc()
+def config_search_param(command, param):
+    """
+    input:
+        command: Command to execute
+        param: The parameter we are looking for in the response
+    return: True is exist, or False if doesn't exist
+    Possible exceptions:
+        TypeError: If the arguments passed to the function are not strings.
+    """
+    if type(command) is not str:
+        raise TypeError("The command must be a string value")
+    if type(param) is not str:
+        raise TypeError("The param must be a string value")
+    result = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+    out, err = result.communicate()
+    out = out.decode("UTF-8")
+    if param in out:
+        return True
+    else:
+        return False
+
+
+def parse_i2c_bus(address):
+    """
+    Takes i2c bus as input parameter, extracts the bus number and returns it.
+    """
+    i2c_bus_pattern = r'i2c-(\d+)'
+    return re.search(i2c_bus_pattern, address).group(1)
+
+
+def parse_i2c_address(port):
+    """
+    Takes i2c address in decimal as input parameter, extracts the hex version and returns it.
+    """
+    return f'{port:x}'
