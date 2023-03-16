@@ -3,7 +3,7 @@ import re
 import subprocess
 import json
 import platform
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 from packaging.version import Version
 
 from retry import retry
@@ -124,11 +124,18 @@ def get_ecc_location() -> str:
             parse_result = urlparse(ecc_list[index])
             i2c_bus = parse_i2c_bus(parse_result.hostname)
             i2c_address = parse_i2c_address(parse_result.port)
+            query_string = parse_qs(parse_result.query)
+            key_slots = query_string["slot"]
             command = f'i2cdetect -y {i2c_bus}'
             parameter = f'{i2c_address} --'
 
             if config_search_param(command, parameter):
-                ecc_location = location
+                if len(key_slots) == 1:
+                    ecc_location = ecc_list[index]
+                else:
+                    for slot in key_slots:    
+                        parse_result.query = f'slot={slot}'
+
                 return ecc_location
 
     return ecc_location
