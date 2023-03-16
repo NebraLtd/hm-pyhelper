@@ -120,8 +120,8 @@ def get_ecc_location() -> str:
     elif len(ecc_list) == 1:
         ecc_location = ecc_list[0]
     else:
-        for location in ecc_list:
-            parse_result = urlparse(location)
+        for index in range(len(ecc_list)):
+            parse_result = urlparse(ecc_list[index])
             i2c_bus = parse_i2c_bus(parse_result.hostname)
             i2c_address = parse_i2c_address(parse_result.port)
             command = f'i2cdetect -y {i2c_bus}'
