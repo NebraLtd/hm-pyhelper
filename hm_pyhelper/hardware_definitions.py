@@ -323,7 +323,7 @@ variant_definitions = {
         },
 
     # Panther X1
-    'panther-fl1': {
+    'pantherx1-fl1': {
         'FRIENDLY': 'Panther X1',
         'SUPPORTED_MODELS': ['Panther X1'],
         'CPU_ARCH': 'arm64',
@@ -483,6 +483,27 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
+    # Linxdot RKCM3
+    'linxdot-rkcm3-fl1': {
+        'FRIENDLY': 'Linxdot RockPi Hotspot',
+        'SUPPORTED_MODELS': ['Linxdot RockPi Hotspot'],
+        'CPU_ARCH': 'arm64',
+        'BALENA_DEVICE_TYPE': ['radxa-cm3-rpicm4-ioboard'],
+        'SPIBUS': 'spidev0.0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
+        'RESET': 17,
+        'MAC': 'wlan0',
+        'STATUS': 22,
+        'BUTTON': 27,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
     # Pycom CM4
     'pycom-fl1': {
         'FRIENDLY': 'Pycom Hotspot',
@@ -526,6 +547,28 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
+    # Syncrobit RKCM3
+    'syncrobit-rkcm3-fl1': {
+        'FRIENDLY': 'Syncrobit RockPi Hotspot',
+        'SUPPORTED_MODELS': ['Syncrobit RockPi Hotspot'],
+        'CPU_ARCH': 'arm64',
+        'BALENA_DEVICE_TYPE': ['radxa-cm3-rpicm4-ioboard'],
+        'SPIBUS': 'spidev0.0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0', 'ecc://i2c-1:88?slot=2'],
+        'ONBOARDING_KEY_URI': ['ecc://i2c-1:96?slot=0', 'ecc://i2c-1:88?slot=15'],
+        'RESET': 17,
+        'MAC': 'wlan0',
+        'STATUS': 22,
+        'BUTTON': 27,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
     # COTX X3 Hotspot
     'cotx-fl1': {
         'FRIENDLY': 'COTX X3',
@@ -547,6 +590,28 @@ variant_definitions = {
         'IC_IDS': [],
         'CONTAINS_IC_IDS': []
         },
+
+    # RisingHF
+    'risinghf-fl1': {
+        'FRIENDLY': 'RisingHF Hotspot',
+        'SUPPORTED_MODELS': ['RisingHF Hotspot'],
+        'CPU_ARCH': 'arm64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi3-64'],
+        'SPIBUS': 'spidev1.0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
+        'RESET': 38,
+        'MAC': 'eth0',
+        'STATUS': 25,
+        'BUTTON': 24,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': True,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
     # Midas CM4
     'midas-fl1': {
         'FRIENDLY': 'Midas Hotspot',
@@ -582,7 +647,7 @@ variant_definitions['NEBHNT-HHRK4-OUT'] = variant_definitions['nebra-outdoor2']
 variant_definitions['COMP-RAKHM'] = variant_definitions['rak-fl1']
 variant_definitions['COMP-HELIUM'] = variant_definitions['helium-fl1']
 variant_definitions['COMP-SENSECAPM1'] = variant_definitions['senscap-fl1']
-variant_definitions['COMP-PANTHERX1'] = variant_definitions['panther-fl1']
+variant_definitions['COMP-PANTHERX1'] = variant_definitions['pantherx1-fl1']
 variant_definitions['COMP-FINESTRA'] = variant_definitions['finestra-fl1']
 variant_definitions['COMP-PISCESP100'] = variant_definitions['pisces-fl1']
 variant_definitions['COMP-COTX3'] = variant_definitions['cotx-fl1']
@@ -591,6 +656,9 @@ variant_definitions['COMP-LINXDOTCM4'] = variant_definitions['linxdot-fl1']
 variant_definitions['COMP-PYCOM'] = variant_definitions['pycom-fl1']
 variant_definitions['COMP-SYNCROBITCM4'] = variant_definitions['syncrobit-fl1']
 variant_definitions['COMP-MIDAS'] = variant_definitions['midas-fl1']
+variant_definitions['COMP-SYNCROBITRKCM3'] = variant_definitions['syncrobit-rkcm3-fl1']
+variant_definitions['COMP-LINXDOTRKCM3'] = variant_definitions['linxdot-rkcm3-fl1']
+variant_definitions['COMP-RISINGHF'] = variant_definitions['risinghf-fl1']
 
 
 def get_variant_attribute(variant_name, attribute_key):
