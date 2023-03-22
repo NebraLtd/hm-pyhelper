@@ -302,7 +302,7 @@ variant_definitions = {
         },
 
     # SenseCAP M1 Hotspot
-    'senscap-fl1': {
+    'sensecap-fl1': {
         'FRIENDLY': 'SenseCAP M1',
         'SUPPORTED_MODELS': ['SenseCAP M1'],
         'CPU_ARCH': 'arm64',
@@ -646,7 +646,7 @@ variant_definitions['NEBHNT-HHRK4'] = variant_definitions['nebra-indoor2']
 variant_definitions['NEBHNT-HHRK4-OUT'] = variant_definitions['nebra-outdoor2']
 variant_definitions['COMP-RAKHM'] = variant_definitions['rak-fl1']
 variant_definitions['COMP-HELIUM'] = variant_definitions['helium-fl1']
-variant_definitions['COMP-SENSECAPM1'] = variant_definitions['senscap-fl1']
+variant_definitions['COMP-SENSECAPM1'] = variant_definitions['sensecap-fl1']
 variant_definitions['COMP-PANTHERX1'] = variant_definitions['pantherx1-fl1']
 variant_definitions['COMP-FINESTRA'] = variant_definitions['finestra-fl1']
 variant_definitions['COMP-PISCESP100'] = variant_definitions['pisces-fl1']
