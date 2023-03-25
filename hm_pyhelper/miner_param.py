@@ -115,8 +115,21 @@ def get_gateway_mfr_version() -> Version:
 def get_ecc_location() -> str:
     ecc_list = get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
 
+    try:
+        with open("eccfile", 'r') as data:
+            generated_ecc_location = str(data.read()).rstrip('\n')
+        if len(generated_ecc_location) < 10:
+            generated_ecc_location = None
+        else:
+            LOGGER.info("Generated ECC location file found: " + generated_ecc_location)
+    except FileNotFoundError:
+        # No ECC location file found, create one with value None
+        generated_ecc_location = None
+
     if os.getenv('SWARM_KEY_URI_OVERRIDE'):
         ecc_location = os.getenv('SWARM_KEY_URI_OVERRIDE')
+    elif generated_ecc_location is not None:
+        ecc_location = generated_ecc_location
     elif len(ecc_list) == 1:
         ecc_location = ecc_list[0]
     else:
@@ -129,6 +142,8 @@ def get_ecc_location() -> str:
 
             if config_search_param(command, parameter):
                 ecc_location = location
+                with open("eccfile", "w") as file:
+                    file.write(ecc_location)
                 return ecc_location
 
     return ecc_location
@@ -354,7 +369,6 @@ def await_spi_available(spi_bus):
         raise SPIUnavailableException("SPI bus %s not found!" % spi_bus)
 
 
-@lock_ecc()
 def config_search_param(command, param):
     """
     input:
