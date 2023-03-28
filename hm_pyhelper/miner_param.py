@@ -148,7 +148,7 @@ def get_ecc_location() -> str:
                 return ecc_location
 
     if not ecc_location:
-        ecc_location = 'None'
+        ecc_location = None
         LOGGER.info("Can't find ECC. Ensure SWARM_KEY_URI is correct in hardware definitions.")
 
     return ecc_location
