@@ -116,8 +116,9 @@ def get_ecc_location() -> str:
     ecc_list = get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
 
     try:
-        with open("eccfile", 'r') as data:
+        with open("/var/nebra/ecc_file", 'r') as data:
             generated_ecc_location = str(data.read()).rstrip('\n')
+
         if len(generated_ecc_location) < 10:
             generated_ecc_location = None
         else:
@@ -142,9 +143,13 @@ def get_ecc_location() -> str:
 
             if config_search_param(command, parameter):
                 ecc_location = location
-                with open("eccfile", "w") as file:
+                with open("/var/nebra/ecc_file", "w") as file:
                     file.write(ecc_location)
                 return ecc_location
+
+    if not ecc_location:
+        ecc_location = 'None'
+        LOGGER.info("Can't find ECC. Ensure SWARM_KEY_URI is correct in hardware definitions.")
 
     return ecc_location
 
