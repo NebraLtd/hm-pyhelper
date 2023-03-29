@@ -23,11 +23,10 @@ variant_definitions = {
     'nebra-indoor1': {
         'FRIENDLY': 'Nebra Indoor Hotspot Gen 1',
         'SUPPORTED_MODELS': ['Nebra Indoor Hotspot Gen 1'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi3-64'],
         'SPIBUS': 'spidev1.2',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 38,
         'MAC': 'eth0',
         'STATUS': 25,
@@ -45,11 +44,10 @@ variant_definitions = {
     'nebra-outdoor1': {
         'FRIENDLY': 'Nebra Outdoor Hotspot Gen 1',
         'SUPPORTED_MODELS': ['Nebra Outdoor Hotspot Gen 1'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi3-64'],
         'SPIBUS': 'spidev1.2',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 38,
         'MAC': 'eth0',
         'STATUS': 25,
@@ -65,15 +63,14 @@ variant_definitions = {
         },
 
     # Nebra Outdoor Hotspot Gen2
-    # Note:: assuming outdoor2 is equivalent to light miner 2
+    # Note:: assuming outdoor2 is equivalent to indoor2
     'nebra-outdoor2': {
         'FRIENDLY': 'Nebra ROCK Pi 4 Outdoor',
         'SUPPORTED_MODELS': ['Nebra ROCK Pi 4 Outdoor'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['rockpi-4b-rk3399'],
         'SPIBUS': 'spidev32766.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-7',
-        'SWARM_KEY_URI': 'ecc://i2c-7:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-7:96?slot=0'],
         'RESET': 149,
         'MAC': 'eth0',
         'STATUS': 156,
@@ -98,8 +95,7 @@ variant_definitions = {
         'CPU_ARCH': 'armv6hf',
         'BALENA_DEVICE_TYPE': ['raspberry-pi'],
         'SPIBUS': 'spidev1.2',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 22,
         'MAC': 'wlan0',
         'STATUS': 24,
@@ -120,8 +116,7 @@ variant_definitions = {
         'CPU_ARCH': 'armv6hf',
         'BALENA_DEVICE_TYPE': ['raspberry-pi'],
         'SPIBUS': 'spidev1.2',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 22,
         'MAC': 'wlan0',
         'STATUS': 24,
@@ -139,11 +134,10 @@ variant_definitions = {
     'nebra-light2': {
         'FRIENDLY': 'Nebra Radxa Zero Light Hotspot II SE',
         'SUPPORTED_MODELS': ['Nebra Radxa Zero Light Hotspot II SE'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['radxa-zero'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-3',
-        'SWARM_KEY_URI': 'ecc://i2c-3:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-3:96?slot=0'],
         'RESET': 415,
         'MAC': 'wlan0',
         'STATUS': 421,
@@ -164,7 +158,7 @@ variant_definitions = {
         'CPU_ARCH': 'armv6hf',
         'BALENA_DEVICE_TYPE': ['raspberry-pi'],
         'SPIBUS': 'spidev1.2',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 4,
         'MAC': 'wlan0',
         'STATUS': 26,
@@ -185,8 +179,7 @@ variant_definitions = {
         'CPU_ARCH': 'armv7hf',
         'BALENA_DEVICE_TYPE': ['beaglebone-black'],
         'SPIBUS': 'spidev1.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 60,
         'MAC': 'eth0',
         'STATUS': 31,
@@ -207,8 +200,7 @@ variant_definitions = {
         'CPU_ARCH': 'armv7hf',
         'BALENA_DEVICE_TYPE': ['beaglebone-pocket'],
         'SPIBUS': 'spidev1.2',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 60,
         'MAC': 'wlan0',
         'STATUS': 31,
@@ -226,11 +218,10 @@ variant_definitions = {
     'nebra-indoor2': {
         'FRIENDLY': 'Nebra ROCK Pi 4 Indoor',
         'SUPPORTED_MODELS': ['Nebra ROCK Pi 4 Indoor'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['rockpi-4b-rk3399'],
         'SPIBUS': 'spidev32766.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-7',
-        'SWARM_KEY_URI': 'ecc://i2c-7:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-7:96?slot=0'],
         'RESET': 149,
         'MAC': 'eth0',
         'STATUS': 156,
@@ -253,8 +244,7 @@ variant_definitions = {
         'CPU_ARCH': 'armv7hf',
         'BALENA_DEVICE_TYPE': ['asus-tinker-board'],
         'SPIBUS': 'spidev2.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 167,
         'MAC': 'eth0',
         'STATUS': 163,
@@ -272,11 +262,10 @@ variant_definitions = {
     'rak-fl1': {
         'FRIENDLY': 'RAK Hotspot',
         'SUPPORTED_MODELS': ['RAK v1.5', 'RAK v2', 'RAK MNTD'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 25,
         'MAC': 'wlan0',
         'STATUS': 20,
@@ -294,11 +283,11 @@ variant_definitions = {
     'helium-fl1': {
         'FRIENDLY': 'Helium Hotspot',
         'SUPPORTED_MODELS': ['Helium Hotspot'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi3-64', 'raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
+        'ONBOARDING_KEY_URI': ['ecc://i2c-1:96?slot=15'],
         'RESET': 25,
         'MAC': 'wlan0',
         'STATUS': 20,
@@ -313,14 +302,13 @@ variant_definitions = {
         },
 
     # SenseCAP M1 Hotspot
-    'senscap-fl1': {
+    'sensecap-fl1': {
         'FRIENDLY': 'SenseCAP M1',
         'SUPPORTED_MODELS': ['SenseCAP M1'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 17,
         'MAC': 'wlan0',
         'STATUS': 22,
@@ -335,14 +323,13 @@ variant_definitions = {
         },
 
     # Panther X1
-    'panther-fl1': {
+    'pantherx1-fl1': {
         'FRIENDLY': 'Panther X1',
         'SUPPORTED_MODELS': ['Panther X1'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 23,
         'MAC': 'wlan0',
         'STATUS': 22,
@@ -360,11 +347,10 @@ variant_definitions = {
     'finestra-fl1': {
         'FRIENDLY': 'Finestra Miner',
         'SUPPORTED_MODELS': ['Finestra Miner'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 17,
         'MAC': 'wlan0',
         'STATUS_LED': {
@@ -387,11 +373,10 @@ variant_definitions = {
     'pisces-fl1': {
         'FRIENDLY': 'Pisces P100',
         'SUPPORTED_MODELS': ['Pisces P100'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-0',
-        'SWARM_KEY_URI': 'ecc://i2c-0:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-0:96?slot=0'],
         'RESET': 23,
         'MAC': 'eth0',
         'STATUS': 17,
@@ -409,11 +394,10 @@ variant_definitions = {
     'controllino-fl1': {
         'FRIENDLY': 'Controllino  (Conelcom) Hotspot',
         'SUPPORTED_MODELS': ['Controllino Hotspot', 'Conelcom Hotspot'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 4,
         'MAC': 'wlan0',
         'STATUS_LED': {
@@ -441,8 +425,7 @@ variant_definitions = {
                                'raspberrypi0-2w-64', 'raspberrypi3-64',
                                'raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 22,
         'MAC': 'eth0',
         'STATUS': 20,
@@ -465,8 +448,7 @@ variant_definitions = {
                                'raspberrypi0-2w-64', 'raspberrypi3-64',
                                'raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 17,
         'MAC': 'eth0',
         'STATUS': 20,
@@ -484,11 +466,31 @@ variant_definitions = {
     'linxdot-fl1': {
         'FRIENDLY': 'Linxdot Hotspot',
         'SUPPORTED_MODELS': ['Linxdot Hotspot'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
+        'RESET': 17,
+        'MAC': 'wlan0',
+        'STATUS': 22,
+        'BUTTON': 27,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
+    # Linxdot RKCM3
+    'linxdot-rkcm3-fl1': {
+        'FRIENDLY': 'Linxdot RockPi Hotspot',
+        'SUPPORTED_MODELS': ['Linxdot RockPi Hotspot'],
+        'CPU_ARCH': 'arm64',
+        'BALENA_DEVICE_TYPE': ['radxa-cm3-rpicm4-ioboard'],
+        'SPIBUS': 'spidev0.0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 17,
         'MAC': 'wlan0',
         'STATUS': 22,
@@ -506,11 +508,10 @@ variant_definitions = {
     'pycom-fl1': {
         'FRIENDLY': 'Pycom Hotspot',
         'SUPPORTED_MODELS': ['Pycom Hotspot'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-10',
-        'SWARM_KEY_URI': 'ecc://i2c-10:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-10:96?slot=0'],
         'RESET': 23,
         'MAC': 'wlan0',
         'STATUS': 22,
@@ -528,11 +529,33 @@ variant_definitions = {
     'syncrobit-fl1': {
         'FRIENDLY': 'Syncrobit Hotspot',
         'SUPPORTED_MODELS': ['Syncrobit Hotspot'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
         'SPIBUS': 'spidev0.0',
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0', 'ecc://i2c-1:88?slot=2'],
+        'ONBOARDING_KEY_URI': ['ecc://i2c-1:96?slot=0', 'ecc://i2c-1:88?slot=15'],
+        'RESET': 17,
+        'MAC': 'wlan0',
+        'STATUS': 22,
+        'BUTTON': 27,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
+    # Syncrobit RKCM3
+    'syncrobit-rkcm3-fl1': {
+        'FRIENDLY': 'Syncrobit RockPi Hotspot',
+        'SUPPORTED_MODELS': ['Syncrobit RockPi Hotspot'],
+        'CPU_ARCH': 'arm64',
+        'BALENA_DEVICE_TYPE': ['radxa-cm3-rpicm4-ioboard'],
+        'SPIBUS': 'spidev0.0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0', 'ecc://i2c-1:88?slot=2'],
+        'ONBOARDING_KEY_URI': ['ecc://i2c-1:96?slot=0', 'ecc://i2c-1:88?slot=15'],
         'RESET': 17,
         'MAC': 'wlan0',
         'STATUS': 22,
@@ -550,11 +573,10 @@ variant_definitions = {
     'cotx-fl1': {
         'FRIENDLY': 'COTX X3',
         'SUPPORTED_MODELS': ['COTX X3'],
-        'CPU_ARCH': 'aarch64',
+        'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['raspberrypi4-64'],
         'SPIBUS': 'spidev0.0',  # There is a CSN1 pin which is connected to GPIO6 (HAT Pin 31)
-        'KEY_STORAGE_BUS': '/dev/i2c-1',
-        'SWARM_KEY_URI': 'ecc://i2c-1:96?slot=0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'RESET': 22,
         'MAC': 'eth0',
         'STATUS': 21,  # Stub. There is no status LED on X3. I2C-3 is used for display
@@ -563,6 +585,48 @@ variant_definitions = {
         'ECCOB': True,
         'TYPE': 'Full',
         'CELLULAR': False,  # There is a 4G option on the HAT board.
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
+    # RisingHF
+    'risinghf-fl1': {
+        'FRIENDLY': 'RisingHF Hotspot',
+        'SUPPORTED_MODELS': ['RisingHF Hotspot'],
+        'CPU_ARCH': 'arm64',
+        'BALENA_DEVICE_TYPE': ['raspberrypi3-64'],
+        'SPIBUS': 'spidev1.0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
+        'RESET': 38,
+        'MAC': 'eth0',
+        'STATUS': 25,
+        'BUTTON': 24,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': True,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
+    # Midas CM4
+    'midas-fl1': {
+        'FRIENDLY': 'Midas Hotspot',
+        'SUPPORTED_MODELS': ['Midas Hotspot'],
+        'CPU_ARCH': 'arm64',
+        'BALENA_DEVICE_TYPE': ['raspberrypicm4-ioboard'],
+        'SPIBUS': 'spidev0.0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
+        'RESET': 17,
+        'MAC': 'wlan0',
+        'STATUS': 22,
+        'BUTTON': 27,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
         'FCC_IDS': [],
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
@@ -582,8 +646,8 @@ variant_definitions['NEBHNT-HHRK4'] = variant_definitions['nebra-indoor2']
 variant_definitions['NEBHNT-HHRK4-OUT'] = variant_definitions['nebra-outdoor2']
 variant_definitions['COMP-RAKHM'] = variant_definitions['rak-fl1']
 variant_definitions['COMP-HELIUM'] = variant_definitions['helium-fl1']
-variant_definitions['COMP-SENSECAPM1'] = variant_definitions['senscap-fl1']
-variant_definitions['COMP-PANTHERX1'] = variant_definitions['panther-fl1']
+variant_definitions['COMP-SENSECAPM1'] = variant_definitions['sensecap-fl1']
+variant_definitions['COMP-PANTHERX1'] = variant_definitions['pantherx1-fl1']
 variant_definitions['COMP-FINESTRA'] = variant_definitions['finestra-fl1']
 variant_definitions['COMP-PISCESP100'] = variant_definitions['pisces-fl1']
 variant_definitions['COMP-COTX3'] = variant_definitions['cotx-fl1']
@@ -591,6 +655,10 @@ variant_definitions['COMP-CONTROLLINO'] = variant_definitions['controllino-fl1']
 variant_definitions['COMP-LINXDOTCM4'] = variant_definitions['linxdot-fl1']
 variant_definitions['COMP-PYCOM'] = variant_definitions['pycom-fl1']
 variant_definitions['COMP-SYNCROBITCM4'] = variant_definitions['syncrobit-fl1']
+variant_definitions['COMP-MIDAS'] = variant_definitions['midas-fl1']
+variant_definitions['COMP-SYNCROBITRKCM3'] = variant_definitions['syncrobit-rkcm3-fl1']
+variant_definitions['COMP-LINXDOTRKCM3'] = variant_definitions['linxdot-rkcm3-fl1']
+variant_definitions['COMP-RISINGHF'] = variant_definitions['risinghf-fl1']
 
 
 def get_variant_attribute(variant_name, attribute_key):

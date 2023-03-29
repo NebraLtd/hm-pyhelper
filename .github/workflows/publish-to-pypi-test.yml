@@ -17,18 +17,31 @@ jobs:
 
       - name: Fetch gateway-mfr-rs
         env:
-          GATEWAY_MFR_RS_RELEASE: v0.2.2
+          GATEWAY_MFR_RS_RELEASE: v0.3.2
         run: |
-          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz"
-          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum"
-          SHA256=$( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz" | awk '{print $1}')
-          echo "Generated checksum: ${SHA256}"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf-ecc608.tar.gz"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf-ecc608.checksum"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu-ecc608.tar.gz"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu-ecc608.checksum"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-unknown-linux-gnu-ecc608.tar.gz"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-unknown-linux-gnu-ecc608.checksum"
+          SHA256_ARM=$( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf-ecc608.tar.gz" | awk '{print $1}')
+          SHA256_AARCH64=$( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu-ecc608.tar.gz" | awk '{print $1}')
+          SHA256_X86_64=$( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-unknown-linux-gnu-ecc608.tar.gz" | awk '{print $1}')
+          echo "Generated checksum ARM: ${SHA256_ARM}"
+          echo "Generated checksum AARCH64: ${SHA256_AARCH64}"
+          echo "Generated checksum X86_64: ${SHA256_X86_64}"
 
-          # Verify the checksum 
-          if grep -q "${SHA256}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum"; then
+          # Verify the checksums
+          if grep -q "${SHA256_ARM}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf-ecc608.checksum" && grep -q "${SHA256_AARCH64}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu-ecc608.checksum" && grep -q "${SHA256_X86_64}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-unknown-linux-gnu-ecc608.checksum"; then
             echo "Checksum verified for gateway_mfr. Unpacking tarball..."
-            # Unpack the tarball
-            tar -xvf "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz"
+            # Unpack the tarballs
+            tar -xvf "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf-ecc608.tar.gz"
+            mv gateway_mfr gateway_mfr_arm
+            tar -xvf "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu-ecc608.tar.gz"
+            mv gateway_mfr gateway_mfr_aarch64
+            tar -xvf "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-unknown-linux-gnu-ecc608.tar.gz"
+            mv gateway_mfr gateway_mfr_x86_64
             exit 0
           else
             echo "Checksum does not match. Please check download manually and rerun!"
@@ -37,12 +50,16 @@ jobs:
 
       - name: Change permissions on gateway_mfr
         run: |
-          chmod +x gateway_mfr
-
+          chmod +x gateway_mfr_arm
+          chmod +x gateway_mfr_aarch64
+          chmod +x gateway_mfr_x86_64
+          
       - name: Move gateway_mfr in place
         run: |
-          mv gateway_mfr hm_pyhelper/
-
+          mv gateway_mfr_arm hm_pyhelper/gateway_mfr
+          mv gateway_mfr_aarch64 hm_pyhelper/gateway_mfr_aarch64
+          mv gateway_mfr_x86_64 hm_pyhelper/gateway_mfr_x86_64
+          
       - name: Install pypa/build
         run: |
           python -m pip install build --user

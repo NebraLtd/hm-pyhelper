@@ -1,1 +1,2 @@
 include hm_pyhelper/gateway_mfr
+include hm_pyhelper/gateway_mfr_aarch64

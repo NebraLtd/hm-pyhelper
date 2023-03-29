@@ -1,17 +1,19 @@
 import json
 import unittest
 import pytest
-from unittest.mock import ANY, mock_open, patch
+import sys
+from unittest.mock import ANY, mock_open, patch, Mock
 from packaging.version import Version
 from hm_pyhelper.exceptions import ECCMalfunctionException, \
     MinerFailedToFetchMacAddress, GatewayMFRInvalidVersion, GatewayMFRExecutionException, \
     GatewayMFRFileNotFoundException, UnsupportedGatewayMfrVersion
 from hm_pyhelper.lock_singleton import ResourceBusyError
 from hm_pyhelper.miner_param import retry_get_region, await_spi_available, \
-    provision_key, run_gateway_mfr, \
-    did_gateway_mfr_test_result_include_miner_key_pass, \
+    provision_key, run_gateway_mfr, get_gateway_mfr_path, config_search_param, get_ecc_location, \
+    did_gateway_mfr_test_result_include_miner_key_pass, parse_i2c_address, parse_i2c_bus, \
     get_mac_address, get_public_keys_rust, get_gateway_mfr_version, get_gateway_mfr_command
 
+sys.path.append("..")
 
 ALL_PASS_GATEWAY_MFR_TESTS = {
     'ecdh(0)': {'error': 'decode error\n\nCaused by:\n    not a compact key', 'result': 'fail'},
@@ -61,13 +63,21 @@ NONE_PASS_GATEWAY_MFR_TESTS = {
 MOCK_VARIANT_DEFINITIONS = {
         'NEBHNT-WITH-ECC-ADDRESS': {
             'KEY_STORAGE_BUS': '/dev/i2c-X',
-            'SWARM_KEY_URI': 'ecc://i2c-X:96?slot=0',
+            'SWARM_KEY_URI': ['ecc://i2c-X:96?slot=0'],
         },
         'NEBHNT-NO-ECC-ADDRESS': {
             'NO_KEY_STORAGE_BUS': '/dev/i2c-X',
-            'NO_KEY_SWARM_KEY_URI': 'ecc://i2c-X:96?slot=0',
+            'NO_KEY_SWARM_KEY_URI': ['ecc://i2c-X:96?slot=0'],
+        },
+        'NEBHNT-MULTIPLE-ECC-ADDRESS': {
+            'KEY_STORAGE_BUS': '/dev/i2c-2',
+            'SWARM_KEY_URI': ['ecc://i2c-3:96?slot=0', 'ecc://i2c-4:88?slot=10'],
+            'ONBOARDING_KEY_URI': ['ecc://i2c-3:96?slot=0', 'ecc://i2c-4:88?slot=15'],
         }
     }
+
+ECC_FILE_DATA = 'ecc://i2c-Y:96?slot=1'
+ECC_FILE_DATA_BLANK = None
 
 
 class SubprocessResult(object):
@@ -120,44 +130,6 @@ class TestMinerParam(unittest.TestCase):
             [ANY, '--version'], capture_output=True, check=True)
 
     @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
-           return_value=Version('0.1.7'))
-    def test_get_gateway_mfr_command_v017(self, mocked_get_gateway_mfr_version):
-        actual_result = get_gateway_mfr_command('key')
-        expected_result = [ANY, '--path', '/dev/i2c-X', 'key', '0']
-        self.assertListEqual(actual_result, expected_result)
-        mocked_get_gateway_mfr_version.assert_called_once()
-
-        actual_result = get_gateway_mfr_command('info')
-        expected_result = [ANY, '--path', '/dev/i2c-X', 'info']
-        self.assertListEqual(actual_result, expected_result)
-
-    @patch.dict('os.environ', {"VARIANT": "NEBHNT-INVALID"})
-    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
-           return_value=Version('0.1.7'))
-    def test_get_gateway_mfr_command_v017_no_variant(self, mocked_get_gateway_mfr_version):
-        actual_result = get_gateway_mfr_command('key')
-        expected_result = [ANY, 'key', '0']
-        self.assertListEqual(actual_result, expected_result)
-        mocked_get_gateway_mfr_version.assert_called_once()
-
-        actual_result = get_gateway_mfr_command('info')
-        expected_result = [ANY, 'info']
-        self.assertListEqual(actual_result, expected_result)
-
-    @patch.dict('os.environ', {"VARIANT": "NEBHNT-NO-ECC-ADDRESS"})
-    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
-           return_value=Version('0.1.7'))
-    def test_get_gateway_mfr_command_v017_no_KEY_STORAGE_BUS(self, mocked_get_gateway_mfr_version):
-        actual_result = get_gateway_mfr_command('key')
-        expected_result = [ANY, 'key', '0']
-        self.assertListEqual(actual_result, expected_result)
-        mocked_get_gateway_mfr_version.assert_called_once()
-
-        actual_result = get_gateway_mfr_command('info')
-        expected_result = [ANY, 'info']
-        self.assertListEqual(actual_result, expected_result)
-
-    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
            return_value=Version('0.2.1'))
     def test_get_gateway_mfr_command_v021(self, mocked_get_gateway_mfr_version):
         actual_result = get_gateway_mfr_command('key')
@@ -165,8 +137,8 @@ class TestMinerParam(unittest.TestCase):
         self.assertListEqual(actual_result, expected_result)
         mocked_get_gateway_mfr_version.assert_called_once()
 
-        actual_result = get_gateway_mfr_command('info')
-        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=0', 'info']
+        actual_result = get_gateway_mfr_command('test', 9)
+        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=9', 'test']
         self.assertListEqual(actual_result, expected_result)
 
     @patch.dict('os.environ', {"VARIANT": "NEBHNT-INVALID"})
@@ -195,6 +167,52 @@ class TestMinerParam(unittest.TestCase):
         expected_result = [ANY, 'test']
         self.assertListEqual(actual_result, expected_result)
 
+    @patch.dict('os.environ', {"SWARM_KEY_URI_OVERRIDE": "override-test"})
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.2.1'))
+    def test_get_gateway_mfr_command_v021_override(self, mocked_get_gateway_mfr_version):
+        actual_result = get_gateway_mfr_command('key')
+        expected_result = [ANY, '--device', 'override-test', 'key']
+        self.assertListEqual(actual_result, expected_result)
+        mocked_get_gateway_mfr_version.assert_called_once()
+
+        actual_result = get_gateway_mfr_command('test')
+        expected_result = [ANY, '--device', 'override-test', 'test']
+        self.assertListEqual(actual_result, expected_result)
+
+    @patch("builtins.open", mock_open(read_data=ECC_FILE_DATA_BLANK))
+    @patch.dict('os.environ', {"VARIANT": "NEBHNT-MULTIPLE-ECC-ADDRESS"})
+    @patch('subprocess.Popen')
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.2.1'))
+    def test_get_gateway_mfr_command_v021_multi_SWARM_KEY_URI(self, mocked_get_gateway_mfr_version,
+                                                              mock_subproc_popen):
+        process_mock = Mock()
+        attrs = {'communicate.return_value': (str.encode("60 --"), 'error')}
+        process_mock.configure_mock(**attrs)
+        mock_subproc_popen.return_value = process_mock
+
+        actual_result = get_gateway_mfr_command('key')
+        expected_result = [ANY, '--device', 'ecc://i2c-3:96?slot=0', 'key']
+        self.assertListEqual(actual_result, expected_result)
+        mocked_get_gateway_mfr_version.assert_called_once()
+
+    @patch("builtins.open", mock_open(read_data=ECC_FILE_DATA_BLANK))
+    @patch.dict('os.environ', {"VARIANT": "NEBHNT-MULTIPLE-ECC-ADDRESS"})
+    @patch('subprocess.Popen')
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.2.1'))
+    def test_get_gateway_mfr_command_v021_multi_SWARM_KEY_58(self, mocked_get_gateway_mfr_version,
+                                                             mock_subproc_popen):
+        process_mock = Mock()
+        attrs = {'communicate.return_value': (str.encode("58 --"), 'error')}
+        process_mock.configure_mock(**attrs)
+        mock_subproc_popen.return_value = process_mock
+
+        actual_result = get_gateway_mfr_command('test')
+        expected_result = [ANY, '--device', 'ecc://i2c-4:88?slot=10', 'test']
+        self.assertListEqual(actual_result, expected_result)
+
     @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
            return_value=Version('0.2.0'))
     def test_get_gateway_mfr_command_v020(self, mocked_get_gateway_mfr_version):
@@ -205,6 +223,7 @@ class TestMinerParam(unittest.TestCase):
 
         actual_result = get_gateway_mfr_command('info')
         expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=0', 'info']
+        self.assertListEqual(actual_result, expected_result)
 
     @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
            return_value=Version('0.3.9'))
@@ -216,6 +235,19 @@ class TestMinerParam(unittest.TestCase):
 
         actual_result = get_gateway_mfr_command('info')
         expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=0', 'info']
+        self.assertListEqual(actual_result, expected_result)
+
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.3.9'))
+    def test_get_gateway_mfr_command_slot_force(self, mocked_get_gateway_mfr_version):
+        actual_result = get_gateway_mfr_command('key', 3)
+        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=3', 'key']
+        self.assertListEqual(actual_result, expected_result)
+        mocked_get_gateway_mfr_version.assert_called_once()
+
+        actual_result = get_gateway_mfr_command('info', 15)
+        expected_result = [ANY, '--device', 'ecc://i2c-X:96?slot=15', 'info']
+        self.assertListEqual(actual_result, expected_result)
 
     @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
            return_value=Version('0.0.0'))
@@ -223,6 +255,12 @@ class TestMinerParam(unittest.TestCase):
         with self.assertRaises(UnsupportedGatewayMfrVersion):
             get_gateway_mfr_command('key')
         mocked_get_gateway_mfr_version.assert_called_once()
+
+    @patch("builtins.open", mock_open(read_data=ECC_FILE_DATA))
+    def test_get_ecc_location_generated_ecc(self):
+        actual_result = get_ecc_location()
+        expected_result = 'ecc://i2c-Y:96?slot=1'
+        self.assertEqual(actual_result, expected_result)
 
     @patch('hm_pyhelper.miner_param.get_gateway_mfr_command',
            return_value=['gateway_mfr', 'arg1', 'arg2'])
@@ -352,3 +390,51 @@ class TestMinerParam(unittest.TestCase):
     def test_error_mac_address(self):
         with pytest.raises(MinerFailedToFetchMacAddress):
             get_mac_address("test/path")
+
+    @patch('platform.machine')
+    @patch('os.path.dirname')
+    def test_get_gateway_mfr_path(self, mock_dir, mock_platform):
+        mock_dir.return_value = "/test/this/works"
+        mock_platform.return_value = "aarch64"
+        actual_result = get_gateway_mfr_path()
+        expected_result = "/test/this/works/gateway_mfr_aarch64"
+        self.assertEqual(actual_result, expected_result)
+
+    def test_parse_i2c_address(self):
+        port = 96
+        output = parse_i2c_address(port)
+        hex_i2c_address = '60'
+
+        self.assertEqual(output, hex_i2c_address)
+
+    def test_parse_i2c_bus(self):
+        bus = 'i2c-1'
+        output = parse_i2c_bus(bus)
+        i2c_bus = '1'
+
+        self.assertEqual(output, i2c_bus)
+
+
+class TestConfigSearch(unittest.TestCase):
+    @patch('subprocess.Popen')
+    def test_correct_param(self, mock_subproc_popen):
+        process_mock = Mock()
+        attrs = {'communicate.return_value': (str.encode("60--"), 'error')}
+        process_mock.configure_mock(**attrs)
+        mock_subproc_popen.return_value = process_mock
+        result = config_search_param("somecommand", "60--")
+        self.assertEqual(result, True)
+
+    @patch('subprocess.Popen')
+    def test_incorrect_param(self, mock_subproc_popen):
+        process_mock = Mock()
+        attrs = {'communicate.return_value': (str.encode('output'), 'error')}
+        process_mock.configure_mock(**attrs)
+        mock_subproc_popen.return_value = process_mock
+        result = config_search_param("somecommand", "60--")
+        self.assertEqual(result, False)
+
+    def test_types(self):
+        self.assertRaises(TypeError, config_search_param, 1, 2)
+        self.assertRaises(TypeError, config_search_param, "123321", 1)
+        self.assertRaises(TypeError, config_search_param, 1, "123321")
