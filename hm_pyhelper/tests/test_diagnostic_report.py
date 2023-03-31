@@ -1,5 +1,6 @@
 import unittest
 import json
+from hm_pyhelper.constants.diagnostics import ERRORS_KEY
 
 from hm_pyhelper.diagnostics import Diagnostic, DiagnosticsReport
 from hm_pyhelper.diagnostics.diagnostics_report import \
@@ -78,7 +79,7 @@ class TestDiagnostic(unittest.TestCase):
 
         response = {
             'diagnostics_passed': False,
-            'errors': ['ECC', 'BN', 'OK', 'PK', 'PF'],
+            ERRORS_KEY: ['ECC', 'BN', 'OK', 'PK', 'PF'],
             'serial_number': '0000000021aabbcc',
             'ECC': 'gateway_mfr test finished with error',
             'E0': 'F0:4C:D5:58:E0:E1',
