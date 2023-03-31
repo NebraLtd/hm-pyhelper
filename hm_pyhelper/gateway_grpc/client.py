@@ -5,7 +5,7 @@ import json
 from typing import Union
 
 from hm_pyhelper.protos import blockchain_txn_add_gateway_v1_pb2, \
-    local_pb2_grpc, local_pb2, region_pb2
+    local_pb2_grpc, local_pb2, region_pb2, gateway_staking_mode_pb2
 from hm_pyhelper.gateway_grpc.exceptions import MinerMalformedAddGatewayTxn
 
 from hm_pyhelper.logger import get_logger
@@ -52,12 +52,6 @@ class GatewayClient(object):
     def __exit__(self, _, _2, _3):
         self._channel.close()
 
-    def get_validator_info(self) -> local_pb2.height_res:
-        return self.stub.height(local_pb2.height_req())
-
-    def get_height(self) -> int:
-        return self.get_validator_info().height
-
     def get_region_enum(self) -> int:
         '''
         Returns the current configured region of the gateway.
@@ -100,52 +94,14 @@ class GatewayClient(object):
             "region": str
                 configured region eg. "US915",
             "key": str
-                gateway/device public key,
-            "validator": {
-                "height": int
-                    blockchain height,
-                "block_age": int
-                    age of the last block in seconds,
-                "address": str
-                    public key/address of the validator,
-                "uri": http url
-                    http endpoint of the validator
-            }
+                gateway/device public key
         }
         '''
-        validator_info = self.get_validator_info()
         return {
             'region': self.get_region(),
             'key': self.get_pubkey(),
             'gateway_version': self.get_gateway_version(),
-            'validator': {
-                'height': validator_info.height,
-                'block_age': validator_info.block_age,
-                'address': decode_pub_key(validator_info.gateway.address),
-                'uri': validator_info.gateway.uri
-            }
         }
-
-    def get_blockchain_config_variables(self, keys: list) -> local_pb2.config_res:
-        '''
-        Allows one to query blockchain variables. For a complete list of chain variables ref
-        https://helium.plus/chain-vars
-
-        Returns config_res which is a list of config_value for the given list
-        of blockchain variables.
-        '''
-        return self.stub.config(local_pb2.config_req(keys=keys))
-
-    def get_blockchain_config_variable(self, key: str) -> local_pb2.config_value:
-        '''
-        Convenience method to get a single variable from the blockchain
-
-        Raises ValueError if the key is not found
-        '''
-        values = self.get_blockchain_config_variables(keys=[key]).values
-        if not values[0].value:
-            raise ValueError(f'{key} not found on chain')
-        return values[0]
 
     def get_gateway_version(self) -> Union[str, None]:
         '''
@@ -164,7 +120,8 @@ class GatewayClient(object):
             return None
 
     def create_add_gateway_txn(self, owner_address: str, payer_address: str,
-                               staking_mode: local_pb2.gateway_staking_mode = local_pb2.light,
+                               staking_mode: gateway_staking_mode_pb2.gateway_staking_mode
+                               = gateway_staking_mode_pb2.gateway_staking_mode.light,
                                gateway_address: str = "") -> dict:
         """
         Invokes the txn_add_gateway RPC endpoint on the gateway and returns
