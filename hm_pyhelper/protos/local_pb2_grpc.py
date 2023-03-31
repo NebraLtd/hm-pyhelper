@@ -19,30 +19,15 @@ class apiStub(object):
                 request_serializer=local__pb2.pubkey_req.SerializeToString,
                 response_deserializer=local__pb2.pubkey_res.FromString,
                 )
-        self.sign = channel.unary_unary(
-                '/helium.local.api/sign',
-                request_serializer=local__pb2.sign_req.SerializeToString,
-                response_deserializer=local__pb2.sign_res.FromString,
-                )
-        self.ecdh = channel.unary_unary(
-                '/helium.local.api/ecdh',
-                request_serializer=local__pb2.ecdh_req.SerializeToString,
-                response_deserializer=local__pb2.ecdh_res.FromString,
-                )
-        self.config = channel.unary_unary(
-                '/helium.local.api/config',
-                request_serializer=local__pb2.config_req.SerializeToString,
-                response_deserializer=local__pb2.config_res.FromString,
-                )
-        self.height = channel.unary_unary(
-                '/helium.local.api/height',
-                request_serializer=local__pb2.height_req.SerializeToString,
-                response_deserializer=local__pb2.height_res.FromString,
-                )
         self.region = channel.unary_unary(
                 '/helium.local.api/region',
                 request_serializer=local__pb2.region_req.SerializeToString,
                 response_deserializer=local__pb2.region_res.FromString,
+                )
+        self.router = channel.unary_unary(
+                '/helium.local.api/router',
+                request_serializer=local__pb2.router_req.SerializeToString,
+                response_deserializer=local__pb2.router_res.FromString,
                 )
         self.add_gateway = channel.unary_unary(
                 '/helium.local.api/add_gateway',
@@ -60,31 +45,13 @@ class apiServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def sign(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def ecdh(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def config(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def height(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def region(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def router(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -104,30 +71,15 @@ def add_apiServicer_to_server(servicer, server):
                     request_deserializer=local__pb2.pubkey_req.FromString,
                     response_serializer=local__pb2.pubkey_res.SerializeToString,
             ),
-            'sign': grpc.unary_unary_rpc_method_handler(
-                    servicer.sign,
-                    request_deserializer=local__pb2.sign_req.FromString,
-                    response_serializer=local__pb2.sign_res.SerializeToString,
-            ),
-            'ecdh': grpc.unary_unary_rpc_method_handler(
-                    servicer.ecdh,
-                    request_deserializer=local__pb2.ecdh_req.FromString,
-                    response_serializer=local__pb2.ecdh_res.SerializeToString,
-            ),
-            'config': grpc.unary_unary_rpc_method_handler(
-                    servicer.config,
-                    request_deserializer=local__pb2.config_req.FromString,
-                    response_serializer=local__pb2.config_res.SerializeToString,
-            ),
-            'height': grpc.unary_unary_rpc_method_handler(
-                    servicer.height,
-                    request_deserializer=local__pb2.height_req.FromString,
-                    response_serializer=local__pb2.height_res.SerializeToString,
-            ),
             'region': grpc.unary_unary_rpc_method_handler(
                     servicer.region,
                     request_deserializer=local__pb2.region_req.FromString,
                     response_serializer=local__pb2.region_res.SerializeToString,
+            ),
+            'router': grpc.unary_unary_rpc_method_handler(
+                    servicer.router,
+                    request_deserializer=local__pb2.router_req.FromString,
+                    response_serializer=local__pb2.router_res.SerializeToString,
             ),
             'add_gateway': grpc.unary_unary_rpc_method_handler(
                     servicer.add_gateway,
@@ -162,74 +114,6 @@ class api(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def sign(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/helium.local.api/sign',
-            local__pb2.sign_req.SerializeToString,
-            local__pb2.sign_res.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def ecdh(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/helium.local.api/ecdh',
-            local__pb2.ecdh_req.SerializeToString,
-            local__pb2.ecdh_res.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def config(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/helium.local.api/config',
-            local__pb2.config_req.SerializeToString,
-            local__pb2.config_res.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def height(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/helium.local.api/height',
-            local__pb2.height_req.SerializeToString,
-            local__pb2.height_res.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def region(request,
             target,
             options=(),
@@ -243,6 +127,23 @@ class api(object):
         return grpc.experimental.unary_unary(request, target, '/helium.local.api/region',
             local__pb2.region_req.SerializeToString,
             local__pb2.region_res.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def router(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/helium.local.api/router',
+            local__pb2.router_req.SerializeToString,
+            local__pb2.router_res.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

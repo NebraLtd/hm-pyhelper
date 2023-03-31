@@ -49,7 +49,7 @@ class TestData:
     expected_summary = {
         'region': region_name,
         'key': pubkey_decoded,
-        'gateway_version': "v1.0.0~alpha.23",
+        'gateway_version': "v1.0.0",
         'validator': {
             'height': height_res.height,
             'block_age': height_res.block_age,
