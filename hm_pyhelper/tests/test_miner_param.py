@@ -226,7 +226,7 @@ class TestMinerParam(unittest.TestCase):
         mock_subproc_popen.return_value = process_mock
 
         actual_result = get_gateway_mfr_command('test')
-        expected_result = [ANY, '--device', 'None', 'test']
+        expected_result = [ANY, '--device', None, 'test']
         self.assertListEqual(actual_result, expected_result)
 
     @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
