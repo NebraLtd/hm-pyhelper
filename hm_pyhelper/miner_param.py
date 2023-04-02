@@ -114,6 +114,7 @@ def get_gateway_mfr_version() -> Version:
 
 def get_ecc_location() -> str:
     ecc_list = get_variant_attribute(os.getenv('VARIANT'), 'SWARM_KEY_URI')
+    ecc_location = None
 
     try:
         with open("/var/nebra/ecc_file", 'r') as data:
@@ -147,10 +148,7 @@ def get_ecc_location() -> str:
                     file.write(ecc_location)
                 return ecc_location
 
-    try:
-        ecc_location
-    except NameError:
-        ecc_location = None
+    if not ecc_location:
         LOGGER.info("Can't find ECC. Ensure SWARM_KEY_URI is correct in hardware definitions.")
 
     return ecc_location
