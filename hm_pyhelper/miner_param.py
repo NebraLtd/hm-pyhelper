@@ -147,7 +147,9 @@ def get_ecc_location() -> str:
                     file.write(ecc_location)
                 return ecc_location
 
-    if not ecc_location:
+    try:
+        ecc_location
+    except NameError:
         ecc_location = None
         LOGGER.info("Can't find ECC. Ensure SWARM_KEY_URI is correct in hardware definitions.")
 
