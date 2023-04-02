@@ -125,7 +125,7 @@ def get_ecc_location() -> str:
         else:
             LOGGER.info("Generated ECC location file found: " + generated_ecc_location)
     except FileNotFoundError:
-        # No ECC location file found, create one with value None
+        # No ECC location file found, create variable with value None
         generated_ecc_location = None
 
     if os.getenv('SWARM_KEY_URI_OVERRIDE'):
@@ -149,7 +149,7 @@ def get_ecc_location() -> str:
                 return ecc_location
 
     if not ecc_location:
-        LOGGER.info("Can't find ECC. Ensure SWARM_KEY_URI is correct in hardware definitions.")
+        LOGGER.error("Can't find ECC. Ensure SWARM_KEY_URI is correct in hardware definitions.")
 
     return ecc_location
 
