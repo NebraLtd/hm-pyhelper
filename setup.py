@@ -1,22 +1,25 @@
 from setuptools import setup, find_packages
-from os.path import join, dirname
+import os
+
+# allow setup.py to be run from any path
+here = os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir))
+os.chdir(here)
+
+requires = [
+    line.strip()
+    for line in open(os.path.join(here, "requirements.txt"), "r").readlines()
+]
 
 setup(
     name='hm_pyhelper',
-    version='0.13.59',
+    version='0.14.0',
     author="Nebra Ltd",
     author_email="support@nebra.com",
     description="Helium Python Helper",
-    long_description=open(join(dirname(__file__), 'README.md')).read(),
+    long_description=open(os.path.join(os.path.dirname(__file__), 'README.md')).read(),
     long_description_content_type="text/markdown",
     url="https://github.com/NebraLtd/hm-pyhelper",
-    install_requires=[
-        'requests>=2.28.1',
-        'retry==0.9.2',
-        'base58==2.1.1',
-        'protobuf==4.21.12',
-        'packaging>=22.0'
-    ],
+    install_requires=requires,
     project_urls={
         "Bug Tracker": "https://github.com/NebraLtd/hm-pyhelper/issues",
     },
