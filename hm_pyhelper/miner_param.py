@@ -154,6 +154,50 @@ def get_ecc_location() -> str:
     return ecc_location
 
 
+def get_onboarding_location() -> str:
+    onboarding_list = get_variant_attribute(os.getenv('VARIANT'), 'ONBOARDING_KEY_URI')
+    onboarding_location = None
+
+    try:
+        with open("/var/nebra/onboarding_file", 'r') as data:
+            generated_onboarding_location = str(data.read()).rstrip('\n')
+
+        if len(generated_onboarding_location) < 10:
+            generated_onboarding_location = None
+        else:
+            LOGGER.info("Generated onboarding key location file found: "
+                        + generated_onboarding_location)
+    except FileNotFoundError:
+        # No onboarding key location file found, create variable with value None
+        generated_onboarding_location = None
+
+    if os.getenv('ONBOARDING_KEY_URI_OVERRIDE'):
+        onboarding_location = os.getenv('ONBOARDING_KEY_URI_OVERRIDE')
+    elif generated_onboarding_location is not None:
+        onboarding_location = generated_onboarding_location
+    elif len(onboarding_list) == 1:
+        onboarding_location = onboarding_list[0]
+    else:
+        for location in onboarding_list:
+            parse_result = urlparse(location)
+            i2c_bus = parse_i2c_bus(parse_result.hostname)
+            i2c_address = parse_i2c_address(parse_result.port)
+            command = f'i2cdetect -y {i2c_bus}'
+            parameter = f'{i2c_address} --'
+
+            if config_search_param(command, parameter):
+                onboarding_location = location
+                with open("/var/nebra/onboarding_file", "w") as file:
+                    file.write(onboarding_location)
+                return onboarding_location
+
+    if not onboarding_location:
+        LOGGER.error("Can't find onboarding key. Ensure ONBOARDING_KEY_URI is "
+                     "correct in hardware definitions.")
+
+    return onboarding_location
+
+
 def get_gateway_mfr_command(sub_command: str, slot: int = False) -> list:
     gateway_mfr_path = get_gateway_mfr_path()
     command = [gateway_mfr_path]
