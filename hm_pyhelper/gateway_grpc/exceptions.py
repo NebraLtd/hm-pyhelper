@@ -1,0 +1,2 @@
+class MinerMalformedAddGatewayTxn(Exception):
+    pass

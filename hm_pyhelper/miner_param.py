@@ -15,8 +15,6 @@ from hm_pyhelper.exceptions import MalformedRegionException, \
     GatewayMFRFileNotFoundException, \
     MinerFailedToFetchMacAddress, GatewayMFRExecutionException, GatewayMFRInvalidVersion, \
     UnsupportedGatewayMfrVersion
-from hm_pyhelper.miner_json_rpc.exceptions import \
-     MinerFailedToFetchEthernetAddress
 from hm_pyhelper.hardware_definitions import get_variant_attribute, \
     UnknownVariantException, UnknownVariantAttributeException
 
@@ -37,10 +35,8 @@ def run_gateway_mfr(sub_command: str, slot: int = False) -> dict:
             capture_output=True,
             check=True
         )
-        LOGGER.info(
-            'gateway_mfr response stdout: %s' % run_gateway_mfr_result.stdout)
-        LOGGER.info(
-            'gateway_mfr response stderr: %s' % run_gateway_mfr_result.stderr)
+        LOGGER.info(f"gateway_mfr response stdout: {run_gateway_mfr_result.stdout}")
+        LOGGER.info(f"gateway_mfr response stderr: {run_gateway_mfr_result.stderr}")
     except subprocess.CalledProcessError as e:
         err_str = "gateway_mfr exited with a non-zero status"
         LOGGER.exception(err_str)
@@ -223,7 +219,7 @@ def provision_key(slot: int, force: bool = False):
 
     try:
         gateway_mfr_result = run_gateway_mfr("provision", slot=slot)
-        LOGGER.info("[ECC Provisioning] %s", gateway_mfr_result)
+        LOGGER.info(f"[ECC Provisioning] {gateway_mfr_result}")
         provisioning_successful = True
         response = gateway_mfr_result
 
@@ -233,9 +229,9 @@ def provision_key(slot: int, force: bool = False):
         response = str(exp)
 
     except Exception as exp:
-        LOGGER.error("[ECC Provisioning] Error during provisioning. %s" % str(exp))
-        provisioning_successful = False
         response = str(exp)
+        LOGGER.error(f"[ECC Provisioning] Error during provisioning. {response}")
+        provisioning_successful = False
 
     # Try key generation.
     if provisioning_successful is False and force is True:
@@ -245,8 +241,8 @@ def provision_key(slot: int, force: bool = False):
             response = gateway_mfr_result
 
         except Exception as exp:
-            LOGGER.error("[ECC Provisioning] key --generate failed: %s" % str(exp))
             response = str(exp)
+            LOGGER.error(f"[ECC Provisioning] key --generate failed: {response}")
 
     return provisioning_successful, response
 
@@ -269,7 +265,7 @@ def did_gateway_mfr_test_result_include_miner_key_pass(
 
 
 def get_ethernet_addresses(diagnostics):
-    # Get ethernet MAC and WIFI address
+    # Get ethernet and wlan MAC address
 
     # The order of the values in the lists is important!
     # It determines which value will be available for which key
@@ -281,13 +277,10 @@ def get_ethernet_addresses(diagnostics):
     for (path, key) in zip(path_to_files, keys):
         try:
             diagnostics[key] = get_mac_address(path)
-        except MinerFailedToFetchMacAddress as e:
-            diagnostics[key] = False
-            LOGGER.error(e)
         except Exception as e:
             diagnostics[key] = False
             LOGGER.error(e)
-            raise MinerFailedToFetchEthernetAddress(str(e))
+            raise MinerFailedToFetchMacAddress(str(e))
 
 
 def get_mac_address(path):
@@ -305,20 +298,18 @@ def get_mac_address(path):
              The path must be a string value")
     try:
         file = open(path)
-    except MinerFailedToFetchMacAddress as e:
-        LOGGER.exception(str(e))
     except FileNotFoundError as e:
         # logging as warning because some people remove wifi from their outdoor units.
         # We can't do anything about these errors even if they were failing wifi units.
         LOGGER.warning("Failed to find Miner"
-                       "Mac Address file at path %s" % path)
+                       f"Mac Address file at path {path}")
         raise MinerFailedToFetchMacAddress("Failed to find file"
                                            "containing miner mac address. "
                                            "Exception: %s" % str(e)) \
             .with_traceback(e.__traceback__)
     except PermissionError as e:
         LOGGER.exception("Permissions invalid for Miner"
-                         "Mac Address file at path %s" % path)
+                         f"Mac Address file at path {path}")
         raise MinerFailedToFetchMacAddress("Failed to fetch"
                                            "miner mac address. "
                                            "Invalid permissions to access "
@@ -349,16 +340,16 @@ def retry_get_region(region_override, region_filepath):
         return region_override
 
     LOGGER.debug(
-        "No region override set (value = %s), will retrieve from miner." % region_override)  # noqa: E501
+        f"No region override set (value = {region_override}), will retrieve from miner.")  # noqa: E501
     with open(region_filepath) as region_file:
         region = region_file.read().rstrip('\n')
-        LOGGER.debug("Region %s parsed from %s " % (region, region_filepath))
+        LOGGER.debug(f"Region {region} parsed from {region_filepath}")
 
         is_region_valid = len(region) > 3
         if is_region_valid:
             return region
 
-        raise MalformedRegionException("Region %s is invalid" % region)
+        raise MalformedRegionException(f"Region {region} is invalid")
 
 
 @retry(SPIUnavailableException, delay=SPI_UNAVAILABLE_SLEEP_SECONDS,
@@ -367,11 +358,11 @@ def await_spi_available(spi_bus):
     """
     Check that the SPI bus path exists, assuming it is in /dev/{spi_bus}
     """
-    if os.path.exists('/dev/{}'.format(spi_bus)):
-        LOGGER.debug("SPI bus %s Configured Correctly" % spi_bus)
+    if os.path.exists(f"/dev/{spi_bus}"):
+        LOGGER.debug(f"SPI bus {spi_bus} Configured Correctly")
         return True
     else:
-        raise SPIUnavailableException("SPI bus %s not found!" % spi_bus)
+        raise SPIUnavailableException(f"SPI bus {spi_bus} not found!")
 
 
 def config_search_param(command, param):
