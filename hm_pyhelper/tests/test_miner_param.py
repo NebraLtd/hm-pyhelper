@@ -218,6 +218,22 @@ class TestMinerParam(unittest.TestCase):
         expected_result = [ANY, '--device', 'ecc://i2c-4:88?slot=10', 'test']
         self.assertListEqual(actual_result, expected_result)
 
+    @patch("builtins.open", mock_open(read_data=ECC_FILE_DATA_BLANK))
+    @patch.dict('os.environ', {"VARIANT": "NEBHNT-MULTIPLE-ECC-ADDRESS"})
+    @patch('subprocess.Popen')
+    @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
+           return_value=Version('0.2.1'))
+    def test_get_gateway_mfr_command_v021_multi_SWARM_KEY_42(self, mocked_get_gateway_mfr_version,
+                                                             mock_subproc_popen):
+        process_mock = Mock()
+        attrs = {'communicate.return_value': (str.encode("42 --"), 'error')}
+        process_mock.configure_mock(**attrs)
+        mock_subproc_popen.return_value = process_mock
+
+        actual_result = get_gateway_mfr_command('test')
+        expected_result = [ANY, '--device', None, 'test']
+        self.assertListEqual(actual_result, expected_result)
+
     @patch('hm_pyhelper.miner_param.get_gateway_mfr_version',
            return_value=Version('0.2.0'))
     def test_get_gateway_mfr_command_v020(self, mocked_get_gateway_mfr_version):

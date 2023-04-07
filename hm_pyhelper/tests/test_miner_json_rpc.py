@@ -15,7 +15,6 @@ def response_result(data, status):
     url = "https://fake_url"
     responses.add(responses.POST, url, json=data, status=status)
     resp = requests.post(url)
-    print(resp.json())
     return resp
 
 
