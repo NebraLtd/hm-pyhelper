@@ -4,14 +4,15 @@ import pytest
 import sys
 from unittest.mock import ANY, mock_open, patch, Mock
 from packaging.version import Version
-from hm_pyhelper.exceptions import ECCMalfunctionException, \
+from hm_pyhelper.exceptions import ECCMalfunctionException, UnknownVariantAttributeException, \
     MinerFailedToFetchMacAddress, GatewayMFRInvalidVersion, GatewayMFRExecutionException, \
-    GatewayMFRFileNotFoundException, UnsupportedGatewayMfrVersion
+    GatewayMFRFileNotFoundException, UnsupportedGatewayMfrVersion, UnknownVariantException
 from hm_pyhelper.lock_singleton import ResourceBusyError
 from hm_pyhelper.miner_param import retry_get_region, await_spi_available, \
     provision_key, run_gateway_mfr, get_gateway_mfr_path, config_search_param, get_ecc_location, \
     did_gateway_mfr_test_result_include_miner_key_pass, parse_i2c_address, parse_i2c_bus, \
-    get_mac_address, get_public_keys_rust, get_gateway_mfr_version, get_gateway_mfr_command
+    get_mac_address, get_public_keys_rust, get_gateway_mfr_version, get_gateway_mfr_command, \
+    get_onboarding_location
 
 sys.path.append("..")
 
@@ -64,10 +65,12 @@ MOCK_VARIANT_DEFINITIONS = {
         'NEBHNT-WITH-ECC-ADDRESS': {
             'KEY_STORAGE_BUS': '/dev/i2c-X',
             'SWARM_KEY_URI': ['ecc://i2c-X:96?slot=0'],
+            'ONBOARDING_KEY_URI': ['ecc://i2c-X:96?slot=0'],
         },
         'NEBHNT-NO-ECC-ADDRESS': {
             'NO_KEY_STORAGE_BUS': '/dev/i2c-X',
             'NO_KEY_SWARM_KEY_URI': ['ecc://i2c-X:96?slot=0'],
+            'NO_ONBOARDING_KEY_URI': ['ecc://i2c-X:96?slot=0'],
         },
         'NEBHNT-MULTIPLE-ECC-ADDRESS': {
             'KEY_STORAGE_BUS': '/dev/i2c-2',
@@ -78,6 +81,8 @@ MOCK_VARIANT_DEFINITIONS = {
 
 ECC_FILE_DATA = 'ecc://i2c-Y:96?slot=1'
 ECC_FILE_DATA_BLANK = None
+ONBOARDING_FILE_DATA = 'ecc://i2c-Z:96?slot=10'
+ONBOARDING_FILE_DATA_BLANK = None
 
 
 class SubprocessResult(object):
@@ -278,6 +283,64 @@ class TestMinerParam(unittest.TestCase):
         expected_result = 'ecc://i2c-Y:96?slot=1'
         self.assertEqual(actual_result, expected_result)
 
+    @patch("builtins.open", mock_open(read_data=ONBOARDING_FILE_DATA))
+    def test_get_onboarding_location_generated_ecc(self):
+        actual_result = get_onboarding_location()
+        expected_result = 'ecc://i2c-Z:96?slot=10'
+        self.assertEqual(actual_result, expected_result)
+
+    @patch.dict('os.environ', {"ONBOARDING_KEY_URI_OVERRIDE": "override-test"})
+    def test_get_onboarding_override(self):
+        actual_result = get_onboarding_location()
+        expected_result = "override-test"
+        self.assertEqual(actual_result, expected_result)
+
+    @patch("builtins.open", mock_open(read_data=ONBOARDING_FILE_DATA_BLANK))
+    @patch.dict('os.environ', {"VARIANT": "NEBHNT-MULTIPLE-ECC-ADDRESS"})
+    @patch('subprocess.Popen')
+    def test_get_onboarding_key_multi_KEY_URI(self, mock_subproc_popen):
+        process_mock = Mock()
+        attrs = {'communicate.return_value': (str.encode("60 --"), 'error')}
+        process_mock.configure_mock(**attrs)
+        mock_subproc_popen.return_value = process_mock
+
+        actual_result = get_onboarding_location()
+        expected_result = 'ecc://i2c-3:96?slot=0'
+        self.assertEqual(actual_result, expected_result)
+
+    @patch("builtins.open", mock_open(read_data=ONBOARDING_FILE_DATA_BLANK))
+    @patch.dict('os.environ', {"VARIANT": "NEBHNT-MULTIPLE-ECC-ADDRESS"})
+    @patch('subprocess.Popen')
+    def test_get_onboarding_key_multi_KEY_58(self, mock_subproc_popen):
+        process_mock = Mock()
+        attrs = {'communicate.return_value': (str.encode("58 --"), 'error')}
+        process_mock.configure_mock(**attrs)
+        mock_subproc_popen.return_value = process_mock
+
+        actual_result = get_onboarding_location()
+        expected_result = 'ecc://i2c-4:88?slot=15'
+        self.assertEqual(actual_result, expected_result)
+
+    @patch.dict('os.environ', {"VARIANT": "NEBHNT-NO-ECC-ADDRESS"})
+    def test_get_onboarding_key_missing(self):
+        with self.assertRaises(UnknownVariantAttributeException):
+            get_onboarding_location()
+
+    @patch.dict('os.environ', {"VARIANT": "NEBHNT-NO-ECC-ADDRESS"})
+    def test_get_ecc_key_missing(self):
+        with self.assertRaises(UnknownVariantAttributeException):
+            get_ecc_location()
+
+    @patch.dict('os.environ', {"VARIANT": "MISSING"})
+    def test_get_onboarding_key_missing_variant(self):
+        with self.assertRaises(UnknownVariantException):
+            get_onboarding_location()
+
+    @patch.dict('os.environ', {"VARIANT": "MISSING"})
+    def test_get_ecc_key_missing_variant(self):
+        with self.assertRaises(UnknownVariantException):
+            get_ecc_location()
+
     @patch('hm_pyhelper.miner_param.get_gateway_mfr_command',
            return_value=['gateway_mfr', 'arg1', 'arg2'])
     @patch('subprocess.run', side_effect=FileNotFoundError())
@@ -445,6 +508,17 @@ class TestConfigSearch(unittest.TestCase):
     def test_incorrect_param(self, mock_subproc_popen):
         process_mock = Mock()
         attrs = {'communicate.return_value': (str.encode('output'), 'error')}
+        process_mock.configure_mock(**attrs)
+        mock_subproc_popen.return_value = process_mock
+        result = config_search_param("somecommand", "60--")
+        self.assertEqual(result, False)
+
+    @patch('subprocess.Popen')
+    def test_error_command(self, mock_subproc_popen):
+        process_mock = Mock()
+        attrs = {'communicate.return_value': (str.encode(''),
+                 "Error: Could not open file `/dev/i2c-1' or `/dev/i2c/1': "
+                                              "No such file or directory")}
         process_mock.configure_mock(**attrs)
         mock_subproc_popen.return_value = process_mock
         result = config_search_param("somecommand", "60--")
