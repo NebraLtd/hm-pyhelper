@@ -78,4 +78,4 @@ jobs:
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/light-hotspot'
+        if: github.ref == 'refs/heads/master'
