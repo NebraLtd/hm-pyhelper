@@ -42,7 +42,7 @@ jobs:
           fi
       - name: Create Pull Request
         if: env.UPDATED == 'true'
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.MR_BUMP }}
           commit-message: Update gateway-mfr-rs to latest release ${{ env.GATEWAY_MFR_RS_RELEASE }}
