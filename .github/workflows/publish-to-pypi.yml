@@ -20,29 +20,29 @@ jobs:
 
       - name: Fetch gateway-mfr-rs
         env:
-          GATEWAY_MFR_RS_RELEASE: "0.4.1"
+          GATEWAY_MFR_RS_RELEASE: "v0.4.1"
         run: |
-          wget "https://github.com/helium/gateway-mfr-rs/releases/download/v${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz"
-          wget "https://github.com/helium/gateway-mfr-rs/releases/download/v${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum"
-          wget "https://github.com/helium/gateway-mfr-rs/releases/download/v${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu.tar.gz"
-          wget "https://github.com/helium/gateway-mfr-rs/releases/download/v${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu.checksum"
-          wget "https://github.com/helium/gateway-mfr-rs/releases/download/v${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-tpm-debian-gnu.tar.gz"
-          wget "https://github.com/helium/gateway-mfr-rs/releases/download/v${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-tpm-debian-gnu.checksum"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu.tar.gz"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu.checksum"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-unknown-debian-gnu.tar.gz"
+          wget "https://github.com/helium/gateway-mfr-rs/releases/download/${GATEWAY_MFR_RS_RELEASE}/gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-unknown-debian-gnu.checksum"
           SHA256_ARM=$( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz" | awk '{print $1}')
           SHA256_AARCH64=$( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu.tar.gz" | awk '{print $1}')
-          SHA256_X86_64=$( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-tpm-debian-gnu.tar.gz" | awk '{print $1}')
+          SHA256_X86_64=$( shasum -a 256 "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-unknowm-debian-gnu.tar.gz" | awk '{print $1}')
           echo "Generated checksum ARM: ${SHA256_ARM}"
           echo "Generated checksum AARCH64: ${SHA256_AARCH64}"
           echo "Generated checksum X86_64: ${SHA256_X86_64}"
           # Verify the checksums
-          if grep -q "${SHA256_ARM}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum" && grep -q "${SHA256_AARCH64}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu.checksum" && grep -q "${SHA256_X86_64}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-tpm-debian-gnu.checksum"; then
+          if grep -q "${SHA256_ARM}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.checksum" && grep -q "${SHA256_AARCH64}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu.checksum" && grep -q "${SHA256_X86_64}" "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-unknown-debian-gnu.checksum"; then
             echo "Checksum verified for gateway_mfr. Unpacking tarball..."
             # Unpack the tarballs
             tar -xvf "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-arm-unknown-linux-gnueabihf.tar.gz"
             mv gateway_mfr gateway_mfr_arm
             tar -xvf "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-aarch64-unknown-linux-gnu.tar.gz"
             mv gateway_mfr gateway_mfr_aarch64
-            tar -xvf "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-tpm-debian-gnu.tar.gz"
+            tar -xvf "gateway-mfr-${GATEWAY_MFR_RS_RELEASE}-x86_64-unknown-debian-gnu.tar.gz"
             mv gateway_mfr gateway_mfr_x86_64
             exit 0
           else
