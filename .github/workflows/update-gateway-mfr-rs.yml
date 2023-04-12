@@ -34,8 +34,8 @@ jobs:
             exit 0
           else
             echo "We're not on the latest Helium gateway-mfr-rs release. Updating to $GATEWAY_MFR_RS_RELEASE."
-            sed -i -E 's/GATEWAY_MFR_RS_RELEASE: v.*/GATEWAY_MFR_RS_RELEASE: '$GATEWAY_MFR_RS_RELEASE'/g' .github/workflows/publish-to-pypi-test.yml
-            sed -i -E 's/GATEWAY_MFR_RS_RELEASE: v.*/GATEWAY_MFR_RS_RELEASE: '$GATEWAY_MFR_RS_RELEASE'/g' .github/workflows/publish-to-pypi.yml
+            sed -i -E 's/GATEWAY_MFR_RS_RELEASE: "v.*/GATEWAY_MFR_RS_RELEASE: "'$GATEWAY_MFR_RS_RELEASE'"/g' .github/workflows/publish-to-pypi-test.yml
+            sed -i -E 's/GATEWAY_MFR_RS_RELEASE: "v.*/GATEWAY_MFR_RS_RELEASE: "'$GATEWAY_MFR_RS_RELEASE'"/g' .github/workflows/publish-to-pypi.yml
             UPDATED=true
             echo "UPDATED=$UPDATED" >> $GITHUB_ENV
             exit 0
