@@ -108,9 +108,12 @@ class GatewayClient(object):
                             ref:
                             https://github.com/helium/proto/blob/master/src/service/local.proto#L38
         """
+        # base58 gives version number as first byte. Get rid of it.
+        owner = base58.b58decode_check(owner_address)[1:]
+        payer = base58.b58decode_check(payer_address)[1:]
         response = self.stub.add_gateway(local_pb2.add_gateway_req(
-            owner=owner_address.encode('utf-8'),
-            payer=payer_address.encode('utf-8'),
+            owner=owner,
+            payer=payer,
             staking_mode=staking_mode
         ))
         return response.add_gateway_txn
