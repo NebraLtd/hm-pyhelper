@@ -1,8 +1,5 @@
 import base58
 import grpc
-import subprocess
-import json
-from typing import Union
 
 from hm_pyhelper.protos import blockchain_txn_add_gateway_v1_pb2, \
     local_pb2_grpc, local_pb2, region_pb2, gateway_staking_mode_pb2
@@ -52,6 +49,9 @@ class GatewayClient(object):
     def __exit__(self, _, _2, _3):
         self._channel.close()
 
+    def api_stub(self):
+        return self.stub
+
     def get_region_enum(self) -> int:
         '''
         Returns the current configured region of the gateway.
@@ -67,18 +67,6 @@ class GatewayClient(object):
         '''
         region_id = self.get_region_enum()
         return region_pb2.region.Name(region_id)
-
-    def sign(self, data: bytes) -> bytes:
-        '''
-        Sign a message with the gateway private key
-        '''
-        return self.stub.sign(local_pb2.sign_req(data=data)).signature
-
-    def ecdh(self, address: bytes) -> bytes:
-        '''
-        Return shared secret using ECDH
-        '''
-        return self.stub.ecdh(local_pb2.ecdh_req(address=address)).secret
 
     def get_pubkey(self) -> str:
         '''
@@ -99,30 +87,13 @@ class GatewayClient(object):
         '''
         return {
             'region': self.get_region(),
-            'key': self.get_pubkey(),
-            'gateway_version': self.get_gateway_version(),
+            'key': self.get_pubkey()
         }
-
-    def get_gateway_version(self) -> Union[str, None]:
-        '''
-        Returns the current version of the gateway package installed
-        '''
-        # NOTE:: there is a command line argument to helium-gateway
-        # but it is not exposed in the rpc, falling back to dpkg
-        try:
-            output = subprocess.check_output(['dpkg', '-s', 'helium_gateway'])
-            for line in output.decode().splitlines():
-                if line.strip().startswith('Version'):
-                    # dpkg has version without v but github tags begin with v
-                    return "v" + line.split(':')[1].strip()
-            return None
-        except subprocess.CalledProcessError:
-            return None
 
     def create_add_gateway_txn(self, owner_address: str, payer_address: str,
                                staking_mode: gateway_staking_mode_pb2.gateway_staking_mode
-                               = gateway_staking_mode_pb2.gateway_staking_mode.light,
-                               gateway_address: str = "") -> dict:
+                               = gateway_staking_mode_pb2.gateway_staking_mode.light
+                               ) -> bytes:
         """
         Invokes the txn_add_gateway RPC endpoint on the gateway and returns
         the same payload that the smartphone app traditionally expects.
@@ -136,23 +107,13 @@ class GatewayClient(object):
             - staking_mode: The staking mode of the gateway.
                             ref:
                             https://github.com/helium/proto/blob/master/src/service/local.proto#L38
-            - gateway_address: The address of the miner itself. This is
-                               an optional parameter because the miner
-                               will always return it in the payload during
-                               transaction generation. If the param is
-                               provided, it will only be used as extra
-                               validation.
         """
-        # NOTE:: this is unimplemented as of alpha23 release of the gateway
         response = self.stub.add_gateway(local_pb2.add_gateway_req(
             owner=owner_address.encode('utf-8'),
             payer=payer_address.encode('utf-8'),
             staking_mode=staking_mode
         ))
-        result = json.loads(response.decode())
-        if result["address"] != gateway_address:
-            raise MinerMalformedAddGatewayTxn
-        return result
+        return response.add_gateway_txn
 
 
 def get_address_from_add_gateway_txn(add_gateway_txn:
@@ -163,7 +124,7 @@ def get_address_from_add_gateway_txn(add_gateway_txn:
     Deserializes specified field in the blockchain_txn_add_gateway_v1_pb2
     protobuf to a base58 Helium address.
 
-    Pararms:
+    Params:
         - add_gateway_txn: The blockchain_txn_add_gateway_v1_pb2 to
                            inspect.
         - address_type: 'owner', 'gateway', or 'payer'.
