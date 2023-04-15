@@ -12,7 +12,7 @@ requires = [
 
 setup(
     name='hm_pyhelper',
-    version='0.14.6',
+    version='0.14.7',
     author="Nebra Ltd",
     author_email="support@nebra.com",
     description="Helium Python Helper",

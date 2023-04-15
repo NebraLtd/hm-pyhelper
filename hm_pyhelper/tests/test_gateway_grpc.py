@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import patch
 import grpc
 from concurrent import futures
 from hm_pyhelper.gateway_grpc.client import GatewayClient
@@ -16,23 +15,9 @@ class TestData:
     pubkey_decoded = "14RdqcZC2rbdTBwNaTsj5EVWYaM7BKGJ44ycq6wWJy9Hg7RKCii"
     region_enum = 0
     region_name = "US915"
-    dpkg_output = b"""Package: helium_gateway\n
-                    Status: install ok installed\n
-                    Priority: optional\n
-                    Section: utility\n
-                    Installed-Size: 3729\n
-                    Maintainer: Marc Nijdam <marc@helium.com>\n
-                    Architecture: amd64\n
-                    Version: 1.0.0\n
-                    Depends: curl\n
-                    Conffiles:\n
-                    /etc/helium_gateway/settings.toml 4d6fb434f97a50066b8163a371d5c208\n
-                    Description: Helium Gateway for LoRa packet forwarders\n
-                    The Helium Gateway to attach your LoRa gateway to the Helium Blockchain.\n"""
     expected_summary = {
         'region': region_name,
-        'key': pubkey_decoded,
-        'gateway_version': "v1.0.0"
+        'key': pubkey_decoded
     }
 
 
@@ -82,16 +67,8 @@ class TestGatewayGRPCClient(unittest.TestCase):
         with GatewayClient(f'localhost:{TestData.server_port}') as client:
             # summary when helium_gateway is not installed
             test_summary_copy = TestData.expected_summary.copy()
-            test_summary_copy['gateway_version'] = None
             self.assertIn(client.get_summary(),
                           [TestData.expected_summary, test_summary_copy])
-
-    @patch('subprocess.check_output', return_value=TestData.dpkg_output)
-    def test_get_gateway_version(self, mock_check_output):
-        mock_check_output.return_value = TestData.dpkg_output
-        with GatewayClient(f'localhost:{TestData.server_port}') as client:
-            self.assertIn(client.get_gateway_version(),
-                          [TestData.expected_summary['gateway_version'], None])
 
     def test_connection_failure(self):
         with self.assertRaises(grpc.RpcError):
