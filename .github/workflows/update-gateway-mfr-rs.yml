@@ -23,7 +23,7 @@ jobs:
           GATEWAY_MFR_RS_RELEASE: ${{ steps.latest_version.outputs.latest_tag }}
         run: |
           GITHUB_BRANCH=$( echo "${{ github.ref }}" | sed 's/refs\/heads\///g' )
-          CHECK_LATEST_RELEASE='GATEWAY_MFR_RS_RELEASE: "${GATEWAY_MFR_RS_RELEASE}"'
+          CHECK_LATEST_RELEASE='GATEWAY_MFR_RS_RELEASE: ""${GATEWAY_MFR_RS_RELEASE}""'
 
           echo "GATEWAY_MFR_RS_RELEASE=$GATEWAY_MFR_RS_RELEASE" >> $GITHUB_ENV
           echo "GITHUB_BRANCH=$GITHUB_BRANCH" >> $GITHUB_ENV
