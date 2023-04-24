@@ -321,9 +321,13 @@ def get_ethernet_addresses(diagnostics):
     for (path, key) in zip(path_to_files, keys):
         try:
             diagnostics[key] = get_mac_address(path)
+        except MinerFailedToFetchMacAddress as e:
+            diagnostics[key] = False
+            LOGGER.error(e)
         except Exception as e:
             diagnostics[key] = False
             LOGGER.error(e)
+            raise MinerFailedToFetchEthernetAddress(str(e))
 
 
 def get_mac_address(path):
