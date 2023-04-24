@@ -14,7 +14,7 @@ from hm_pyhelper.exceptions import MalformedRegionException, \
     SPIUnavailableException, ECCMalfunctionException, \
     GatewayMFRFileNotFoundException, \
     MinerFailedToFetchMacAddress, GatewayMFRExecutionException, GatewayMFRInvalidVersion, \
-    UnsupportedGatewayMfrVersion
+    UnsupportedGatewayMfrVersion, MinerFailedToFetchEthernetAddress
 from hm_pyhelper.hardware_definitions import get_variant_attribute, \
     UnknownVariantException, UnknownVariantAttributeException
 
