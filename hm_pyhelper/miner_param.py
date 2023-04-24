@@ -14,7 +14,7 @@ from hm_pyhelper.exceptions import MalformedRegionException, \
     SPIUnavailableException, ECCMalfunctionException, \
     GatewayMFRFileNotFoundException, \
     MinerFailedToFetchMacAddress, GatewayMFRExecutionException, GatewayMFRInvalidVersion, \
-    UnsupportedGatewayMfrVersion
+    UnsupportedGatewayMfrVersion, MinerFailedToFetchEthernetAddress
 from hm_pyhelper.hardware_definitions import get_variant_attribute, \
     UnknownVariantException, UnknownVariantAttributeException
 
@@ -321,10 +321,13 @@ def get_ethernet_addresses(diagnostics):
     for (path, key) in zip(path_to_files, keys):
         try:
             diagnostics[key] = get_mac_address(path)
+        except MinerFailedToFetchMacAddress as e:
+            diagnostics[key] = False
+            LOGGER.error(e)
         except Exception as e:
             diagnostics[key] = False
             LOGGER.error(e)
-            raise MinerFailedToFetchMacAddress(str(e))
+            raise MinerFailedToFetchEthernetAddress(str(e))
 
 
 def get_mac_address(path):
