@@ -324,7 +324,6 @@ def get_ethernet_addresses(diagnostics):
         except Exception as e:
             diagnostics[key] = False
             LOGGER.error(e)
-            raise MinerFailedToFetchMacAddress(str(e))
 
 
 def get_mac_address(path):
