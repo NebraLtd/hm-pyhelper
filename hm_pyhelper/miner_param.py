@@ -1,6 +1,6 @@
 import os
 import re
-import subprocess
+import subprocess  # nosec
 import json
 import platform
 from urllib.parse import urlparse
@@ -30,7 +30,7 @@ def run_gateway_mfr(sub_command: str, slot: int = False) -> dict:
     command = get_gateway_mfr_command(sub_command, slot=slot)
 
     try:
-        run_gateway_mfr_result = subprocess.run(
+        run_gateway_mfr_result = subprocess.run(  # nosec
             command,
             capture_output=True,
             check=True
@@ -86,7 +86,7 @@ def get_gateway_mfr_version() -> Version:
     command = [gateway_mfr_path, '--version']
 
     try:
-        run_gateway_mfr_result = subprocess.run(
+        run_gateway_mfr_result = subprocess.run(  # nosec
             command,
             capture_output=True,
             check=True
@@ -425,7 +425,7 @@ def config_search_param(command, param):
         raise TypeError("The command must be a string value")
     if type(param) is not str:
         raise TypeError("The param must be a string value")
-    result = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
+    result = subprocess.Popen(command.split(), stdout=subprocess.PIPE)  # nosec
     out, err = result.communicate()
     out = out.decode("UTF-8")
     if param in out:

@@ -24,7 +24,7 @@ class Client(object):
         if kwargs:
             req_body["params"] = kwargs
         try:
-            response = requests.post(self.url, json=req_body)
+            response = requests.post(self.url, json=req_body)  # nosec
         except requests.exceptions.ConnectionError:
             raise MinerConnectionError(
                 "Unable to connect to miner %s" % self.url

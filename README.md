@@ -192,9 +192,8 @@ result = client.create_add_gateway_txn('owner_address', 'payer_address', 'gatewa
 To run tests:
 
 ```bash
-pip install -r requirements.txt
-pip install -r test-requirements.txt
-PYTHONPATH=./ pytest
+poetry install --with dev
+poetry run pytest --cov=hm_pyhelper --cov-fail-under=90
 ```
 
 ## Referencing a branch for development
