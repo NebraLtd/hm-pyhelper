@@ -10,20 +10,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python 3.8
+      - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: 3.9
 
-      - name: Install requirements
-        run: |
-          pip install -r requirements.txt
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: 1.4.2
 
-      - name: Install test requirements
+      - name: Install dependencies
         run: |
-          pip install -r test-requirements.txt
+          poetry install --with dev
 
       - name: Run tests
         run: |
-          export PYTHONPATH=`pwd`
-          pytest --cov=hm_pyhelper --cov-fail-under=90
+          poetry run pytest --cov=hm_pyhelper --cov-fail-under=90
