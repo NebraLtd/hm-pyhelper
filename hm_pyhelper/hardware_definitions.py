@@ -665,10 +665,10 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
-    # Bobcat PX30
+    # Bobcat PX30 (1GB RAM)
     'bobcat-px30': {
-        'FRIENDLY': 'Bobcat PX30 Hotspot',
-        'SUPPORTED_MODELS': ['Bobcat PX30 Hotspot'],
+        'FRIENDLY': 'Bobcat PX30 Hotspot (1GB RAM)',
+        'SUPPORTED_MODELS': ['Bobcat PX30 Hotspot (1GB RAM)'],
         'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['bobcat-px30'],
         'SPIBUS': 'spidev0.0',
