@@ -663,7 +663,29 @@ variant_definitions = {
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
         'CONTAINS_IC_IDS': []
-        }
+        },
+
+    # Bobcat PX30
+    'bobcat-px30': {
+        'FRIENDLY': 'Bobcat PX30 Hotspot',
+        'SUPPORTED_MODELS': ['Bobcat PX30 Hotspot'],
+        'CPU_ARCH': 'arm64',
+        'BALENA_DEVICE_TYPE': ['bobcat-px30'],
+        'SPIBUS': 'spidev0.0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
+        'ONBOARDING_KEY_URI': ['ecc://i2c-1:96?slot=0'],
+        'RESET': 103,
+        'MAC': 'wlan0',
+        'BUTTON': 27,
+        'STATUS': 45,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+    },
 }
 
 # Note: Maintain old names for backward compatibility, should be removed at some
@@ -691,6 +713,7 @@ variant_definitions['COMP-MIDAS'] = variant_definitions['midas-fl1']
 variant_definitions['COMP-SYNCROBITRKCM3'] = variant_definitions['syncrobit-rkcm3-fl1']
 variant_definitions['COMP-LINXDOTRKCM3'] = variant_definitions['linxdot-rkcm3-fl1']
 variant_definitions['COMP-RISINGHF'] = variant_definitions['risinghf-fl1']
+variant_definitions['COMP-BOBCATPX30'] = variant_definitions['bobcat-px30']
 
 
 def get_variant_attribute(variant_name, attribute_key):
