@@ -87,6 +87,7 @@ COMMERCIAL_FLEETS = [
     57,  # Syncrobit Testing
     111,  # Syncrobit RKCM3 Testing
     2006816,  # Rob Testing
+    2061340,  # Rob Testing
 ]
 
 def device_model():
