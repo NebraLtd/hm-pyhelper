@@ -3,6 +3,10 @@ from hm_pyhelper.exceptions import UnknownVariantException, \
     UnknownVariantAttributeException
 
 
+def is_bobcat_px30() -> bool:
+    return sbc.is_sbc_type(sbc.DeviceVendorID.BOBCAT_PX30)
+
+
 def is_rockpi() -> bool:
     return sbc.is_sbc_type(sbc.DeviceVendorID.ROCK_PI)
 
