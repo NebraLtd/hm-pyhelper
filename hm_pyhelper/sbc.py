@@ -207,7 +207,7 @@ def is_nebra_fleet() -> bool:
     api_url = os.environ.get('BALENA_API_URL')
     fleet_id = int(os.environ.get('BALENA_APP_ID'))
 
-    if api_url is not NEBRA_API_URL or (fleet_id not in COMMERCIAL_FLEETS and fleet_id not in NON_COMMERCIAL_FLEETS):
+    if (api_url != NEBRA_API_URL) or (fleet_id not in COMMERCIAL_FLEETS and fleet_id not in NON_COMMERCIAL_FLEETS):
         return False
 
     return True 
