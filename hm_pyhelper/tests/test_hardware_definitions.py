@@ -7,9 +7,9 @@ from hm_pyhelper.exceptions import UnknownVariantException, \
     UnknownVariantAttributeException
 
 from hm_pyhelper.hardware_definitions import is_rockpi, variant_definitions, \
-    get_variant_attribute, is_raspberry_pi
+    get_variant_attribute, is_raspberry_pi, is_bobcat_px30
 from hm_pyhelper.sbc import BALENA_ENV_RASPBERRY_PI_MODELS, \
-    BALENA_ENV_ROCKPI_MODELS
+    BALENA_ENV_ROCKPI_MODELS, BALENA_ENV_BOBCATPX30_MODELS
 
 BUILTINS_OPEN_LITERAL = "builtins.open"
 
@@ -140,3 +140,22 @@ class TestHardwareDefinitions(TestCase):
             # which will not exist on test environment.
             with self.assertRaises(FileNotFoundError):
                 self.assertFalse(is_rockpi())
+
+    mock_known_bobcat_px30_dts_models = ["Bobcat PX30"]
+
+    def test_is_bobcat_px30(self):
+        for model in self.mock_known_bobcat_px30_dts_models:
+            with patch(BUILTINS_OPEN_LITERAL, new_callable=mock_open, read_data=model):
+                self.assertTrue(is_bobcat_px30())
+            with patch(BUILTINS_OPEN_LITERAL, new_callable=mock_open,
+                       read_data="raspberry something"):
+                self.assertFalse(is_bobcat_px30())
+
+        # test balena env based detection
+        for model in BALENA_ENV_BOBCATPX30_MODELS:
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': model}):
+                self.assertTrue(is_bobcat_px30())
+            # in absence of the env, it should look for /proc/device-tree/model
+            # which will not exist on test environment.
+            with self.assertRaises(FileNotFoundError):
+                self.assertFalse(is_bobcat_px30())

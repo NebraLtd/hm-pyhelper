@@ -19,6 +19,7 @@ class DeviceVendorID(Enum):
     INVALID = auto()
     ROCK_PI = auto()
     RASPBERRY_PI = auto()
+    BOBCAT_PX30 = auto()
 
 
 # Pulled from
@@ -36,7 +37,10 @@ BALENA_ENV_RASPBERRY_PI_MODELS = [
 
 BALENA_ENV_ROCKPI_MODELS = ['rockpi-4b-rk3399']
 
+BALENA_ENV_BOBCATPX30_MODELS = ['isg-503']
+
 BALENA_MODELS = {
+    DeviceVendorID.BOBCAT_PX30: BALENA_ENV_BOBCATPX30_MODELS,
     DeviceVendorID.ROCK_PI: BALENA_ENV_ROCKPI_MODELS,
     DeviceVendorID.RASPBERRY_PI: BALENA_ENV_RASPBERRY_PI_MODELS
 }
@@ -169,6 +173,10 @@ def sbc_info() -> SBCInfo:
     elif dev_model.lower().find('rock') >= 0:
         sbc_info = SBCInfo(vendor_id=DeviceVendorID.ROCK_PI,
                            vendor_name='Radxa Rock Pi',
+                           model_name=dev_model)
+    elif dev_model.lower().find('px30') >= 0:
+        sbc_info = SBCInfo(vendor_id=DeviceVendorID.BOBCAT_PX30,
+                           vendor_name='Bobcat',
                            model_name=dev_model)
     return sbc_info
 
