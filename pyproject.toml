@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "hm_pyhelper"
-version = "0.14.20"
+version = "0.14.21"
 description = "Helium Python Helper"
 authors = ["Nebra Ltd <support@nebra.com>"]
 readme = "README.md"
