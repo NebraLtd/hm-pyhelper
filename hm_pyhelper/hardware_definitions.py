@@ -689,7 +689,29 @@ variant_definitions = {
         'CONTAINS_FCC_IDS': [],
         'IC_IDS': [],
         'CONTAINS_IC_IDS': []
-    },
+        },
+
+    # Heltec HT-M2808
+    'heltec-fl1': {
+        'FRIENDLY': 'Heltec HT-M2808 Hotspot',
+        'SUPPORTED_MODELS': ['Heltec HT-M2808'],
+        'CPU_ARCH': 'arm64',
+        'BALENA_DEVICE_TYPE': ['rockpro64'],
+        'SPIBUS': 'spidev32766.0',
+        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0','ecc://i2c-4:96?slot=0'],
+        'ONBOARDING_KEY_URI': ['ecc://i2c-1:96?slot=0','ecc://i2c-4:96?slot=0'],
+        'RESET': 2,
+        'MAC': 'eth0',
+        'STATUS': 85,
+        'BUTTON': 83,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        }
 }
 
 # Note: Maintain old names for backward compatibility, should be removed at some
