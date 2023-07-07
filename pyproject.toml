@@ -1,10 +1,10 @@
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.6.1"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "hm_pyhelper"
-version = "0.14.21"
+version = "0.14.22"
 description = "Helium Python Helper"
 authors = ["Nebra Ltd <support@nebra.com>"]
 readme = "README.md"
@@ -17,17 +17,17 @@ python = "^3.9"
 requests = ">=2.28.1,<2.32.0"
 retry = "~0.9.2"
 base58 = "~2.1.1"
-protobuf = "~4.21.12"
+protobuf = "~4.23.4"
 grpcio = "^1.50.1"
-packaging = "~23"
+packaging = "~23.1"
 
 [tool.poetry.group.dev.dependencies]
-bandit = { version = "~1.7.4", extras = ["toml"] }
-mock = "^5.0.0"
-pytest = "^7.2.0"
-pytest-cov = "^4.0.0"
-ruff = "~0.0.265"
-responses = "^0.22.0"
+bandit = { version = "~1.7.5", extras = ["toml"] }
+mock = "^5.0.2"
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+ruff = "~0.0.277"
+responses = "^0.23.1"
 
 [tool.ruff]
 line-length = 120
