@@ -7,6 +7,10 @@ def is_bobcat_px30() -> bool:
     return sbc.is_sbc_type(sbc.DeviceVendorID.BOBCAT_PX30)
 
 
+def is_bobcat_rk3566() -> bool:
+    return sbc.is_sbc_type(sbc.DeviceVendorID.BOBCAT_RK3566)
+
+
 def is_rockpi() -> bool:
     return sbc.is_sbc_type(sbc.DeviceVendorID.ROCK_PI)
 
@@ -691,6 +695,28 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
+    # Bobcat RK3566 (2GB RAM)
+    'bobcat-rk3566': {
+        'FRIENDLY': 'Bobcat RK3566 Hotspot (2GB RAM)',
+        'SUPPORTED_MODELS': ['Bobcat RK3566 Hotspot (2GB RAM)'],
+        'CPU_ARCH': 'arm64',
+        'BALENA_DEVICE_TYPE': ['rockpro64'],
+        'SPIBUS': 'spidev5.0',
+        'SWARM_KEY_URI': ['ecc://i2c-5:96?slot=0'],
+        'ONBOARDING_KEY_URI': ['ecc://i2c-5:96?slot=0'],
+        'RESET': 149,
+        'MAC': 'wlan0',
+        'BUTTON': 6,
+        'STATUS': 129,
+        'ECCOB': True,
+        'TYPE': 'Full',
+        'CELLULAR': False,
+        'FCC_IDS': [],
+        'CONTAINS_FCC_IDS': [],
+        'IC_IDS': [],
+        'CONTAINS_IC_IDS': []
+        },
+
     # Heltec HT-M2808
     'heltec-fl1': {
         'FRIENDLY': 'Heltec HT-M2808 Hotspot',
@@ -740,6 +766,7 @@ variant_definitions['COMP-SYNCROBITRKCM3'] = variant_definitions['syncrobit-rkcm
 variant_definitions['COMP-LINXDOTRKCM3'] = variant_definitions['linxdot-rkcm3-fl1']
 variant_definitions['COMP-RISINGHF'] = variant_definitions['risinghf-fl1']
 variant_definitions['COMP-BOBCATPX30'] = variant_definitions['bobcat-px30']
+variant_definitions['COMP-BOBCATRK3566'] = variant_definitions['bobcat-rk3566']
 
 
 def get_variant_attribute(variant_name, attribute_key):

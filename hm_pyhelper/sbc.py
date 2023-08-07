@@ -20,6 +20,7 @@ class DeviceVendorID(Enum):
     ROCK_PI = auto()
     RASPBERRY_PI = auto()
     BOBCAT_PX30 = auto()
+    BOBCAT_RK3566 = auto()
 
 
 # Pulled from
@@ -39,14 +40,18 @@ BALENA_ENV_ROCKPI_MODELS = ['rockpi-4b-rk3399']
 
 BALENA_ENV_BOBCATPX30_MODELS = ['isg-503']
 
+BALENA_ENV_BOBCATRK3566_MODELS = ['rockpro64']
+
 BALENA_MODELS = {
     DeviceVendorID.BOBCAT_PX30: BALENA_ENV_BOBCATPX30_MODELS,
+    DeviceVendorID.BOBCAT_RK3566: BALENA_ENV_BOBCATRK3566_MODELS,
     DeviceVendorID.ROCK_PI: BALENA_ENV_ROCKPI_MODELS,
     DeviceVendorID.RASPBERRY_PI: BALENA_ENV_RASPBERRY_PI_MODELS
 }
 
 COMMERCIAL_FLEETS = [
     156,  # Bobcat PX30
+    161,  # Bobcat RK3566
     56,  # Controllino
     106,  # COTX
     53,  # Finestra
@@ -74,6 +79,7 @@ COMMERCIAL_FLEETS = [
     126,  # Syncrobit RKCM3
     98,  # Nebra Indoor Testing
     158,  # Bobcat PX30 Testing
+    163,  # Bobcat RK3566 Testing
     127,  # Controllino Testing
     87,  # COTX Testing
     76,  # Finestra Testing
@@ -103,6 +109,7 @@ NON_COMMERCIAL_FLEETS = [
     150,  # devnet-03
     153,  # dev-sensorhub
     121,  # Bobcat PX30
+    160,  # Bobcat RK3566
     105,  # Controllino
     136,  # COTX
     99,  # Disputed
@@ -134,6 +141,7 @@ NON_COMMERCIAL_FLEETS = [
     69,  # Syncrobit RKCM3
     123,  # Testnet
     157,  # Bobcat PX30 Testnet
+    162,  # Bobcat RK3566 Testnet
     102,  # Controllino Testnet
     86,  # COTX Testnet
     77,  # Finestra Testnet
@@ -169,6 +177,10 @@ def sbc_info() -> SBCInfo:
     if dev_model.lower().find('raspberry') >= 0:
         sbc_info = SBCInfo(vendor_id=DeviceVendorID.RASPBERRY_PI,
                            vendor_name='Raspberry Pi',
+                           model_name=dev_model)
+    elif dev_model.lower().find('rk3566') >= 0:
+        sbc_info = SBCInfo(vendor_id=DeviceVendorID.BOBCAT_RK3566,
+                           vendor_name='Bobcat',
                            model_name=dev_model)
     elif dev_model.lower().find('rock') >= 0:
         sbc_info = SBCInfo(vendor_id=DeviceVendorID.ROCK_PI,
@@ -218,4 +230,4 @@ def is_nebra_fleet() -> bool:
     if (api_url != NEBRA_API_URL) or (fleet_id not in COMMERCIAL_FLEETS and fleet_id not in NON_COMMERCIAL_FLEETS):
         return False
 
-    return True 
+    return True
