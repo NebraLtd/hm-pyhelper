@@ -512,11 +512,11 @@ variant_definitions = {
         },
 
     # Linxdot RKCM3
-    'linxdot-rkcm3-fl1': {
-        'FRIENDLY': 'Linxdot RockPi Hotspot',
-        'SUPPORTED_MODELS': ['Linxdot RockPi Hotspot'],
+    'linxdot-rk3566-fl1': {
+        'FRIENDLY': 'Linxdot RK3566 Hotspot',
+        'SUPPORTED_MODELS': ['Linxdot RK3566 Hotspot'],
         'CPU_ARCH': 'arm64',
-        'BALENA_DEVICE_TYPE': ['radxa-cm3-rpicm4-ioboard'],
+        'BALENA_DEVICE_TYPE': ['nanopc-t4'],
         'SPIBUS': 'spidev0.0',
         'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
         'ONBOARDING_KEY_URI': ['ecc://i2c-1:96?slot=0'],
@@ -763,7 +763,7 @@ variant_definitions['COMP-PYCOM'] = variant_definitions['pycom-fl1']
 variant_definitions['COMP-SYNCROBITCM4'] = variant_definitions['syncrobit-fl1']
 variant_definitions['COMP-MIDAS'] = variant_definitions['midas-fl1']
 variant_definitions['COMP-SYNCROBITRKCM3'] = variant_definitions['syncrobit-rkcm3-fl1']
-variant_definitions['COMP-LINXDOTRKCM3'] = variant_definitions['linxdot-rkcm3-fl1']
+variant_definitions['COMP-LINXDOTRK3566'] = variant_definitions['linxdot-rk3566-fl1']
 variant_definitions['COMP-RISINGHF'] = variant_definitions['risinghf-fl1']
 variant_definitions['COMP-BOBCATPX30'] = variant_definitions['bobcat-px30']
 variant_definitions['COMP-BOBCATRK3566'] = variant_definitions['bobcat-rk3566']
