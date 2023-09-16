@@ -21,6 +21,7 @@ class DeviceVendorID(Enum):
     RASPBERRY_PI = auto()
     BOBCAT_PX30 = auto()
     BOBCAT_RK3566 = auto()
+    LINXDOT_RK3566 = auto()
 
 
 # Pulled from
@@ -42,9 +43,12 @@ BALENA_ENV_BOBCATPX30_MODELS = ['isg-503']
 
 BALENA_ENV_BOBCATRK3566_MODELS = ['rockpro64']
 
+BALENA_ENV_LINXDOTRK3566_MODELS = ['nanopc-t4']
+
 BALENA_MODELS = {
     DeviceVendorID.BOBCAT_PX30: BALENA_ENV_BOBCATPX30_MODELS,
     DeviceVendorID.BOBCAT_RK3566: BALENA_ENV_BOBCATRK3566_MODELS,
+    DeviceVendorID.LINXDOT_RK3566: BALENA_ENV_LINXDOTRK3566_MODELS,
     DeviceVendorID.ROCK_PI: BALENA_ENV_ROCKPI_MODELS,
     DeviceVendorID.RASPBERRY_PI: BALENA_ENV_RASPBERRY_PI_MODELS
 }
@@ -60,7 +64,7 @@ COMMERCIAL_FLEETS = [
     119,  # Nebra Indoor 915MHz
     58,  # Nebra Indoor RockPi 915MHz
     62,  # Linxdot
-    42,  # Linxdot RKCM3
+    42,  # Linxdot RK3566
     143,  # Midas
     145,  # Nebra indoor1
     147,  # Nebra indoor2
@@ -84,7 +88,7 @@ COMMERCIAL_FLEETS = [
     87,  # COTX Testing
     76,  # Finestra Testing
     132,  # Linxdot Testing
-    84,  # Linxdot RKCM3 Testing
+    84,  # Linxdot RK3566 Testing
     144,  # Midas Testing
     128,  # Helium OG Testing
     41,  # PantherX Testing
@@ -120,7 +124,7 @@ NON_COMMERCIAL_FLEETS = [
     91,  # Indoor 915
     122,  # Indoor 915 RockPi
     46,  # Linxdot
-    68,  # Linxdot RKCM3
+    68,  # Linxdot RK3566
     138,  # Midas
     3,  # Indoor1
     27,  # Indoor2
@@ -146,7 +150,7 @@ NON_COMMERCIAL_FLEETS = [
     86,  # COTX Testnet
     77,  # Finestra Testnet
     117,  # Linxdot Testnet
-    110,  # Linxdot RKCM3 Testnet
+    110,  # Linxdot RK3566 Testnet
     139,  # Midas Testnet
     70,  # OG Testnet
     129,  # Panther X1 Testnet
@@ -181,6 +185,10 @@ def sbc_info() -> SBCInfo:
     elif dev_model.lower().find('rk3566') >= 0:
         sbc_info = SBCInfo(vendor_id=DeviceVendorID.BOBCAT_RK3566,
                            vendor_name='Bobcat',
+                           model_name=dev_model)
+    elif dev_model.lower().find('linxdot') >= 0:
+        sbc_info = SBCInfo(vendor_id=DeviceVendorID.LINXDOT_RK3566,
+                           vendor_name='Linxdot',
                            model_name=dev_model)
     elif dev_model.lower().find('rock') >= 0:
         sbc_info = SBCInfo(vendor_id=DeviceVendorID.ROCK_PI,
