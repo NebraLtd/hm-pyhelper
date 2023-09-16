@@ -11,6 +11,10 @@ def is_bobcat_rk3566() -> bool:
     return sbc.is_sbc_type(sbc.DeviceVendorID.BOBCAT_RK3566)
 
 
+def is_linxdot_rk3566() -> bool:
+    return sbc.is_sbc_type(sbc.DeviceVendorID.LINXDOT_RK3566)
+
+
 def is_rockpi() -> bool:
     return sbc.is_sbc_type(sbc.DeviceVendorID.ROCK_PI)
 
