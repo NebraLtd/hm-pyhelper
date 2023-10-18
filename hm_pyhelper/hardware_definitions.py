@@ -11,6 +11,10 @@ def is_bobcat_rk3566() -> bool:
     return sbc.is_sbc_type(sbc.DeviceVendorID.BOBCAT_RK3566)
 
 
+def is_linxdot_rk3566() -> bool:
+    return sbc.is_sbc_type(sbc.DeviceVendorID.LINXDOT_RK3566)
+
+
 def is_rockpi() -> bool:
     return sbc.is_sbc_type(sbc.DeviceVendorID.ROCK_PI)
 
@@ -511,19 +515,24 @@ variant_definitions = {
         'CONTAINS_IC_IDS': []
         },
 
-    # Linxdot RKCM3
+    # Linxdot RK3566
     'linxdot-rk3566-fl1': {
         'FRIENDLY': 'Linxdot RK3566 Hotspot',
         'SUPPORTED_MODELS': ['Linxdot RK3566 Hotspot'],
         'CPU_ARCH': 'arm64',
         'BALENA_DEVICE_TYPE': ['nanopc-t4'],
         'SPIBUS': 'spidev0.0',
-        'SWARM_KEY_URI': ['ecc://i2c-1:96?slot=0'],
-        'ONBOARDING_KEY_URI': ['ecc://i2c-1:96?slot=0'],
+        'SWARM_KEY_URI': ['ecc://i2c-5:96?slot=1'],
+        'ONBOARDING_KEY_URI': ['ecc://i2c-5:96?slot=1'],
         'RESET': 17,
         'MAC': 'wlan0',
-        'STATUS': 22,
-        'BUTTON': 27,
+        'STATUS': None,
+        'BUTTON': None,
+        'BUTTON_ADC': {
+            'PATH': '/sys/bus/iio/devices/iio:device0/in_voltage0_raw',
+            'ACTIVE_BELOW': 500,
+        },
+        'STATUS_LINUX_LED': '/sys/devices/platform/leds/leds/work-led1/brightness',
         'ECCOB': True,
         'TYPE': 'Full',
         'CELLULAR': False,
