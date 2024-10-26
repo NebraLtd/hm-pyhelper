@@ -98,6 +98,7 @@ COMMERCIAL_FLEETS = [
     111,  # Syncrobit RKCM3 Testing
     2006816,  # Rob Testing
     2061340,  # Rob Testing
+    2173105,  # Aaron Testing
 ]
 
 NON_COMMERCIAL_FLEETS = [
