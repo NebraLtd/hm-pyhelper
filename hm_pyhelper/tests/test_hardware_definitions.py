@@ -7,9 +7,10 @@ from hm_pyhelper.exceptions import UnknownVariantException, \
     UnknownVariantAttributeException
 
 from hm_pyhelper.hardware_definitions import is_rockpi, variant_definitions, \
-    get_variant_attribute, is_raspberry_pi, is_bobcat_px30, is_bobcat_rk3566
+    get_variant_attribute, is_raspberry_pi, is_bobcat_px30, is_bobcat_rk3566, is_linxdot_rk3566
 from hm_pyhelper.sbc import BALENA_ENV_RASPBERRY_PI_MODELS, \
-    BALENA_ENV_ROCKPI_MODELS, BALENA_ENV_BOBCATPX30_MODELS, BALENA_ENV_BOBCATRK3566_MODELS
+    BALENA_ENV_ROCKPI_MODELS, BALENA_ENV_BOBCATPX30_MODELS, BALENA_ENV_BOBCATRK3566_MODELS, \
+    BALENA_ENV_LINXDOTRK3566_MODELS
 
 BUILTINS_OPEN_LITERAL = "builtins.open"
 
@@ -119,7 +120,8 @@ class TestHardwareDefinitions(TestCase):
                 self.assertTrue(is_raspberry_pi())
             # in absence of the env, it should look for /proc/device-tree/model
             # which will not exist on test environment.
-            with self.assertRaises(FileNotFoundError):
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': "something"}):
+                self.assertRaises(FileNotFoundError)
                 self.assertFalse(is_raspberry_pi())
 
     mock_known_rock_dts_models = ["ROCK PI 4B"]
@@ -138,7 +140,8 @@ class TestHardwareDefinitions(TestCase):
                 self.assertTrue(is_rockpi())
             # in absence of the env, it should look for /proc/device-tree/model
             # which will not exist on test environment.
-            with self.assertRaises(FileNotFoundError):
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': "something"}):
+                self.assertRaises(FileNotFoundError)
                 self.assertFalse(is_rockpi())
 
     mock_known_bobcat_px30_dts_models = ["Bobcat PX30"]
@@ -157,7 +160,8 @@ class TestHardwareDefinitions(TestCase):
                 self.assertTrue(is_bobcat_px30())
             # in absence of the env, it should look for /proc/device-tree/model
             # which will not exist on test environment.
-            with self.assertRaises(FileNotFoundError):
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': "something"}):
+                self.assertRaises(FileNotFoundError)
                 self.assertFalse(is_bobcat_px30())
 
     mock_known_bobcat_rk3566_dts_models = ["Rockchip RK3566 EVB2 LP4X V10 Board"]
@@ -176,5 +180,26 @@ class TestHardwareDefinitions(TestCase):
                 self.assertTrue(is_bobcat_rk3566())
             # in absence of the env, it should look for /proc/device-tree/model
             # which will not exist on test environment.
-            with self.assertRaises(FileNotFoundError):
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': "something"}):
+                self.assertRaises(FileNotFoundError)
                 self.assertFalse(is_bobcat_rk3566())
+
+    mock_known_linxdot_rk3566_dts_models = ["Linxdot RK3566 R01"]
+
+    def test_is_linxdot_rk3566(self):
+        for model in self.mock_known_linxdot_rk3566_dts_models:
+            with patch(BUILTINS_OPEN_LITERAL, new_callable=mock_open, read_data=model):
+                self.assertTrue(is_linxdot_rk3566())
+            with patch(BUILTINS_OPEN_LITERAL, new_callable=mock_open,
+                       read_data="raspberry something"):
+                self.assertFalse(is_linxdot_rk3566())
+
+        # test balena env based detection
+        for model in BALENA_ENV_LINXDOTRK3566_MODELS:
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': model}):
+                self.assertTrue(is_linxdot_rk3566())
+            # in absence of the env, it should look for /proc/device-tree/model
+            # which will not exist on test environment.
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': "something"}):
+                self.assertRaises(FileNotFoundError)
+                self.assertFalse(is_linxdot_rk3566())

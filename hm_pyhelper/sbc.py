@@ -21,6 +21,7 @@ class DeviceVendorID(Enum):
     RASPBERRY_PI = auto()
     BOBCAT_PX30 = auto()
     BOBCAT_RK3566 = auto()
+    LINXDOT_RK3566 = auto()
 
 
 # Pulled from
@@ -42,9 +43,12 @@ BALENA_ENV_BOBCATPX30_MODELS = ['isg-503']
 
 BALENA_ENV_BOBCATRK3566_MODELS = ['rockpro64']
 
+BALENA_ENV_LINXDOTRK3566_MODELS = ['nanopc-t4']
+
 BALENA_MODELS = {
     DeviceVendorID.BOBCAT_PX30: BALENA_ENV_BOBCATPX30_MODELS,
     DeviceVendorID.BOBCAT_RK3566: BALENA_ENV_BOBCATRK3566_MODELS,
+    DeviceVendorID.LINXDOT_RK3566: BALENA_ENV_LINXDOTRK3566_MODELS,
     DeviceVendorID.ROCK_PI: BALENA_ENV_ROCKPI_MODELS,
     DeviceVendorID.RASPBERRY_PI: BALENA_ENV_RASPBERRY_PI_MODELS
 }
@@ -179,9 +183,13 @@ def sbc_info() -> SBCInfo:
         sbc_info = SBCInfo(vendor_id=DeviceVendorID.RASPBERRY_PI,
                            vendor_name='Raspberry Pi',
                            model_name=dev_model)
-    elif dev_model.lower().find('rk3566') >= 0:
+    elif dev_model.lower().find('rk3566 evb2') >= 0:
         sbc_info = SBCInfo(vendor_id=DeviceVendorID.BOBCAT_RK3566,
                            vendor_name='Bobcat',
+                           model_name=dev_model)
+    elif dev_model.lower().find('rk3566 r01') >= 0:
+        sbc_info = SBCInfo(vendor_id=DeviceVendorID.LINXDOT_RK3566,
+                           vendor_name='Linxdot',
                            model_name=dev_model)
     elif dev_model.lower().find('rock') >= 0:
         sbc_info = SBCInfo(vendor_id=DeviceVendorID.ROCK_PI,
