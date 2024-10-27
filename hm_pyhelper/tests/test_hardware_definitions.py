@@ -196,5 +196,6 @@ class TestHardwareDefinitions(TestCase):
                 self.assertTrue(is_linxdot_rk3566())
             # in absence of the env, it should look for /proc/device-tree/model
             # which will not exist on test environment.
-            with self.assertRaises(FileNotFoundError):
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': "something"}):
+                self.assertRaises(FileNotFoundError)
                 self.assertFalse(is_linxdot_rk3566())
