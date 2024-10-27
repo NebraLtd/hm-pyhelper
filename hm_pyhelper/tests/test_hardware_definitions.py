@@ -120,7 +120,8 @@ class TestHardwareDefinitions(TestCase):
                 self.assertTrue(is_raspberry_pi())
             # in absence of the env, it should look for /proc/device-tree/model
             # which will not exist on test environment.
-            with self.assertRaises(FileNotFoundError):
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': "something"}):
+                self.assertRaises(FileNotFoundError)
                 self.assertFalse(is_raspberry_pi())
 
     mock_known_rock_dts_models = ["ROCK PI 4B"]
@@ -139,7 +140,8 @@ class TestHardwareDefinitions(TestCase):
                 self.assertTrue(is_rockpi())
             # in absence of the env, it should look for /proc/device-tree/model
             # which will not exist on test environment.
-            with self.assertRaises(FileNotFoundError):
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': "something"}):
+                self.assertRaises(FileNotFoundError)
                 self.assertFalse(is_rockpi())
 
     mock_known_bobcat_px30_dts_models = ["Bobcat PX30"]
@@ -158,7 +160,8 @@ class TestHardwareDefinitions(TestCase):
                 self.assertTrue(is_bobcat_px30())
             # in absence of the env, it should look for /proc/device-tree/model
             # which will not exist on test environment.
-            with self.assertRaises(FileNotFoundError):
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': "something"}):
+                self.assertRaises(FileNotFoundError)
                 self.assertFalse(is_bobcat_px30())
 
     mock_known_bobcat_rk3566_dts_models = ["Rockchip RK3566 EVB2 LP4X V10 Board"]
@@ -177,7 +180,8 @@ class TestHardwareDefinitions(TestCase):
                 self.assertTrue(is_bobcat_rk3566())
             # in absence of the env, it should look for /proc/device-tree/model
             # which will not exist on test environment.
-            with self.assertRaises(FileNotFoundError):
+            with patch.dict(os.environ, {'BALENA_DEVICE_TYPE': "something"}):
+                self.assertRaises(FileNotFoundError)
                 self.assertFalse(is_bobcat_rk3566())
 
     mock_known_linxdot_rk3566_dts_models = ["Linxdot RK3566 R01"]
