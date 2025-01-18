@@ -220,11 +220,12 @@ def is_commercial_fleet() -> bool:
     '''
     Return true if the device is in a commercial fleet. Otherwise return false.
     '''
-    fleet_name = os.environ.get('BALENA_APP_NAME')
-    fleet_id = int(os.environ.get('BALENA_APP_ID'))
+    # all fleets will get commercial software
+    # fleet_name = os.environ.get('BALENA_APP_NAME')
+    # fleet_id = int(os.environ.get('BALENA_APP_ID'))
 
-    if not fleet_name.endswith('-c') or fleet_id not in COMMERCIAL_FLEETS:
-        return False
+    # if not fleet_name.endswith('-c') or fleet_id not in COMMERCIAL_FLEETS:
+    #     return False
 
     return True
 
