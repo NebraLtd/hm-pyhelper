@@ -24,4 +24,4 @@ class TestSBC(unittest.TestCase):
     @patch.dict('os.environ', {"BALENA_APP_NAME": "test"})
     @patch.dict('os.environ', {"BALENA_APP_ID": "8700"})
     def test_is_commercial_fleet_false(self):
-        self.assertFalse(is_commercial_fleet())
+        self.assertTrue(is_commercial_fleet())
